@@ -1,13 +1,21 @@
-import puppeteer from "puppeteer";
-import { describe, it, expect } from "vitest";
+import puppeteer, { Browser } from "puppeteer";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { VizFiles } from "@vizhub/viz-types";
 import { computeSrcDoc } from "./index";
 import { basicHTML, fetchProxy, jsScriptTag } from "./fixtures";
 
-async function testInBrowser(files: VizFiles, expectedLog: string) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+let browser: Browser;
 
+beforeAll(async () => {
+  browser = await puppeteer.launch();
+});
+
+afterAll(async () => {
+  await browser.close();
+});
+
+async function testInBrowser(files: VizFiles, expectedLog: string) {
+  const page = await browser.newPage();
   try {
     // Capture console.log output
     const logs: string[] = [];
@@ -22,7 +30,7 @@ async function testInBrowser(files: VizFiles, expectedLog: string) {
     // Check console output
     expect(logs).toContain(expectedLog);
   } finally {
-    await browser.close();
+    await page.close();
   }
 }
 
