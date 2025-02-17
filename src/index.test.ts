@@ -22,7 +22,7 @@ describe("VizHub Runtime", () => {
     await page.setContent(generateSrcdoc());
     
     // Wait a bit for scripts to execute
-    await page.waitForTimeout(100);
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // Check console output
     expect(logs).toContain('Hello, World!');
