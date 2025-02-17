@@ -13,7 +13,7 @@ export const basicHTML: VizFiles = {
     <p>This is my first HTML document.</p>
     <script>
       console.log('Hello, World!');
-    </script
+    </script>
   </body>
 </html>`,
   },

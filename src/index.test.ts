@@ -1,9 +1,10 @@
+import puppeteer from "puppeteer";
 import { describe, it, expect } from "vitest";
+import { VizFiles } from "@vizhub/viz-types";
 import { computeSrcDoc } from "./index";
-import puppeteer, { Browser, Page } from "puppeteer";
-import { basicHTML, jsScriptTag } from "./fixtures";
+import { basicHTML, fetchProxy, jsScriptTag } from "./fixtures";
 
-async function testInBrowser(html: string, expectedLog: string) {
+async function testInBrowser(files: VizFiles, expectedLog: string) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -13,7 +14,7 @@ async function testInBrowser(html: string, expectedLog: string) {
     page.on("console", (message) => logs.push(message.text()));
 
     // Load the HTML
-    await page.setContent(computeSrcDoc(html));
+    await page.setContent(computeSrcDoc(files));
 
     // Wait a bit for scripts to execute
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -39,5 +40,9 @@ describe("VizHub Runtime", () => {
 
   it("jsScriptTag", async () => {
     await testInBrowser(jsScriptTag, "Hello, JS!");
+  });
+
+  it("fetchProxy", async () => {
+    await testInBrowser(fetchProxy, "Hello, Fetch!");
   });
 });
