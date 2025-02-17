@@ -20,7 +20,7 @@
     "@types/node": "^22.13.4",
     "puppeteer": "^24.2.1",
     "typescript": "^5.7.3",
-    "vitest": "^1.6.1"
+    "vitest": "^3.0.5"
   },
   "dependencies": {
     "@vizhub/viz-types": "^0.0.1",
