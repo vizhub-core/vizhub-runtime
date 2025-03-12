@@ -9,7 +9,7 @@ import {
   styleTest,
   xmlTest,
   protocolTest,
-} from "./fixtures";
+} from "./fixtures/magicSandbox";
 
 let browser: Browser;
 
