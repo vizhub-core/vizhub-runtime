@@ -1,6 +1,5 @@
 import puppeteer, { Browser } from "puppeteer";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { VizFiles } from "@vizhub/viz-types";
 import { computeSrcDoc } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
@@ -21,7 +20,6 @@ beforeAll(async () => {
 afterAll(async () => {
   await browser.close();
 });
-
 
 describe("Magic Sandbox", () => {
   it("should generate srcdoc HTML", () => {
