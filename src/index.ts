@@ -1,6 +1,6 @@
 import { VizFiles } from "@vizhub/viz-types";
 // @ts-ignore
-import magicSandbox from "magic-sandbox";
+import magicSandbox from "./magicSandbox";
 
 // Isolate the HTML entry point.
 const template = (files: VizFiles) => {

@@ -2,7 +2,14 @@ import puppeteer, { Browser } from "puppeteer";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { VizFiles } from "@vizhub/viz-types";
 import { computeSrcDoc } from "./index";
-import { basicHTML, fetchProxy, jsScriptTag } from "./fixtures";
+import { 
+  basicHTML, 
+  fetchProxy, 
+  jsScriptTag,
+  styleTest,
+  xmlTest,
+  protocolTest
+} from "./fixtures";
 
 let browser: Browser;
 
@@ -52,5 +59,19 @@ describe("VizHub Runtime", () => {
 
   it("fetchProxy", async () => {
     await testInBrowser(fetchProxy, "Hello, Fetch!");
+  });
+
+  it("should handle CSS file loading", async () => {
+    await testInBrowser(styleTest, "rgb(255, 0, 0)");
+  });
+
+  it("should handle XML file loading", async () => {
+    await testInBrowser(xmlTest, "root");
+  });
+
+  it("should convert protocol-less URLs to https", () => {
+    const srcdoc = computeSrcDoc(protocolTest);
+    expect(srcdoc).toContain('href="https://fonts.googleapis.com');
+    expect(srcdoc).toContain('src="https://code.jquery.com');
   });
 });
