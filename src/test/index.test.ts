@@ -1,14 +1,15 @@
 import puppeteer, { Browser } from "puppeteer";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { VizFiles } from "@vizhub/viz-types";
-import { computeSrcDoc } from "./index";
-import { 
-  basicHTML, 
-  fetchProxy, 
+import { computeSrcDoc } from "../index";
+import { testInBrowser } from "./testInBrowser";
+import {
+  basicHTML,
+  fetchProxy,
   jsScriptTag,
   styleTest,
   xmlTest,
-  protocolTest
+  protocolTest,
 } from "./fixtures";
 
 let browser: Browser;
@@ -21,27 +22,8 @@ afterAll(async () => {
   await browser.close();
 });
 
-async function testInBrowser(files: VizFiles, expectedLog: string) {
-  const page = await browser.newPage();
-  try {
-    // Capture console.log output
-    const logs: string[] = [];
-    page.on("console", (message) => logs.push(message.text()));
 
-    // Load the HTML
-    await page.setContent(computeSrcDoc(files));
-
-    // Wait a bit for scripts to execute
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Check console output
-    expect(logs).toContain(expectedLog);
-  } finally {
-    await page.close();
-  }
-}
-
-describe("VizHub Runtime", () => {
+describe("Magic Sandbox", () => {
   it("should generate srcdoc HTML", () => {
     const srcdoc = computeSrcDoc(basicHTML);
     expect(srcdoc).toContain("<!DOCTYPE html>");
@@ -50,23 +32,23 @@ describe("VizHub Runtime", () => {
   });
 
   it("basicHTML", async () => {
-    await testInBrowser(basicHTML, "Hello, World!");
+    await testInBrowser(browser, basicHTML, "Hello, World!");
   });
 
   it("jsScriptTag", async () => {
-    await testInBrowser(jsScriptTag, "Hello, JS!");
+    await testInBrowser(browser, jsScriptTag, "Hello, JS!");
   });
 
   it("fetchProxy", async () => {
-    await testInBrowser(fetchProxy, "Hello, Fetch!");
+    await testInBrowser(browser, fetchProxy, "Hello, Fetch!");
   });
 
   it("should handle CSS file loading", async () => {
-    await testInBrowser(styleTest, "rgb(255, 0, 0)");
+    await testInBrowser(browser, styleTest, "rgb(255, 0, 0)");
   });
 
   it("should handle XML file loading", async () => {
-    await testInBrowser(xmlTest, "root");
+    await testInBrowser(browser, xmlTest, "root");
   });
 
   it("should convert protocol-less URLs to https", () => {
