@@ -1,9 +1,6 @@
-import { generateVizFileId, VizFiles } from "@vizhub/viz-types";
-
-export const basicHTML: VizFiles = {
-  [generateVizFileId()]: {
-    name: "index.html",
-    text: `<!DOCTYPE html>
+export const basicHTML = {
+  "index.html": {
+    content: `<!DOCTYPE html>
 <html>
   <head>
     <title>My HTML Document</title>

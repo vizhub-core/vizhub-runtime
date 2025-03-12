@@ -27,10 +27,9 @@ function escapeRegExp(str: string): string {
 /**
  * Transforms HTML and files to create a sandboxed environment
  */
-export default function magicSandbox(
-  template: string,
-  files: FileCollection
-): string {
+export default function magicSandbox(files: FileCollection): string {
+  let template = files["index.html"]?.content || "";
+  const { "index.html": _, ...remainingFiles } = files;
   // Fix protocol-less URLs (//example.com) to use HTTPS
   template = fixProtocollessUrls(template);
 

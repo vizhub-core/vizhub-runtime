@@ -1,9 +1,6 @@
-import { generateVizFileId, VizFiles } from "@vizhub/viz-types";
-
-export const protocolTest: VizFiles = {
-  [generateVizFileId()]: {
-    name: "index.html",
-    text: `<!DOCTYPE html>
+export const protocolTest = {
+  "index.html": {
+    content: `<!DOCTYPE html>
 <html>
   <head>
     <link href="//fonts.googleapis.com/css?family=Roboto" rel="stylesheet">

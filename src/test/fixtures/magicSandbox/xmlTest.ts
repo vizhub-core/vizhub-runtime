@@ -1,9 +1,6 @@
-import { generateVizFileId, VizFiles } from "@vizhub/viz-types";
-
-export const xmlTest: VizFiles = {
-  [generateVizFileId()]: {
-    name: "index.html",
-    text: `<!DOCTYPE html>
+export const xmlTest = {
+  "index.html": {
+    content: `<!DOCTYPE html>
 <html>
   <body>
     <script>
@@ -15,13 +12,12 @@ export const xmlTest: VizFiles = {
       xhr.send();
     </script>
   </body>
-</html>`,
+</html>`
   },
-  [generateVizFileId()]: {
-    name: "data.xml",
-    text: `<?xml version="1.0" encoding="UTF-8"?>
+  "data.xml": {
+    content: `<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <item>Test</item>
-</root>`,
-  },
+</root>`
+  }
 };

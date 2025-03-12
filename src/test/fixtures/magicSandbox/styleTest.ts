@@ -1,9 +1,6 @@
-import { generateVizFileId, VizFiles } from "@vizhub/viz-types";
-
-export const styleTest: VizFiles = {
-  [generateVizFileId()]: {
-    name: "index.html",
-    text: `<!DOCTYPE html>
+export const styleTest = {
+  "index.html": {
+    content: `<!DOCTYPE html>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -14,10 +11,9 @@ export const styleTest: VizFiles = {
       console.log(window.getComputedStyle(document.getElementById('test')).color);
     </script>
   </body>
-</html>`,
+</html>`
   },
-  [generateVizFileId()]: {
-    name: "styles.css",
-    text: `#test { color: rgb(255, 0, 0); }`,
-  },
+  "styles.css": {
+    content: `#test { color: rgb(255, 0, 0); }`
+  }
 };
