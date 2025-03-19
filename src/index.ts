@@ -1,5 +1,3 @@
-import magicSandbox from "./magicSandbox";
-
-type FileCollection = Record<string, { content: string }>;
+import { magicSandbox, FileCollection } from "magic-sandbox";
 
 export const computeSrcDoc = (files: FileCollection) => magicSandbox(files);

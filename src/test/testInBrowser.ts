@@ -1,11 +1,11 @@
 import { Browser, Page } from "puppeteer";
 import { expect } from "vitest";
-import { VizFiles } from "@vizhub/viz-types";
 import { computeSrcDoc } from "../index";
+import { FileCollection } from "magic-sandbox";
 
 export async function testInBrowser(
   browser: Browser,
-  files: VizFiles,
+  files: FileCollection,
   expectedLog: string
 ) {
   const page: Page = await browser.newPage();

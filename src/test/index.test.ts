@@ -6,6 +6,7 @@ import {
   basicHTML,
   fetchProxy,
   jsScriptTag,
+  jsScriptTagTypeModule,
   styleTest,
   xmlTest,
   protocolTest,
@@ -21,7 +22,7 @@ afterAll(async () => {
   await browser.close();
 });
 
-describe("Magic Sandbox", () => {
+describe("Magic Sandbox Baseline Tests", () => {
   it("should generate srcdoc HTML", () => {
     const srcdoc = computeSrcDoc(basicHTML);
     expect(srcdoc).toContain("<!DOCTYPE html>");
@@ -35,6 +36,10 @@ describe("Magic Sandbox", () => {
 
   it("jsScriptTag", async () => {
     await testInBrowser(browser, jsScriptTag, "Hello, JS!");
+  });
+
+  it("jsScriptTagTypeModule", async () => {
+    await testInBrowser(browser, jsScriptTagTypeModule, "Hello, ES Module!");
   });
 
   it("fetchProxy", async () => {
