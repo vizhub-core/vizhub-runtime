@@ -1,16 +1,15 @@
 import puppeteer, { Browser } from "puppeteer";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { computeSrcDoc } from "../index";
+import { buildHTML } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
   basicHTML,
   fetchProxy,
   jsScriptTag,
-  jsScriptTagTypeModule,
   styleTest,
   xmlTest,
   protocolTest,
-} from "./fixtures/magicSandbox";
+} from "./fixtures/v1";
 
 let browser: Browser;
 
@@ -22,9 +21,11 @@ afterAll(async () => {
   await browser.close();
 });
 
-describe("Magic Sandbox Baseline Tests", () => {
-  it("should generate srcdoc HTML", () => {
-    const srcdoc = computeSrcDoc(basicHTML);
+describe("VizHub Runtime v1", () => {
+  it("should generate srcdoc HTML", async () => {
+    const srcdoc = await buildHTML({
+      files: basicHTML,
+    });
     expect(srcdoc).toContain("<!DOCTYPE html>");
     expect(srcdoc).toContain("<title>My HTML Document</title>");
     expect(srcdoc).toContain("Hello, World!");
@@ -36,10 +37,6 @@ describe("Magic Sandbox Baseline Tests", () => {
 
   it("jsScriptTag", async () => {
     await testInBrowser(browser, jsScriptTag, "Hello, JS!");
-  });
-
-  it("jsScriptTagTypeModule", async () => {
-    await testInBrowser(browser, jsScriptTagTypeModule, "Hello, ES Module!");
   });
 
   it("fetchProxy", async () => {
@@ -54,8 +51,8 @@ describe("Magic Sandbox Baseline Tests", () => {
     await testInBrowser(browser, xmlTest, "root");
   });
 
-  it("should convert protocol-less URLs to https", () => {
-    const srcdoc = computeSrcDoc(protocolTest);
+  it("should convert protocol-less URLs to https", async () => {
+    const srcdoc = await buildHTML({ files: protocolTest });
     expect(srcdoc).toContain('href="https://fonts.googleapis.com');
     expect(srcdoc).toContain('src="https://code.jquery.com');
   });

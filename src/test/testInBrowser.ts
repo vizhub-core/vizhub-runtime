@@ -1,7 +1,10 @@
 import { Browser, Page } from "puppeteer";
+import { rollup } from "rollup";
 import { expect } from "vitest";
-import { computeSrcDoc } from "../index";
+import { buildHTML } from "../index";
 import { FileCollection } from "magic-sandbox";
+
+const DEBUG = false;
 
 export async function testInBrowser(
   browser: Browser,
@@ -14,11 +17,20 @@ export async function testInBrowser(
     const logs: string[] = [];
     page.on("console", (message) => logs.push(message.text()));
 
+    // Capture page errors
+    page.on("pageerror", (error) => {
+      console.error("[testInBrowser] pageerror:", error);
+    });
+
     // Load the HTML
-    await page.setContent(computeSrcDoc(files));
+    const html = await buildHTML({ files, rollup });
+    await page.setContent(html);
 
     // Wait a bit for scripts to execute
     await new Promise((resolve) => setTimeout(resolve, 100));
+
+    DEBUG && console.log("[testInBrowser] html:", html);
+    DEBUG && console.log("[testInBrowser] logs:", logs);
 
     // Check console output
     expect(logs).toContain(expectedLog);
