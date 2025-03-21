@@ -1,7 +1,7 @@
 import { FileCollection, runtimeVersion } from "./types";
 
 export const determineRuntimeVersion = (
-  files: FileCollection
+  files: FileCollection,
 ): runtimeVersion | null => {
   if (Object.keys(files).length === 0) {
     return null;

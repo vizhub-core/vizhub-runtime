@@ -1,5 +1,6 @@
 import { FileCollection } from "../types";
 import { virtualFileSystem } from "./virtualFileSystem";
+import { sucrasePlugin } from "./sucrasePlugin";
 import type { RollupBuild, RollupOptions, OutputOptions } from "rollup";
 
 const globals = {
@@ -22,7 +23,7 @@ export const computeBundleJS = async ({
 
   const inputOptions: RollupOptions = {
     input: "./index.js",
-    plugins: [virtualFileSystem(files)],
+    plugins: [virtualFileSystem(files), sucrasePlugin()],
     onwarn(warning, warn) {
       // Suppress "treating module as external dependency" warnings
       if (warning.code === "UNRESOLVED_IMPORT") return;
