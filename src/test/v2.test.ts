@@ -40,7 +40,7 @@ describe("VizHub Runtime v2", () => {
     await testInBrowser(browser, d3Import, "function");
   });
 
-  it.skip("should support d3 imports from packages", async () => {
+  it("should support d3 imports from packages", async () => {
     await testInBrowser(browser, d3ImportPkg, "function");
   });
 
@@ -48,7 +48,7 @@ describe("VizHub Runtime v2", () => {
     await testInBrowser(browser, reactImport, "object");
   });
 
-  it.skip("should support React imports from packages", async () => {
+  it("should support React imports from packages", async () => {
     await testInBrowser(browser, reactImportPkg, "object");
   });
 
@@ -56,7 +56,7 @@ describe("VizHub Runtime v2", () => {
     await testInBrowser(browser, reactDomImport, "object");
   });
 
-  it.skip("should support ReactDOM imports from packages", async () => {
+  it("should support ReactDOM imports from packages", async () => {
     await testInBrowser(browser, reactDomImportPkg, "object");
   });
 
