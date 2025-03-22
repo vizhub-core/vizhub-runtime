@@ -8,6 +8,8 @@ import { FileCollection } from "../types";
 
 let parser: DOMParser;
 
+const DEBUG = false;
+
 // Expose a way to inject a DOMParser implementation
 // when we're in a Node environment (tests, API server).
 export const setJSDOM = (JSDOMInstance: typeof JSDOM): void => {
@@ -20,7 +22,7 @@ if (typeof window !== "undefined") {
   parser = new DOMParser();
 }
 
-const injectBundleScript = (htmlTemplate: string, files: FileCollection) => {
+const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   if (!parser) {
     throw new Error(
       "DOM parser is not defined. Did you forget to call setJSDOM()?"
@@ -29,8 +31,42 @@ const injectBundleScript = (htmlTemplate: string, files: FileCollection) => {
 
   const doc = parser.parseFromString(htmlTemplate, "text/html");
 
-  // Always inject bundle.js if it exists, even if there's already a script tag
-  if (files["bundle.js"]) {
+  // Ensure we have a head element
+  if (!doc.head) {
+    const head = doc.createElement("head");
+    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+  }
+
+  // Ensure we have a body element
+  if (!doc.body) {
+    const body = doc.createElement("body");
+    doc.documentElement.appendChild(body);
+  }
+
+  // Handle dependencies first (in head)
+  const deps: [string, string][] = Object.entries(dependencies(files) || {});
+  if (deps.length > 0) {
+    const libraries = getConfiguredLibraries(files);
+
+    // Remove any existing dependency scripts
+    deps.forEach(([name]) => {
+      const selector = `script[src*="${name}@"]`;
+      const existingScripts = doc.querySelectorAll(selector);
+      existingScripts.forEach((script) => script.remove());
+    });
+
+    // Add dependency scripts in order
+    deps
+      .map(([name, version]) => dependencySource({ name, version }, libraries))
+      .forEach((url) => {
+        const scriptTag = doc.createElement("script");
+        scriptTag.src = url;
+        doc.head.appendChild(scriptTag);
+      });
+  }
+
+  // Handle bundle.js (in body)
+  if (files["bundle.js"] || files["index.js"]) {
     // Remove any existing bundle.js script tags
     const existingScripts = doc.querySelectorAll('script[src="bundle.js"]');
     existingScripts.forEach((script) => script.remove());
@@ -43,49 +79,6 @@ const injectBundleScript = (htmlTemplate: string, files: FileCollection) => {
   return `<!DOCTYPE html>${doc.documentElement.outerHTML}`;
 };
 
-const injectDependenciesScript = (
-  htmlTemplate: string,
-  files: FileCollection
-) => {
-  const deps: [string, string][] = Object.entries(dependencies(files) || {});
-
-  if (deps.length === 0) return htmlTemplate;
-
-  if (!parser) {
-    throw new Error(
-      "DOM parser is not defined. Did you forget to call setJSDOM()?"
-    );
-  }
-
-  const doc = parser.parseFromString(htmlTemplate, "text/html");
-  const libraries = getConfiguredLibraries(files);
-
-  // Ensure we have a head element
-  if (!doc.head) {
-    const head = doc.createElement("head");
-    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
-  }
-
-  // Remove any existing dependency scripts
-  deps.forEach(([name]) => {
-    const selector = `script[src*="${name}@"]`;
-    const existingScripts = doc.querySelectorAll(selector);
-    existingScripts.forEach((script) => script.remove());
-  });
-
-  // Add dependency scripts in order
-  deps
-    .map(([name, version]) => dependencySource({ name, version }, libraries))
-    .forEach((url) => {
-      const scriptTag = doc.createElement("script");
-      scriptTag.src = url;
-      doc.head.appendChild(scriptTag);
-    });
-
-  return `<!DOCTYPE html>${doc.documentElement.outerHTML}`;
-};
-
-const DEBUG = false;
 // Compute the index.html file from the files.
 // Includes:
 // - bundle.js script tag
@@ -96,17 +89,11 @@ export const getComputedIndexHtml = (files: FileCollection): string => {
 
   // If there is no index.html file, return an empty string.
   if (!htmlTemplate) {
+    DEBUG && console.log("[getComputedIndexHtml] No index.html file found");
     return "";
   }
 
-  // Inject bundle.js script tag if needed.
-  const htmlWithBundleScriptTemplate = injectBundleScript(htmlTemplate, files);
-
-  // Inject dependencies script tag(s) if needed, based on package.json.
-  const indexHtml = injectDependenciesScript(
-    htmlWithBundleScriptTemplate,
-    files
-  );
+  const indexHtml = injectScripts(htmlTemplate, files);
 
   DEBUG && console.log("[getComputedIndexHtml] indexHtml", indexHtml);
 

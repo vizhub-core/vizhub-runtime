@@ -19,12 +19,17 @@ export interface Libraries {
   [key: string]: Library;
 }
 
+const DEBUG = false;
+
 export const packageJSON = (files: FileCollection) => {
   const packageJsonText = files["package.json"];
+  DEBUG && console.log("[packageJSON] packageJsonText:", packageJsonText);
   try {
     const pkg = packageJsonText ? JSON.parse(packageJsonText) : EMPTY_PKG_JSON;
+    DEBUG && console.log("[packageJSON] pkg:", JSON.stringify(pkg, null, 2));
     return pkg;
   } catch {
+    DEBUG && console.log("[packageJSON] Error parsing package.json");
     return EMPTY_PKG_JSON;
   }
 };

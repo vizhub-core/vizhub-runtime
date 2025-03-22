@@ -19,6 +19,6 @@ export const reactDomImportPkg = {
           "path": "/umd/react-dom.production.min.js"
         }
       }
-    },
+    }
   }`,
 };

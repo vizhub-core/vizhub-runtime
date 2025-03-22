@@ -4,6 +4,8 @@ import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "./v2";
 // import { v3Build } from "./v3";
 
+const DEBUG = false;
+
 export const buildHTML = async ({
   files,
   rollup,
@@ -12,6 +14,7 @@ export const buildHTML = async ({
   rollup?: (options: RollupOptions) => Promise<RollupBuild>;
 }): Promise<string> => {
   const version = determineRuntimeVersion(files);
+  DEBUG && console.log("[buildHTML] version:", version);
   if (version === "v1") {
     return magicSandbox(files);
   }
