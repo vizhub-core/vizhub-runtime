@@ -1,6 +1,20 @@
 import { FileCollection } from "../types";
 
-const EMPTY_PKG_JSON = {
+export type Licence = string;
+
+export interface PackageJson {
+  dependencies?: {
+    [key: string]: string;
+  };
+  vizhub?: {
+    libraries?: {
+      [key: string]: VizHubLibraryConfig;
+    };
+  };
+  license?: Licence | { type: string };
+}
+
+const EMPTY_PKG_JSON: PackageJson = {
   dependencies: {},
   vizhub: {},
   license: "MIT",
@@ -11,17 +25,18 @@ export interface Dependency {
   version: string;
 }
 
-export interface Library {
+export interface VizHubLibraryConfig {
   path?: string;
+  global?: string;
 }
 
-export interface Libraries {
-  [key: string]: Library;
+export interface VizHubLibraryConfigs {
+  [key: string]: VizHubLibraryConfig;
 }
 
 const DEBUG = false;
 
-export const packageJSON = (files: FileCollection) => {
+export const packageJSON = (files: FileCollection): PackageJson => {
   const packageJsonText = files["package.json"];
   DEBUG && console.log("[packageJSON] packageJsonText:", packageJsonText);
   try {
@@ -44,16 +59,15 @@ export const getConfiguredLibraries = (files: FileCollection) => {
 
 export const dependencySource = (
   { name, version }: Dependency,
-  libraries: Libraries,
+  libraries: VizHubLibraryConfigs
 ) => {
   const path = libraries[name] ? libraries[name].path || "" : "";
-  // unpkg uses file from unpkg or main field when no file specifid in url
   return `https://unpkg.com/${name}@${version}${path}`;
 };
 
 export const getLicense = (files: FileCollection) => {
   const license = packageJSON(files).license;
-  if (typeof license === 'object' && license !== null && 'type' in license) {
+  if (typeof license === "object" && license !== null && "type" in license) {
     return license.type;
   }
   return license || EMPTY_PKG_JSON.license;
