@@ -51,5 +51,10 @@ export const dependencySource = (
   return `https://unpkg.com/${name}@${version}${path}`;
 };
 
-export const getLicense = (files: FileCollection) =>
-  packageJSON(files).license || EMPTY_PKG_JSON.license;
+export const getLicense = (files: FileCollection) => {
+  const license = packageJSON(files).license;
+  if (typeof license === 'object' && license !== null && 'type' in license) {
+    return license.type;
+  }
+  return license || EMPTY_PKG_JSON.license;
+};
