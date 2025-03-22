@@ -9,7 +9,7 @@ const DEBUG = false;
 export async function testInBrowser(
   browser: Browser,
   files: FileCollection,
-  expectedLog: string,
+  expectedLog: string
 ) {
   const page: Page = await browser.newPage();
   try {
