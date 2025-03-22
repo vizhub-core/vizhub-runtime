@@ -2,7 +2,7 @@ import {
   dependencies,
   getConfiguredLibraries,
   dependencySource,
-} from "./packageJson";
+} from "../common/packageJson";
 import type { JSDOM } from "jsdom";
 import { FileCollection } from "../types";
 

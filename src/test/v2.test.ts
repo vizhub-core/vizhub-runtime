@@ -15,6 +15,7 @@ import {
   es6Preserve,
   generatorSupport,
   unicodeSupport,
+  d3RosettaImportPkg,
 } from "./fixtures/v2";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
@@ -75,5 +76,9 @@ describe("VizHub Runtime v2", () => {
 
   it("should support unicode characters", async () => {
     await testInBrowser(browser, unicodeSupport, "Привет");
+  });
+
+  it("should handle globals config for arbitrary package d3-rosetta", async () => {
+    await testInBrowser(browser, d3RosettaImportPkg, "function");
   });
 });
