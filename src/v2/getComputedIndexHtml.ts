@@ -25,7 +25,7 @@ if (typeof window !== "undefined") {
 const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   if (!parser) {
     throw new Error(
-      "DOM parser is not defined. Did you forget to call setJSDOM()?",
+      "DOM parser is not defined. Did you forget to call setJSDOM()?"
     );
   }
 
@@ -44,7 +44,7 @@ const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   }
 
   // Handle dependencies first (in head)
-  const deps: [string, string][] = Object.entries(dependencies(files) || {});
+  const deps: [string, string][] = Object.entries(dependencies(files));
   if (deps.length > 0) {
     const libraries = getConfiguredLibraries(files);
 

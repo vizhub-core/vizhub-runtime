@@ -60,9 +60,14 @@ export const getConfiguredLibraries = (files: FileCollection) => {
 export const dependencySource = (
   { name, version }: Dependency,
   libraries: VizHubLibraryConfigs,
+  cdn = "jsdelivr"
 ) => {
   const path = libraries[name] ? libraries[name].path || "" : "";
-  return `https://unpkg.com/${name}@${version}${path}`;
+  const src =
+    cdn === "jsdelivr"
+      ? `https://cdn.jsdelivr.net/npm/${name}@${version}${path}`
+      : `https://unpkg.com/${name}@${version}${path}`;
+  return src;
 };
 
 export const getLicense = (files: FileCollection) => {
@@ -74,7 +79,7 @@ export const getLicense = (files: FileCollection) => {
 };
 
 export const getConfiguredGlobals = (
-  pkg: PackageJson,
+  pkg: PackageJson
 ): Record<string, string> => {
   const libraries = pkg?.vizhub?.libraries;
   if (libraries) {
@@ -85,7 +90,7 @@ export const getConfiguredGlobals = (
         }
         return accumulator;
       },
-      {} as Record<string, string>,
+      {} as Record<string, string>
     );
   }
   return {};
