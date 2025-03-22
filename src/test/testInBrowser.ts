@@ -3,6 +3,8 @@ import { rollup } from "rollup";
 import { expect } from "vitest";
 import { buildHTML } from "../index";
 import { FileCollection } from "magic-sandbox";
+import { v2Build } from "../v2/v2Build";
+import { getComputedIndexHtml } from "../v2/getComputedIndexHtml";
 
 const DEBUG = false;
 
@@ -22,8 +24,12 @@ export async function testInBrowser(
       console.error("[testInBrowser] pageerror:", error);
     });
 
-    // Load the HTML
-    const html = await buildHTML({ files, rollup });
+    // Build files including bundle.js
+    const builtFiles = await v2Build({ files, rollup });
+    
+    // Get computed HTML with proper script tags
+    const html = getComputedIndexHtml(builtFiles);
+    
     await page.setContent(html);
 
     // Wait a bit for scripts to execute

@@ -40,9 +40,7 @@ describe("VizHub Runtime v2", () => {
     await testInBrowser(browser, d3Import, "function");
   });
 
-  // TODO get this to work by invoking getComputedIndexHtml
-  // in the right place
-  it.skip("should support d3 imports from packages", async () => {
+  it("should support d3 imports from packages", async () => {
     await testInBrowser(browser, d3ImportPkg, "function");
   });
 
