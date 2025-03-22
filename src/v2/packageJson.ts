@@ -44,7 +44,7 @@ export const getConfiguredLibraries = (files: FileCollection) => {
 
 export const dependencySource = (
   { name, version }: Dependency,
-  libraries: Libraries
+  libraries: Libraries,
 ) => {
   const path = libraries[name] ? libraries[name].path || "" : "";
   // unpkg uses file from unpkg or main field when no file specifid in url
