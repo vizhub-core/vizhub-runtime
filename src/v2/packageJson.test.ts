@@ -111,4 +111,44 @@ describe("packageJson", () => {
       expect(result).toBe("MIT");
     });
   });
+
+  describe("Edge cases", () => {
+    it("should handle malformed library configuration", () => {
+      const malformedFiles: FileCollection = {
+        "package.json": JSON.stringify({
+          dependencies: { d3: "7.0.0" },
+          vizhub: { libraries: { d3: null } }
+        })
+      };
+      const result = getConfiguredLibraries(malformedFiles);
+      expect(result).toEqual({ d3: null });
+    });
+
+    it("should handle empty version strings", () => {
+      const emptyVersionFiles: FileCollection = {
+        "package.json": JSON.stringify({
+          dependencies: { react: "" }
+        })
+      };
+      const dependency = { name: "react", version: "" };
+      const result = dependencySource(dependency, {});
+      expect(result).toBe("https://unpkg.com/react@");
+    });
+
+    it("should handle special characters in dependency names", () => {
+      const specialCharDep = { name: "@angular/core", version: "14.0.0" };
+      const result = dependencySource(specialCharDep, {});
+      expect(result).toBe("https://unpkg.com/@angular/core@14.0.0");
+    });
+
+    it("should handle unusual license formats", () => {
+      const unusualLicenseFiles: FileCollection = {
+        "package.json": JSON.stringify({
+          license: { type: "MIT" }
+        })
+      };
+      const result = getLicense(unusualLicenseFiles);
+      expect(result).toBe("MIT");
+    });
+  });
 });

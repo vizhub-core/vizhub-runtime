@@ -44,12 +44,17 @@ export const getConfiguredLibraries = (files: FileCollection) => {
 
 export const dependencySource = (
   { name, version }: Dependency,
-  libraries: Libraries
+  libraries: Libraries,
 ) => {
   const path = libraries[name] ? libraries[name].path || "" : "";
   // unpkg uses file from unpkg or main field when no file specifid in url
   return `https://unpkg.com/${name}@${version}${path}`;
 };
 
-export const getLicense = (files: FileCollection) =>
-  packageJSON(files).license || EMPTY_PKG_JSON.license;
+export const getLicense = (files: FileCollection) => {
+  const license = packageJSON(files).license;
+  if (typeof license === 'object' && license !== null && 'type' in license) {
+    return license.type;
+  }
+  return license || EMPTY_PKG_JSON.license;
+};

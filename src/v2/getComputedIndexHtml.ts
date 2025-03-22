@@ -25,7 +25,7 @@ if (typeof window !== "undefined") {
 const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   if (!parser) {
     throw new Error(
-      "DOM parser is not defined. Did you forget to call setJSDOM()?"
+      "DOM parser is not defined. Did you forget to call setJSDOM()?",
     );
   }
 
@@ -88,12 +88,16 @@ export const getComputedIndexHtml = (files: FileCollection): string => {
   const htmlTemplate = files["index.html"];
 
   // If there is no index.html file, return an empty string.
-  if (!htmlTemplate) {
+  if (!htmlTemplate && !files["index.js"] && !files["bundle.js"]) {
     DEBUG && console.log("[getComputedIndexHtml] No index.html file found");
     return "";
   }
 
-  const indexHtml = injectScripts(htmlTemplate, files);
+  // If index.html is empty but we have JS files, create a minimal HTML template
+  const template =
+    htmlTemplate || "<!DOCTYPE html><html><head></head><body></body></html>";
+
+  const indexHtml = injectScripts(template, files);
 
   DEBUG && console.log("[getComputedIndexHtml] indexHtml", indexHtml);
 

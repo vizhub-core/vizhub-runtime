@@ -6,10 +6,12 @@ import { FileCollection } from "magic-sandbox";
 
 const DEBUG = false;
 
+// Invokes Puppeteer to test the HTML in a browser,
+// and isolates the console.log output to check against expectedLog.
 export async function testInBrowser(
   browser: Browser,
   files: FileCollection,
-  expectedLog: string
+  expectedLog: string,
 ) {
   const page: Page = await browser.newPage();
   try {
