@@ -117,19 +117,14 @@ describe("packageJson", () => {
       const malformedFiles: FileCollection = {
         "package.json": JSON.stringify({
           dependencies: { d3: "7.0.0" },
-          vizhub: { libraries: { d3: null } }
-        })
+          vizhub: { libraries: { d3: null } },
+        }),
       };
       const result = getConfiguredLibraries(malformedFiles);
       expect(result).toEqual({ d3: null });
     });
 
     it("should handle empty version strings", () => {
-      const emptyVersionFiles: FileCollection = {
-        "package.json": JSON.stringify({
-          dependencies: { react: "" }
-        })
-      };
       const dependency = { name: "react", version: "" };
       const result = dependencySource(dependency, {});
       expect(result).toBe("https://unpkg.com/react@");
@@ -144,8 +139,8 @@ describe("packageJson", () => {
     it("should handle unusual license formats", () => {
       const unusualLicenseFiles: FileCollection = {
         "package.json": JSON.stringify({
-          license: { type: "MIT" }
-        })
+          license: { type: "MIT" },
+        }),
       };
       const result = getLicense(unusualLicenseFiles);
       expect(result).toBe("MIT");

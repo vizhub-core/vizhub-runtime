@@ -59,7 +59,7 @@ export const getConfiguredLibraries = (files: FileCollection) => {
 
 export const dependencySource = (
   { name, version }: Dependency,
-  libraries: VizHubLibraryConfigs
+  libraries: VizHubLibraryConfigs,
 ) => {
   const path = libraries[name] ? libraries[name].path || "" : "";
   return `https://unpkg.com/${name}@${version}${path}`;
@@ -71,4 +71,22 @@ export const getLicense = (files: FileCollection) => {
     return license.type;
   }
   return license || EMPTY_PKG_JSON.license;
+};
+
+export const getConfiguredGlobals = (
+  pkg: PackageJson,
+): Record<string, string> => {
+  const libraries = pkg?.vizhub?.libraries;
+  if (libraries) {
+    return Object.entries(libraries).reduce(
+      (accumulator, [packageName, config]) => {
+        if (config.global) {
+          accumulator[packageName] = config.global;
+        }
+        return accumulator;
+      },
+      {} as Record<string, string>,
+    );
+  }
+  return {};
 };

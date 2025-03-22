@@ -1,0 +1,1 @@
+export { basicIndexJS } from "./basicIndexJS";
