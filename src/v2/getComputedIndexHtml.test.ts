@@ -1,0 +1,31 @@
+import { describe, it, expect } from "vitest";
+import { getComputedIndexHtml, setJSDOM } from "./getComputedIndexHtml";
+import { FileCollection } from "../types";
+import { JSDOM } from "jsdom";
+
+setJSDOM(JSDOM);
+
+describe("v2 getComputedIndexHtml", () => {
+  it("should return empty string if missing index.html", async () => {
+    const files: FileCollection = {};
+    expect(getComputedIndexHtml(files)).toEqual(``);
+  });
+
+  it("should preserve existing index.html if no bundle and no package.json", async () => {
+    const text =
+      "<!DOCTYPE html><html><head></head><body><h1>Hello World</h1></body></html>";
+    const files: FileCollection = { "index.html": text };
+    expect(getComputedIndexHtml(files)).toEqual(text);
+  });
+
+  it("should add bundle.js, no package.json", async () => {
+    const text =
+      '<!DOCTYPE html><html><head></head><body><script src="bundle.js"></script></body></html>';
+    const files: FileCollection = {
+      "index.html": text,
+      "index.js": 'console.log("Hello")',
+    };
+    // console.log(JSON.stringify(getComputedIndexHtml(files), null, 2));
+    expect(getComputedIndexHtml(files)).toEqual(text);
+  });
+});
