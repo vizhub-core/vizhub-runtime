@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { createVizCache } from "./vizCache";
-import { sampleVizContent } from "../test/fixtures/v3";
 import { VizContent } from "@vizhub/viz-types";
+import { sampleVizContent } from "../test/fixtures/v3";
 
 describe("VizCache", () => {
   describe("VizCache - get method", () => {
@@ -10,35 +10,49 @@ describe("VizCache", () => {
         initialContents: [sampleVizContent],
         handleCacheMiss: vi.fn(),
       });
-      const content = await vizCache.get(sampleVizContent.id);
+      const content = await vizCache.get(
+        sampleVizContent.id,
+      );
       expect(content).toEqual(sampleVizContent);
       expect(vi.fn()).toHaveBeenCalledTimes(0); // handleCacheMiss should not be called
     });
 
     it("should fetch content on cache miss and store it", async () => {
-      const handleCacheMissMock = vi.fn().mockResolvedValue(sampleVizContent);
+      const handleCacheMissMock = vi
+        .fn()
+        .mockResolvedValue(sampleVizContent);
       const vizCache = createVizCache({
         initialContents: [],
         handleCacheMiss: handleCacheMissMock,
       });
 
-      const content = await vizCache.get(sampleVizContent.id);
-      expect(handleCacheMissMock).toHaveBeenCalledWith(sampleVizContent.id);
+      const content = await vizCache.get(
+        sampleVizContent.id,
+      );
+      expect(handleCacheMissMock).toHaveBeenCalledWith(
+        sampleVizContent.id,
+      );
       expect(content).toEqual(sampleVizContent);
       // Verify that the cache now contains the fetched content
-      const cachedContent = await vizCache.get(sampleVizContent.id);
+      const cachedContent = await vizCache.get(
+        sampleVizContent.id,
+      );
       expect(cachedContent).toEqual(sampleVizContent);
     });
 
     it("should throw an error if handleCacheMiss does not return content", async () => {
-      const handleCacheMissMock = vi.fn().mockResolvedValue(undefined);
+      const handleCacheMissMock = vi
+        .fn()
+        .mockResolvedValue(undefined);
       const vizCache = createVizCache({
         initialContents: [],
         handleCacheMiss: handleCacheMissMock,
       });
 
-      await expect(vizCache.get("nonexistentId")).rejects.toThrow(
-        "Unresolved import from vizId nonexistentId"
+      await expect(
+        vizCache.get("nonexistentId"),
+      ).rejects.toThrow(
+        "Unresolved import from vizId nonexistentId",
       );
     });
 

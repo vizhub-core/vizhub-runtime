@@ -27,17 +27,19 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.13.13",
+    "@types/uuid": "^10.0.0",
     "jsdom": "^26.0.0",
     "prettier": "^3.5.3",
     "puppeteer": "^24.4.0",
-    "rollup": "^4.36.0",
+    "rollup": "^4.37.0",
     "sucrase": "^3.35.0",
     "typescript": "^5.8.2",
     "vitest": "^3.0.9"
   },
   "dependencies": {
     "@vizhub/viz-types": "^0.0.2",
-    "magic-sandbox": "^2.1.0"
+    "magic-sandbox": "^2.1.0",
+    "uuid": "^11.1.0"
   }
 }

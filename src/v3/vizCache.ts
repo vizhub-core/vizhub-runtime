@@ -18,14 +18,17 @@ export const createVizCache = ({
 }): VizCache => {
   // Track the content of cached vizzes.
   const contentMap = new Map<VizId, VizContent>(
-    initialContents.map((content) => [content.id, content])
+    initialContents.map((content) => [content.id, content]),
   );
 
   // Gets the content of a viz.
   // Returns the cached content if it exists.
   // Otherwise, calls handleCacheMiss to fetch the content.
-  const get = async (vizId: string): Promise<VizContent> => {
-    const cachedContent: VizContent | undefined = contentMap.get(vizId);
+  const get = async (
+    vizId: string,
+  ): Promise<VizContent> => {
+    const cachedContent: VizContent | undefined =
+      contentMap.get(vizId);
 
     // Cache hit
     if (cachedContent !== undefined) {
@@ -41,7 +44,9 @@ export const createVizCache = ({
     }
 
     // TODO surface this error to the user
-    throw new Error(`Unresolved import from vizId ${vizId}`);
+    throw new Error(
+      `Unresolved import from vizId ${vizId}`,
+    );
   };
 
   // Updates the content of a viz in the cache.

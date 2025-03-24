@@ -12,7 +12,9 @@ const DEBUG = false;
 
 // Expose a way to inject a DOMParser implementation
 // when we're in a Node environment (tests, API server).
-export const setJSDOM = (JSDOMInstance: typeof JSDOM): void => {
+export const setJSDOM = (
+  JSDOMInstance: typeof JSDOM,
+): void => {
   const dom = new JSDOMInstance();
   parser = new dom.window.DOMParser();
 };
@@ -22,19 +24,28 @@ if (typeof window !== "undefined") {
   parser = new DOMParser();
 }
 
-const injectScripts = (htmlTemplate: string, files: FileCollection) => {
+const injectScripts = (
+  htmlTemplate: string,
+  files: FileCollection,
+) => {
   if (!parser) {
     throw new Error(
-      "DOM parser is not defined. Did you forget to call setJSDOM()?"
+      "DOM parser is not defined. Did you forget to call setJSDOM()?",
     );
   }
 
-  const doc = parser.parseFromString(htmlTemplate, "text/html");
+  const doc = parser.parseFromString(
+    htmlTemplate,
+    "text/html",
+  );
 
   // Ensure we have a head element
   if (!doc.head) {
     const head = doc.createElement("head");
-    doc.documentElement.insertBefore(head, doc.documentElement.firstChild);
+    doc.documentElement.insertBefore(
+      head,
+      doc.documentElement.firstChild,
+    );
   }
 
   // Ensure we have a body element
@@ -44,20 +55,25 @@ const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   }
 
   // Handle dependencies first (in head)
-  const deps: [string, string][] = Object.entries(dependencies(files));
+  const deps: [string, string][] = Object.entries(
+    dependencies(files),
+  );
   if (deps.length > 0) {
     const libraries = getConfiguredLibraries(files);
 
     // Remove any existing dependency scripts
     deps.forEach(([name]) => {
       const selector = `script[src*="${name}@"]`;
-      const existingScripts = doc.querySelectorAll(selector);
+      const existingScripts =
+        doc.querySelectorAll(selector);
       existingScripts.forEach((script) => script.remove());
     });
 
     // Add dependency scripts in order
     deps
-      .map(([name, version]) => dependencySource({ name, version }, libraries))
+      .map(([name, version]) =>
+        dependencySource({ name, version }, libraries),
+      )
       .forEach((url) => {
         const scriptTag = doc.createElement("script");
         scriptTag.src = url;
@@ -68,7 +84,9 @@ const injectScripts = (htmlTemplate: string, files: FileCollection) => {
   // Handle bundle.js (in body)
   if (files["bundle.js"] || files["index.js"]) {
     // Remove any existing bundle.js script tags
-    const existingScripts = doc.querySelectorAll('script[src="bundle.js"]');
+    const existingScripts = doc.querySelectorAll(
+      'script[src="bundle.js"]',
+    );
     existingScripts.forEach((script) => script.remove());
 
     const bundleScriptTag = doc.createElement("script");
@@ -83,23 +101,37 @@ const injectScripts = (htmlTemplate: string, files: FileCollection) => {
 // Includes:
 // - bundle.js script tag
 // - dependencies script tag(s)
-export const getComputedIndexHtml = (files: FileCollection): string => {
+export const getComputedIndexHtml = (
+  files: FileCollection,
+): string => {
   // Isolate the index.html file.
   const htmlTemplate = files["index.html"];
 
   // If there is no index.html file, return an empty string.
-  if (!htmlTemplate && !files["index.js"] && !files["bundle.js"]) {
-    DEBUG && console.log("[getComputedIndexHtml] No index.html file found");
+  if (
+    !htmlTemplate &&
+    !files["index.js"] &&
+    !files["bundle.js"]
+  ) {
+    DEBUG &&
+      console.log(
+        "[getComputedIndexHtml] No index.html file found",
+      );
     return "";
   }
 
   // If index.html is empty but we have JS files, create a minimal HTML template
   const template =
-    htmlTemplate || "<!DOCTYPE html><html><head></head><body></body></html>";
+    htmlTemplate ||
+    "<!DOCTYPE html><html><head></head><body></body></html>";
 
   const indexHtml = injectScripts(template, files);
 
-  DEBUG && console.log("[getComputedIndexHtml] indexHtml", indexHtml);
+  DEBUG &&
+    console.log(
+      "[getComputedIndexHtml] indexHtml",
+      indexHtml,
+    );
 
   return indexHtml;
 };

@@ -1,6 +1,12 @@
 import puppeteer, { Browser } from "puppeteer";
 import { rollup } from "rollup";
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+} from "vitest";
 import { buildHTML } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
@@ -16,6 +22,7 @@ import {
   generatorSupport,
   unicodeSupport,
   d3RosettaImportPkg,
+  basicBundleNoExtension,
 } from "./fixtures/v2";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
@@ -35,6 +42,14 @@ afterAll(async () => {
 describe("VizHub Runtime v2", () => {
   it("should bundle basic imports", async () => {
     await testInBrowser(browser, basicBundle, "bar");
+  });
+
+  it("should bundle basic imports missing .js extension", async () => {
+    await testInBrowser(
+      browser,
+      basicBundleNoExtension,
+      "bar",
+    );
   });
 
   it("should support d3 imports", async () => {
@@ -58,11 +73,18 @@ describe("VizHub Runtime v2", () => {
   });
 
   it("should support ReactDOM imports from packages", async () => {
-    await testInBrowser(browser, reactDomImportPkg, "object");
+    await testInBrowser(
+      browser,
+      reactDomImportPkg,
+      "object",
+    );
   });
 
   it("should transpile JSX", async () => {
-    const srcdoc = await buildHTML({ files: jsxTranspile, rollup });
+    const srcdoc = await buildHTML({
+      files: jsxTranspile,
+      rollup,
+    });
     expect(srcdoc).toContain("React.createElement");
   });
 
@@ -79,6 +101,10 @@ describe("VizHub Runtime v2", () => {
   });
 
   it("should handle globals config for arbitrary package d3-rosetta", async () => {
-    await testInBrowser(browser, d3RosettaImportPkg, "function");
+    await testInBrowser(
+      browser,
+      d3RosettaImportPkg,
+      "function",
+    );
   });
 });

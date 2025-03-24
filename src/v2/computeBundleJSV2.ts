@@ -1,10 +1,17 @@
 import { FileCollection } from "../types";
 import { virtualFileSystem } from "../common/virtualFileSystem";
 import { sucrasePlugin } from "../common/sucrasePlugin";
-import type { RollupBuild, RollupOptions, OutputOptions } from "rollup";
-import { getConfiguredGlobals } from "../common/packageJson";
+import type {
+  RollupBuild,
+  RollupOptions,
+  OutputOptions,
+} from "rollup";
+import {
+  getGlobals,
+  packageJSON,
+} from "../common/packageJson";
 
-export const computeBundleJS = async ({
+export const computeBundleJSV2 = async ({
   files,
   rollup,
 }: {
@@ -28,15 +35,8 @@ export const computeBundleJS = async ({
 
   const bundle = await rollup(inputOptions);
 
-  const pkg = JSON.parse(files["package.json"] || "{}");
-  const configuredGlobals = getConfiguredGlobals(pkg);
-
-  const globals = {
-    d3: "d3",
-    react: "React",
-    "react-dom": "ReactDOM",
-    ...configuredGlobals,
-  };
+  const pkg = packageJSON(files);
+  const globals = getGlobals(pkg);
 
   const outputOptions: OutputOptions = {
     format: "iife",

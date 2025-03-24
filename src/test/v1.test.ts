@@ -1,5 +1,11 @@
 import puppeteer, { Browser } from "puppeteer";
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+} from "vitest";
 import { buildHTML } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
@@ -31,12 +37,18 @@ describe("VizHub Runtime v1", () => {
       files: basicHTML,
     });
     expect(srcdoc).toContain("<!DOCTYPE html>");
-    expect(srcdoc).toContain("<title>My HTML Document</title>");
+    expect(srcdoc).toContain(
+      "<title>My HTML Document</title>",
+    );
     expect(srcdoc).toContain("Hello, World!");
   });
 
   it("basicHTML", async () => {
-    await testInBrowser(browser, basicHTML, "Hello, World!");
+    await testInBrowser(
+      browser,
+      basicHTML,
+      "Hello, World!",
+    );
   });
 
   it("jsScriptTag", async () => {
@@ -44,11 +56,19 @@ describe("VizHub Runtime v1", () => {
   });
 
   it("fetchProxy", async () => {
-    await testInBrowser(browser, fetchProxy, "Hello, Fetch!");
+    await testInBrowser(
+      browser,
+      fetchProxy,
+      "Hello, Fetch!",
+    );
   });
 
   it("should handle CSS file loading", async () => {
-    await testInBrowser(browser, styleTest, "rgb(255, 0, 0)");
+    await testInBrowser(
+      browser,
+      styleTest,
+      "rgb(255, 0, 0)",
+    );
   });
 
   it("should handle XML file loading", async () => {
@@ -57,7 +77,11 @@ describe("VizHub Runtime v1", () => {
 
   it("should convert protocol-less URLs to https", async () => {
     const srcdoc = await buildHTML({ files: protocolTest });
-    expect(srcdoc).toContain('href="https://fonts.googleapis.com');
-    expect(srcdoc).toContain('src="https://code.jquery.com');
+    expect(srcdoc).toContain(
+      'href="https://fonts.googleapis.com',
+    );
+    expect(srcdoc).toContain(
+      'src="https://code.jquery.com',
+    );
   });
 });

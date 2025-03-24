@@ -17,7 +17,9 @@ export async function testInBrowser(
   try {
     // Capture console.log output
     const logs: string[] = [];
-    page.on("console", (message) => logs.push(message.text()));
+    page.on("console", (message) =>
+      logs.push(message.text()),
+    );
 
     // Capture page errors
     page.on("pageerror", (error) => {
@@ -29,7 +31,9 @@ export async function testInBrowser(
     await page.setContent(html);
 
     // Wait a bit for scripts to execute
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 100),
+    );
 
     DEBUG && console.log("[testInBrowser] html:", html);
     DEBUG && console.log("[testInBrowser] logs:", logs);

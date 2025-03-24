@@ -11,7 +11,10 @@ const normalizePath = (filepath: string): string => {
   return normalized;
 };
 
-const joinPaths = (base: string, relative: string): string => {
+const joinPaths = (
+  base: string,
+  relative: string,
+): string => {
   // Get directory name of base path
   const baseDir = base.includes("/")
     ? base.slice(0, base.lastIndexOf("/"))
@@ -19,7 +22,9 @@ const joinPaths = (base: string, relative: string): string => {
 
   // Handle .. by removing one directory level
   const parts = relative.split("/");
-  const resultParts: string[] = baseDir ? baseDir.split("/") : [];
+  const resultParts: string[] = baseDir
+    ? baseDir.split("/")
+    : [];
 
   for (const part of parts) {
     if (part === "..") {
@@ -32,25 +37,49 @@ const joinPaths = (base: string, relative: string): string => {
   return resultParts.join("/");
 };
 
-export const virtualFileSystem = (files: FileCollection): Plugin => {
+export const virtualFileSystem = (
+  files: FileCollection,
+): Plugin => {
   return {
     name: "virtual-file-system",
 
     resolveId(source: string, importer?: string) {
       // Handle relative paths
-      if (source.startsWith("./") || source.startsWith("../")) {
+      if (
+        source.startsWith("./") ||
+        source.startsWith("../")
+      ) {
         const resolvedPath = importer
           ? normalizePath(joinPaths(importer, source))
           : normalizePath(source);
 
+        // Try exact match first
         if (files[resolvedPath]) {
           return resolvedPath;
+        }
+
+        // Try with extensions if no exact match is found
+        const extensions = [".js", ".jsx", ".ts", ".tsx"];
+        for (const ext of extensions) {
+          const pathWithExt = resolvedPath + ext;
+          if (files[pathWithExt]) {
+            return pathWithExt;
+          }
         }
       }
 
       // Handle bare module imports
       if (files[source]) {
         return source;
+      }
+
+      // Try bare imports with extensions
+      const extensions = [".js", ".jsx", ".ts", ".tsx"];
+      for (const ext of extensions) {
+        const pathWithExt = source + ext;
+        if (files[pathWithExt]) {
+          return pathWithExt;
+        }
       }
 
       return null;
