@@ -33,7 +33,10 @@ describe("packageJson", () => {
     it("should parse valid package.json", () => {
       const result = packageJSON(mockFiles);
       expect(result).toHaveProperty("dependencies");
-      expect(result.dependencies).toHaveProperty("react", "17.0.2");
+      expect(result.dependencies).toHaveProperty(
+        "react",
+        "17.0.2",
+      );
     });
 
     it("should return empty object for missing package.json", () => {
@@ -85,17 +88,57 @@ describe("packageJson", () => {
   });
 
   describe("dependencySource", () => {
-    it("should generate correct URL with path", () => {
+    it("should generate correct URL with path - jsdelivr", () => {
       const dependency = { name: "d3", version: "7.0.0" };
       const libraries = { d3: { path: "/dist/d3.min.js" } };
-      const result = dependencySource(dependency, libraries);
-      expect(result).toBe("https://unpkg.com/d3@7.0.0/dist/d3.min.js");
+      const result = dependencySource(
+        dependency,
+        libraries,
+      );
+      expect(result).toBe(
+        "https://cdn.jsdelivr.net/npm/d3@7.0.0/dist/d3.min.js",
+      );
     });
 
-    it("should generate correct URL without path", () => {
-      const dependency = { name: "react", version: "17.0.2" };
+    it("should generate correct URL without path - jsdelivr", () => {
+      const dependency = {
+        name: "react",
+        version: "17.0.2",
+      };
       const libraries = {};
-      const result = dependencySource(dependency, libraries);
+      const result = dependencySource(
+        dependency,
+        libraries,
+      );
+      expect(result).toBe(
+        "https://cdn.jsdelivr.net/npm/react@17.0.2",
+      );
+    });
+
+    it("should generate correct URL with path - unpkg", () => {
+      const dependency = { name: "d3", version: "7.0.0" };
+      const libraries = { d3: { path: "/dist/d3.min.js" } };
+      const result = dependencySource(
+        dependency,
+        libraries,
+        "unpkg",
+      );
+      expect(result).toBe(
+        "https://unpkg.com/d3@7.0.0/dist/d3.min.js",
+      );
+    });
+
+    it("should generate correct URL without path - unpkg", () => {
+      const dependency = {
+        name: "react",
+        version: "17.0.2",
+      };
+      const libraries = {};
+      const result = dependencySource(
+        dependency,
+        libraries,
+        "unpkg",
+      );
       expect(result).toBe("https://unpkg.com/react@17.0.2");
     });
   });
@@ -127,13 +170,20 @@ describe("packageJson", () => {
     it("should handle empty version strings", () => {
       const dependency = { name: "react", version: "" };
       const result = dependencySource(dependency, {});
-      expect(result).toBe("https://unpkg.com/react@");
+      expect(result).toBe(
+        "https://cdn.jsdelivr.net/npm/react@",
+      );
     });
 
     it("should handle special characters in dependency names", () => {
-      const specialCharDep = { name: "@angular/core", version: "14.0.0" };
+      const specialCharDep = {
+        name: "@angular/core",
+        version: "14.0.0",
+      };
       const result = dependencySource(specialCharDep, {});
-      expect(result).toBe("https://unpkg.com/@angular/core@14.0.0");
+      expect(result).toBe(
+        "https://cdn.jsdelivr.net/npm/@angular/core@14.0.0",
+      );
     });
 
     it("should handle unusual license formats", () => {

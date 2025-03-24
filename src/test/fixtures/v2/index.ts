@@ -1,4 +1,5 @@
 export { basicBundle } from "./basicBundle";
+export { basicBundleNoExtension } from "./basicBundleNoExtension";
 export { d3Import } from "./d3Import";
 export { d3ImportPkg } from "./d3ImportPkg";
 export { reactImport } from "./reactImport";

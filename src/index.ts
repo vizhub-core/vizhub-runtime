@@ -1,4 +1,7 @@
-import { FileCollection, magicSandbox } from "magic-sandbox";
+import {
+  FileCollection,
+  magicSandbox,
+} from "magic-sandbox";
 import type { RollupBuild, RollupOptions } from "rollup";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "./v2";
@@ -31,5 +34,7 @@ export const buildHTML = async ({
     return await v3Build({ files, rollup });
   }
 
-  throw new Error(`Unsupported runtime version: ${version}`);
+  throw new Error(
+    `Unsupported runtime version: ${version}`,
+  );
 };

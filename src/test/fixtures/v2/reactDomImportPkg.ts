@@ -2,7 +2,8 @@ export const reactDomImportPkg = {
   "index.html": `
     <script src='bundle.js'></script>
   `,
-  "index.js": 'import ReactDOM from "react-dom"; console.log(typeof ReactDOM);',
+  "index.js":
+    'import ReactDOM from "react-dom"; console.log(typeof ReactDOM);',
   "package.json": `{
     "dependencies": {
       "react": "18.2.0",
