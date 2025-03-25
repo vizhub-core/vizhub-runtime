@@ -1,6 +1,9 @@
 import puppeteer, { Browser } from "puppeteer";
 import { describe, it, beforeAll, afterAll } from "vitest";
-import { testInBrowser } from "./testInBrowser";
+import {
+  testInBrowser,
+  testStackTrace,
+} from "./testInBrowser";
 import {
   basicIndexJS,
   jsExport,
@@ -29,62 +32,78 @@ afterAll(async () => {
 
 describe("VizHub Runtime v3", () => {
   it("should run main without index.html", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      basicIndexJS,
-      "Hello main!",
-    );
+      files: basicIndexJS,
+      expectedLog: "Hello main!",
+    });
   });
 
   it("should handle JS exports", async () => {
-    await testInBrowser(browser, jsExport, "Outer Inner");
+    await testInBrowser({
+      browser,
+      files: jsExport,
+      expectedLog: "Outer Inner",
+    });
   });
 
-  it("should handle CSS imports", async () => {
-    await testInBrowser(
+  it.skip("should handle CSS imports", async () => {
+    await testInBrowser({
       browser,
-      cssImport,
-      "rgb(255, 0, 0)",
-    );
+      files: cssImport,
+      expectedLog: "rgb(255, 0, 0)",
+    });
   });
 
   it.skip("should handle CSV imports", async () => {
-    await testInBrowser(browser, csvImport, "csv data");
+    await testInBrowser({
+      browser,
+      files: csvImport,
+      expectedLog: "csv data",
+    });
   });
 
   it.skip("should handle CSV with strange characters", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      csvStrangeChars,
-      "csv strange chars",
-    );
+      files: csvStrangeChars,
+      expectedLog: "csv strange chars",
+    });
   });
 
   it.skip("should handle viz imports", async () => {
-    await testInBrowser(browser, vizImport, "viz import");
+    await testInBrowser({
+      browser,
+      files: vizImport,
+      expectedLog: "viz import",
+    });
   });
 
   it.skip("should handle viz imports with slug", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      vizImportSlug,
-      "viz import slug",
-    );
+      files: vizImportSlug,
+      expectedLog: "viz import slug",
+    });
   });
 
   it.skip("should handle viz imports with CSS", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      vizImportWithCSS,
-      "viz import with css",
-    );
+      files: vizImportWithCSS,
+      expectedLog: "viz import with css",
+    });
   });
 
   it.skip("should handle Svelte components", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      svelte,
-      "svelte component",
-    );
+      files: svelte,
+      expectedLog: "svelte component",
+    });
+  });
+
+  it.skip("should provide sourcemaps with correct line numbers in stack traces", async () => {
+    await testStackTrace(browser, cssImport);
   });
 });

@@ -14,9 +14,11 @@ import {
 export const computeBundleJSV2 = async ({
   files,
   rollup,
+  enableSourcemap = true,
 }: {
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
+  enableSourcemap?: boolean;
 }): Promise<string> => {
   const indexJSContent = files["index.js"];
   if (!indexJSContent) {
@@ -41,6 +43,7 @@ export const computeBundleJSV2 = async ({
   const outputOptions: OutputOptions = {
     format: "iife",
     globals,
+    sourcemap: enableSourcemap,
   };
 
   const { output } = await bundle.generate(outputOptions);

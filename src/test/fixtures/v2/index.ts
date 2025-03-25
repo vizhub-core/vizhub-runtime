@@ -11,3 +11,5 @@ export { es6Preserve } from "./es6Preserve";
 export { generatorSupport } from "./generatorSupport";
 export { unicodeSupport } from "./unicodeSupport";
 export { d3RosettaImportPkg } from "./d3RosettaImportPkg";
+// Make sure to add the sourceMapErrorFixture to the exports
+export * from "./sourceMapErrorFixture";
