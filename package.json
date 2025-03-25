@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@vizhub/viz-types": "^0.0.2",
+    "@vizhub/viz-utils": "^0.0.1",
     "magic-sandbox": "^2.1.0",
     "uuid": "^11.1.0"
   }

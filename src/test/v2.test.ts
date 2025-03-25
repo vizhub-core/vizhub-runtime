@@ -8,7 +8,10 @@ import {
   afterAll,
 } from "vitest";
 import { buildHTML } from "../index";
-import { testInBrowser } from "./testInBrowser";
+import {
+  testInBrowser,
+  testStackTrace,
+} from "./testInBrowser";
 import {
   basicBundle,
   d3Import,
@@ -23,6 +26,7 @@ import {
   unicodeSupport,
   d3RosettaImportPkg,
   basicBundleNoExtension,
+  sourceMapErrorFixture,
 } from "./fixtures/v2";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
@@ -41,43 +45,67 @@ afterAll(async () => {
 
 describe("VizHub Runtime v2", () => {
   it("should bundle basic imports", async () => {
-    await testInBrowser(browser, basicBundle, "bar");
+    await testInBrowser({
+      browser,
+      files: basicBundle,
+      expectedLog: "bar",
+    });
   });
 
   it("should bundle basic imports missing .js extension", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      basicBundleNoExtension,
-      "bar",
-    );
+      files: basicBundleNoExtension,
+      expectedLog: "bar",
+    });
   });
 
   it("should support d3 imports", async () => {
-    await testInBrowser(browser, d3Import, "function");
+    await testInBrowser({
+      browser,
+      files: d3Import,
+      expectedLog: "function",
+    });
   });
 
   it("should support d3 imports from packages", async () => {
-    await testInBrowser(browser, d3ImportPkg, "function");
+    await testInBrowser({
+      browser,
+      files: d3ImportPkg,
+      expectedLog: "function",
+    });
   });
 
   it("should support React imports", async () => {
-    await testInBrowser(browser, reactImport, "object");
+    await testInBrowser({
+      browser,
+      files: reactImport,
+      expectedLog: "object",
+    });
   });
 
   it("should support React imports from packages", async () => {
-    await testInBrowser(browser, reactImportPkg, "object");
+    await testInBrowser({
+      browser,
+      files: reactImportPkg,
+      expectedLog: "object",
+    });
   });
 
   it("should support ReactDOM imports", async () => {
-    await testInBrowser(browser, reactDomImport, "object");
+    await testInBrowser({
+      browser,
+      files: reactDomImport,
+      expectedLog: "object",
+    });
   });
 
   it("should support ReactDOM imports from packages", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      reactDomImportPkg,
-      "object",
-    );
+      files: reactDomImportPkg,
+      expectedLog: "object",
+    });
   });
 
   it("should transpile JSX", async () => {
@@ -89,22 +117,46 @@ describe("VizHub Runtime v2", () => {
   });
 
   it("should preserve ES6 syntax", async () => {
-    await testInBrowser(browser, es6Preserve, "16"); // 4 * 4 = 16
+    await testInBrowser({
+      browser,
+      files: es6Preserve,
+      expectedLog: "16", // 4 * 4 = 16
+    });
   });
 
   it("should support generator functions", async () => {
-    await testInBrowser(browser, generatorSupport, "5");
+    await testInBrowser({
+      browser,
+      files: generatorSupport,
+      expectedLog: "5",
+    });
   });
 
   it("should support unicode characters", async () => {
-    await testInBrowser(browser, unicodeSupport, "Привет");
+    await testInBrowser({
+      browser,
+      files: unicodeSupport,
+      expectedLog: "Привет",
+    });
   });
 
   it("should handle globals config for arbitrary package d3-rosetta", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      d3RosettaImportPkg,
-      "function",
-    );
+      files: d3RosettaImportPkg,
+      expectedLog: "function",
+    });
   });
+
+  // it("should handle CSS imports", async () => {
+  // TODO: Add test for CSS imports
+  // });
+  // TODO get this working
+
+  // it("should provide sourcemaps with correct line numbers in stack traces", async () => {
+  //   await testStackTrace(browser, sourceMapErrorFixture, {
+  //     sourceFile: "error.js", // Note: The actual filename may not appear in stack traces
+  //     sourceLine: 3,
+  //   });
+  // });
 });

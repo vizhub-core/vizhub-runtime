@@ -1,0 +1,86 @@
+import { InputPluginOption } from "rollup";
+import { ResolvedVizFileId } from "./types";
+import { parseId } from "./parseId";
+import { VizCache } from "./vizCache";
+import { VizContent } from "@vizhub/viz-types";
+
+const debug = false;
+
+// TODO move this to viz-utils
+// Gets the text content of a file with the given name.
+// Returns null if not found.
+const getFileText = (
+  content: VizContent,
+  fileName: string,
+): string | null => {
+  if (content && content.files) {
+    for (const fileId of Object.keys(content.files)) {
+      const file = content.files[fileId];
+      if (file.name === fileName) {
+        return file.text;
+      }
+    }
+  }
+  return null;
+};
+
+// Responsible for loading all imports and
+// tracking which CSS files are imported.
+// Throws an error if a file is imported but not found.
+export const vizLoad = ({
+  vizCache,
+  trackCSSImport,
+}: {
+  vizCache: VizCache;
+  trackCSSImport: (cssFile: ResolvedVizFileId) => void;
+}): InputPluginOption => ({
+  name: "vizLoad",
+
+  // `id` here is of the form
+  // `{vizId}/{fileName}`
+  load: async (id: ResolvedVizFileId) => {
+    if (debug) {
+      console.log("[vizLoadCSS]: load() " + id);
+    }
+
+    const { vizId, fileName } = parseId(id);
+
+    if (debug) {
+      console.log("  [vizLoadCSS] vizId: " + vizId);
+      console.log("  [vizLoadCSS] fileName: " + fileName);
+    }
+
+    // For CSS imports, all we need to do here is
+    // keep track of them so they can be injected
+    // into the IFrame later.
+    if (fileName.endsWith(".css")) {
+      if (debug) {
+        console.log(
+          "    [vizResolve] tracking CSS import for " + id,
+        );
+      }
+      // The import is tracked here so that it can be
+      // injected into the IFrame later, external to the
+      // Rollup build.
+      trackCSSImport(id);
+      // TODO consider using Rollup's `emitFile` to emit a CSS file.
+      return "";
+    }
+
+    const content: VizContent = await vizCache.get(vizId);
+    const fileText = getFileText(content, fileName);
+
+    // If a file is imported but not found, throw an error.
+    if (fileText === null) {
+      throw new Error(
+        `Imported file "${fileName}" not found.`,
+      );
+      // TODO ideally show username/slug instead of vizId
+      // `Imported file "${fileName}" not found in viz ${vizId}`,
+      // `Imported file "${fileName}" not found.`,
+      // );
+    }
+
+    return fileText;
+  },
+});

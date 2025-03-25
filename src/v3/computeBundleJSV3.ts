@@ -11,15 +11,23 @@ import {
   packageJSON,
 } from "../common/packageJson";
 import { transformDSV } from "./transformDSV";
+import { vizResolve } from "./vizResolve";
+import { VizCache } from "./vizCache";
+import { VizId } from "@vizhub/viz-types";
+import { vizLoad } from "./vizLoad";
 
 export const computeBundleJSV3 = async ({
   files,
   rollup,
   enableSourcemap = true,
+  vizCache,
+  vizId,
 }: {
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
+  vizCache: VizCache;
+  vizId: VizId;
 }): Promise<{ src: string; cssFiles: string[] }> => {
   // Track CSS imports
   const cssFilesSet = new Set<string>();
@@ -34,25 +42,27 @@ export const computeBundleJSV3 = async ({
   const inputOptions: RollupOptions = {
     input: "./index.js",
     plugins: [
-      virtualFileSystem(files),
+      vizResolve({ vizId }),
+      // virtualFileSystem(files),
       transformDSV(),
       sucrasePlugin(),
-      {
-        name: "css-handler",
-        transform(_, id) {
-          // This runs before parsing, so we can intercept CSS imports
-          if (id.endsWith(".css")) {
-            // Extract the filename from the path
-            trackCSSImport(id);
-            // Return an empty module instead of the CSS content
-            return {
-              code: "export default {};",
-              map: { mappings: "" },
-            };
-          }
-          return null;
-        },
-      },
+      // {
+      //   name: "css-handler",
+      //   transform(_, id) {
+      //     // This runs before parsing, so we can intercept CSS imports
+      //     if (id.endsWith(".css")) {
+      //       // Extract the filename from the path
+      //       trackCSSImport(id);
+      //       // Return an empty module instead of the CSS content
+      //       return {
+      //         code: "export default {};",
+      //         map: { mappings: "" },
+      //       };
+      //     }
+      //     return null;
+      //   },
+      // },
+      vizLoad({ vizCache, trackCSSImport }),
     ],
     onwarn(warning, warn) {
       // Suppress "treating module as external dependency" warnings

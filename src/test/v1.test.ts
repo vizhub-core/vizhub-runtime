@@ -44,35 +44,43 @@ describe("VizHub Runtime v1", () => {
   });
 
   it("basicHTML", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      basicHTML,
-      "Hello, World!",
-    );
+      files: basicHTML,
+      expectedLog: "Hello, World!",
+    });
   });
 
   it("jsScriptTag", async () => {
-    await testInBrowser(browser, jsScriptTag, "Hello, JS!");
+    await testInBrowser({
+      browser,
+      files: jsScriptTag,
+      expectedLog: "Hello, JS!",
+    });
   });
 
   it("fetchProxy", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      fetchProxy,
-      "Hello, Fetch!",
-    );
+      files: fetchProxy,
+      expectedLog: "Hello, Fetch!",
+    });
   });
 
   it("should handle CSS file loading", async () => {
-    await testInBrowser(
+    await testInBrowser({
       browser,
-      styleTest,
-      "rgb(255, 0, 0)",
-    );
+      files: styleTest,
+      expectedLog: "rgb(255, 0, 0)",
+    });
   });
 
   it("should handle XML file loading", async () => {
-    await testInBrowser(browser, xmlTest, "root");
+    await testInBrowser({
+      browser,
+      files: xmlTest,
+      expectedLog: "root",
+    });
   });
 
   it("should convert protocol-less URLs to https", async () => {
