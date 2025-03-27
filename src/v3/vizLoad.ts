@@ -3,26 +3,9 @@ import { ResolvedVizFileId } from "./types";
 import { parseId } from "./parseId";
 import { VizCache } from "./vizCache";
 import { VizContent } from "@vizhub/viz-types";
+import { getFileText } from "../utils/getFileText";
 
 const debug = false;
-
-// TODO move this to viz-utils
-// Gets the text content of a file with the given name.
-// Returns null if not found.
-const getFileText = (
-  content: VizContent,
-  fileName: string,
-): string | null => {
-  if (content && content.files) {
-    for (const fileId of Object.keys(content.files)) {
-      const file = content.files[fileId];
-      if (file.name === fileName) {
-        return file.text;
-      }
-    }
-  }
-  return null;
-};
 
 // Responsible for loading all imports and
 // tracking which CSS files are imported.
