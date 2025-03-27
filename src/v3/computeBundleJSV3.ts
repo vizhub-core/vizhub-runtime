@@ -43,25 +43,8 @@ export const computeBundleJSV3 = async ({
     input: "./index.js",
     plugins: [
       vizResolve({ vizId }),
-      // virtualFileSystem(files),
       transformDSV(),
       sucrasePlugin(),
-      // {
-      //   name: "css-handler",
-      //   transform(_, id) {
-      //     // This runs before parsing, so we can intercept CSS imports
-      //     if (id.endsWith(".css")) {
-      //       // Extract the filename from the path
-      //       trackCSSImport(id);
-      //       // Return an empty module instead of the CSS content
-      //       return {
-      //         code: "export default {};",
-      //         map: { mappings: "" },
-      //       };
-      //     }
-      //     return null;
-      //   },
-      // },
       vizLoad({ vizCache, trackCSSImport }),
     ],
     onwarn(warning, warn) {

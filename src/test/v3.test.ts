@@ -47,7 +47,7 @@ describe("VizHub Runtime v3", () => {
     });
   });
 
-  it.skip("should handle CSS imports", async () => {
+  it("should handle CSS imports", async () => {
     await testInBrowser({
       browser,
       files: cssImport,
