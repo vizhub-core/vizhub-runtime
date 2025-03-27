@@ -10,13 +10,16 @@ import {
   cssImport,
   csvImport,
   csvStrangeChars,
-  vizImport,
-  vizImportSlug,
   vizImportWithCSS,
   svelte,
+  sampleContent,
+  sampleContentVizImport,
+  sampleContentVizImportSlug,
 } from "./fixtures/v3";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
+import { createVizCache } from "../v3/vizCache";
+import { createSlugCache } from "../v3/slugCache";
 
 setJSDOM(JSDOM);
 
@@ -71,19 +74,37 @@ describe("VizHub Runtime v3", () => {
     });
   });
 
-  it.skip("should handle viz imports", async () => {
+  it("should handle viz imports", async () => {
     await testInBrowser({
       browser,
-      files: vizImport,
-      expectedLog: "viz import",
+      expectedLog: "Imported from viz: Outer Inner",
+      vizCache: createVizCache({
+        initialContents: [
+          sampleContent,
+          sampleContentVizImport,
+        ],
+      }),
+      vizId: sampleContentVizImport.id,
     });
   });
 
-  it.skip("should handle viz imports with slug", async () => {
+  it("should handle viz imports with slug", async () => {
     await testInBrowser({
       browser,
-      files: vizImportSlug,
-      expectedLog: "viz import slug",
+      expectedLog:
+        "Imported from viz with slug: Outer Inner",
+      vizCache: createVizCache({
+        initialContents: [
+          sampleContent,
+          sampleContentVizImportSlug,
+        ],
+      }),
+      vizId: sampleContentVizImportSlug.id,
+      slugCache: createSlugCache({
+        initialMappings: {
+          "joe/sample-content-slug": sampleContent.id,
+        },
+      }),
     });
   });
 

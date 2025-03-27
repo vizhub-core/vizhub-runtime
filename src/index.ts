@@ -8,6 +8,8 @@ import { v2Build } from "./v2";
 import { v3Build } from "./v3";
 import { createVizCache, VizCache } from "./v3/vizCache";
 import { createVizContent } from "./v3/createVizContent";
+import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
+import { SlugCache } from "./v3/slugCache";
 
 const DEBUG = false;
 
@@ -15,17 +17,44 @@ export const buildHTML = async ({
   files,
   rollup,
   enableSourcemap = true,
-  // vizCache,
+  vizCache,
+  vizId,
+  slugCache,
 }: {
-  files: FileCollection;
+  // Only required for v1 and v2 runtime
+  // For v3, EITHER files OR vizCache is required
+  files?: FileCollection;
 
   // Only required for v2 and v3 runtime
   rollup?: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
 
   // Only required for v3 runtime
-  // vizCache?: VizCache;
+  // For v3, EITHER files OR vizCache is required
+  vizCache?: VizCache;
+  vizId?: string;
+  slugCache?: SlugCache;
 }): Promise<string> => {
+  if (!files && !vizCache) {
+    throw new Error("Either files or vizCache is required");
+  }
+
+  if (!files && vizCache && !vizId) {
+    throw new Error(
+      "vizId is required when using vizCache",
+    );
+  }
+
+  if (!files && vizCache && vizId) {
+    files = vizContentToFileCollection(
+      await vizCache.get(vizId),
+    );
+  }
+
+  if (!files) {
+    throw new Error("Upable to extract viz files");
+  }
+
   const version = determineRuntimeVersion(files);
   DEBUG && console.log("[buildHTML] version:", version);
   if (version === "v1") {
@@ -43,21 +72,32 @@ export const buildHTML = async ({
     if (!rollup) {
       throw new Error("Rollup is required for v3 runtime");
     }
-    const vizContent = createVizContent(files);
-    const vizId = vizContent.id;
-    const vizCache = createVizCache({
-      initialContents: [vizContent],
-      handleCacheMiss: async () => {
-        throw new Error(
-          "Cache miss handler not implemented",
-        );
-      },
-    });
+
+    if (!vizCache && !vizId) {
+      const vizContent = createVizContent(files);
+      vizId = vizContent.id;
+      vizCache = createVizCache({
+        initialContents: [vizContent],
+        handleCacheMiss: async () => {
+          throw new Error(
+            "Cache miss handler not implemented",
+          );
+        },
+      });
+    }
+
+    if (!vizCache || !vizId) {
+      throw new Error(
+        "vizCache and vizId are required for v3 runtime",
+      );
+    }
+
     return await v3Build({
       files,
       rollup,
       vizCache,
       vizId,
+      slugCache,
     });
   }
 

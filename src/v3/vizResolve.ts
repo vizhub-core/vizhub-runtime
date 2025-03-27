@@ -9,21 +9,16 @@ import { ResolvedVizFileId } from "./types";
 import { parseId } from "./parseId";
 import { VizId } from "@vizhub/viz-types";
 import { isVizId } from "@vizhub/viz-utils";
+import { SlugCache } from "./slugCache";
 
 const debug = false;
 
 export const vizResolve = ({
   vizId,
-  resolveSlug,
+  slugCache,
 }: {
   vizId: VizId;
-  resolveSlug?: ({
-    userName,
-    slug,
-  }: {
-    userName: string;
-    slug: string;
-  }) => Promise<VizId>;
+  slugCache: SlugCache;
 }): InputPluginOption => ({
   name: "vizResolve",
   resolveId: async (
@@ -92,15 +87,15 @@ export const vizResolve = ({
       if (isVizId(vizImport.idOrSlug)) {
         vizId = vizImport.idOrSlug;
       } else {
-        if (!resolveSlug) {
+        if (!slugCache) {
           throw new Error(
-            "resolveSlug is required to import by slug",
+            "slugCache is required to import by slug in v3 runtime",
           );
         }
-        vizId = await resolveSlug({
-          userName: vizImport.userName,
-          slug: vizImport.idOrSlug,
-        });
+
+        vizId = await slugCache.get(
+          `${vizImport.userName}/${vizImport.idOrSlug}`,
+        );
       }
       return vizId + "/index.js";
     }
