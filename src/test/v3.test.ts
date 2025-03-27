@@ -55,19 +55,19 @@ describe("VizHub Runtime v3", () => {
     });
   });
 
-  it.skip("should handle CSV imports", async () => {
+  it("should handle CSV imports", async () => {
     await testInBrowser({
       browser,
       files: csvImport,
-      expectedLog: "csv data",
+      expectedLog: "Setosa",
     });
   });
 
-  it.skip("should handle CSV with strange characters", async () => {
+  it("should handle CSV with strange characters", async () => {
     await testInBrowser({
       browser,
       files: csvStrangeChars,
-      expectedLog: "csv strange chars",
+      expectedLog: "Türkiye",
     });
   });
 
