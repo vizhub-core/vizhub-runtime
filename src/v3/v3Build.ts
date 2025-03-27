@@ -7,6 +7,7 @@ import { VizId } from "@vizhub/viz-types";
 import { parseId } from "./parseId";
 import { getFileText } from "../utils/getFileText";
 import { ResolvedVizFileId } from "./types";
+import { SlugCache } from "./slugCache";
 
 export const v3Build = async ({
   files,
@@ -14,12 +15,14 @@ export const v3Build = async ({
   enableSourcemap = true,
   vizCache,
   vizId,
+  slugCache,
 }: {
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
   vizCache: VizCache;
   vizId: VizId;
+  slugCache: SlugCache;
 }): Promise<string> => {
   const { src, cssFiles } = await computeBundleJSV3({
     files,
@@ -27,6 +30,7 @@ export const v3Build = async ({
     enableSourcemap,
     vizCache,
     vizId,
+    slugCache,
   });
 
   // Generate CSS styles from imported CSS files

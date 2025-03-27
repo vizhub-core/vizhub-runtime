@@ -15,6 +15,7 @@ import { vizResolve } from "./vizResolve";
 import { VizCache } from "./vizCache";
 import { VizId } from "@vizhub/viz-types";
 import { vizLoad } from "./vizLoad";
+import { SlugCache } from "./slugCache";
 
 export const computeBundleJSV3 = async ({
   files,
@@ -22,12 +23,14 @@ export const computeBundleJSV3 = async ({
   enableSourcemap = true,
   vizCache,
   vizId,
+  slugCache,
 }: {
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
   vizCache: VizCache;
   vizId: VizId;
+  slugCache: SlugCache;
 }): Promise<{ src: string; cssFiles: string[] }> => {
   // Track CSS imports
   const cssFilesSet = new Set<string>();
@@ -42,7 +45,7 @@ export const computeBundleJSV3 = async ({
   const inputOptions: RollupOptions = {
     input: "./index.js",
     plugins: [
-      vizResolve({ vizId }),
+      vizResolve({ vizId, slugCache }),
       transformDSV(),
       sucrasePlugin(),
       vizLoad({ vizCache, trackCSSImport }),

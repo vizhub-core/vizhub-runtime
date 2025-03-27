@@ -14,7 +14,7 @@ export const createVizCache = ({
   handleCacheMiss,
 }: {
   initialContents: Array<VizContent>;
-  handleCacheMiss: (vizId: VizId) => Promise<VizContent>;
+  handleCacheMiss?: (vizId: VizId) => Promise<VizContent>;
 }): VizCache => {
   // Track the content of cached vizzes.
   const contentMap = new Map<VizId, VizContent>(
@@ -36,6 +36,11 @@ export const createVizCache = ({
     }
 
     // Cache miss
+    if (!handleCacheMiss) {
+      throw new Error(
+        `Unresolved import from vizId ${vizId}, cache miss handler not provided.`,
+      );
+    }
     const freshContent = await handleCacheMiss(vizId);
 
     if (freshContent) {

@@ -4,7 +4,12 @@ export { jsExport } from "./jsExport";
 export { cssImport } from "./cssImport";
 export { csvImport } from "./csvImport";
 export { csvStrangeChars } from "./csvStrangeChars";
-export { vizImport } from "./vizImport";
-export { vizImportSlug } from "./vizImportSlug";
+export {
+  sampleContent,
+  sampleContentVizImport,
+  sampleContentVizImportSlug,
+  sampleContentWithCSS,
+  sampleContentVizImportWithCSS,
+} from "./vizImport";
 export { vizImportWithCSS } from "./vizImportWithCSS";
 export { svelte } from "./svelte";

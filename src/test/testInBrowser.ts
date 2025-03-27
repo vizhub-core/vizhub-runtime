@@ -3,6 +3,9 @@ import { rollup } from "rollup";
 import { expect } from "vitest";
 import { buildHTML } from "../index";
 import { FileCollection } from "magic-sandbox";
+import { VizCache } from "../v3/vizCache";
+import { VizId } from "@vizhub/viz-types";
+import { SlugCache } from "../v3/slugCache";
 
 const DEBUG = false;
 
@@ -89,10 +92,16 @@ export async function testStackTrace(
 export async function testInBrowser({
   browser,
   files,
+  vizCache,
+  slugCache,
+  vizId,
   expectedLog,
 }: {
   browser: Browser;
-  files: FileCollection;
+  files?: FileCollection;
+  vizCache?: VizCache;
+  slugCache?: SlugCache;
+  vizId?: VizId;
   expectedLog: string | RegExp;
 }) {
   const page: Page = await browser.newPage();
@@ -109,7 +118,13 @@ export async function testInBrowser({
     });
 
     // Load the HTML
-    const html = await buildHTML({ files, rollup });
+    const html = await buildHTML({
+      files,
+      vizCache,
+      slugCache,
+      vizId,
+      rollup,
+    });
     await page.setContent(html);
 
     // Wait a bit for scripts to execute
