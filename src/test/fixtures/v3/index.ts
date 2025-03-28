@@ -11,5 +11,5 @@ export {
   sampleContentWithCSS,
   sampleContentVizImportWithCSS,
 } from "./vizImport";
-export { vizImportWithCSS } from "./vizImportWithCSS";
 export { svelte } from "./svelte";
+export { sourcemap } from "./sourcemap";

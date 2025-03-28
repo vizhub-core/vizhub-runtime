@@ -82,38 +82,9 @@ export const sampleContentVizImportWithCSS: VizContent = {
       text: `
         // Import for the CSS side effect
         import '@joe/${sampleContentWithCSS.id}';
+        console.log(getComputedStyle(document.body).color);
       `,
     },
   },
   title: "Sample Content for Viz Importing with CSS",
-};
-
-// TODO move this elsewhere, simplify to FileCollection
-export const sampleContentSvelte = {
-  id: "816040d214484b41b653bd6919a11fd9",
-  files: {
-    "7548392": {
-      name: "App.svelte",
-      text: `
-        <script>
-          const name = "World";
-        </script>
-
-        <h1>Hello {name}!</h1>
-      `,
-    },
-    "6714854": {
-      name: "index.js",
-      text: `
-        import App from './App.svelte';
-
-        export const main = (container) => {
-          const app = new App({
-            target: container,
-          });
-        };
-      `,
-    },
-  },
-  title: "Sample Content for Svelte",
 };

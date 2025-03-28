@@ -1,25 +1,27 @@
 import puppeteer, { Browser } from "puppeteer";
 import { describe, it, beforeAll, afterAll } from "vitest";
-import {
-  testInBrowser,
-  testStackTrace,
-} from "./testInBrowser";
+import { compile } from "svelte/compiler";
+import { testInBrowser } from "./testInBrowser";
 import {
   basicIndexJS,
   jsExport,
   cssImport,
   csvImport,
   csvStrangeChars,
-  vizImportWithCSS,
   svelte,
   sampleContent,
   sampleContentVizImport,
   sampleContentVizImportSlug,
+  sampleContentWithCSS,
+  sampleContentVizImportWithCSS,
+  sourcemap,
 } from "./fixtures/v3";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
 import { createVizCache } from "../v3/vizCache";
 import { createSlugCache } from "../v3/slugCache";
+import { SvelteCompiler } from "../v3/transformSvelte";
+import { testStackTrace } from "./testStackTrace";
 
 setJSDOM(JSDOM);
 
@@ -108,23 +110,35 @@ describe("VizHub Runtime v3", () => {
     });
   });
 
-  it.skip("should handle viz imports with CSS", async () => {
+  it("should handle viz imports with CSS", async () => {
     await testInBrowser({
       browser,
-      files: vizImportWithCSS,
-      expectedLog: "viz import with css",
+      expectedLog: "rgb(255, 0, 0)",
+      vizCache: createVizCache({
+        initialContents: [
+          sampleContentWithCSS,
+          sampleContentVizImportWithCSS,
+        ],
+      }),
+      vizId: sampleContentVizImportWithCSS.id,
     });
   });
 
-  it.skip("should handle Svelte components", async () => {
+  it("should handle Svelte components", async () => {
     await testInBrowser({
       browser,
       files: svelte,
-      expectedLog: "svelte component",
+      expectedLog: "Svelte",
+      getSvelteCompiler: async () =>
+        compile as unknown as SvelteCompiler,
     });
   });
 
-  it.skip("should provide sourcemaps with correct line numbers in stack traces", async () => {
-    await testStackTrace(browser, cssImport);
+  it("should provide sourcemaps with correct line numbers in stack traces", async () => {
+    await testStackTrace({
+      browser,
+      files: sourcemap,
+      expectedLineNumber: 6,
+    });
   });
 });

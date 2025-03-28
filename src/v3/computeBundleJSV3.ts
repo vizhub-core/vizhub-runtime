@@ -16,6 +16,10 @@ import { VizCache } from "./vizCache";
 import { VizId } from "@vizhub/viz-types";
 import { vizLoad } from "./vizLoad";
 import { SlugCache } from "./slugCache";
+import {
+  SvelteCompiler,
+  transformSvelte,
+} from "./transformSvelte";
 
 export const computeBundleJSV3 = async ({
   files,
@@ -24,13 +28,15 @@ export const computeBundleJSV3 = async ({
   vizCache,
   vizId,
   slugCache,
+  getSvelteCompiler,
 }: {
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
   vizCache: VizCache;
   vizId: VizId;
-  slugCache: SlugCache;
+  slugCache?: SlugCache;
+  getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<{ src: string; cssFiles: string[] }> => {
   // Track CSS imports
   const cssFilesSet = new Set<string>();
@@ -48,6 +54,7 @@ export const computeBundleJSV3 = async ({
       vizResolve({ vizId, slugCache }),
       transformDSV(),
       sucrasePlugin(),
+      transformSvelte({ getSvelteCompiler }),
       vizLoad({ vizCache, trackCSSImport }),
     ],
     onwarn(warning, warn) {
