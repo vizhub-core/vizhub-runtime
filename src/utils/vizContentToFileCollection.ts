@@ -7,22 +7,22 @@ import type { FileCollection } from "magic-sandbox";
  * FileCollection is a simple {name: text} structure
  */
 export const vizContentToFileCollection = (
-  vizContent: VizContent
+  vizContent: VizContent,
 ): FileCollection => {
   const fileCollection: FileCollection = {};
-  
+
   // Extract files from vizContent
   const { files } = vizContent;
-  
+
   // Return empty object if files is undefined
   if (!files) {
     return fileCollection;
   }
-  
+
   // Convert each VizFile to the FileCollection format
   Object.values(files).forEach((file) => {
     fileCollection[file.name] = file.text;
   });
-  
+
   return fileCollection;
 };

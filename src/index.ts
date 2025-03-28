@@ -10,6 +10,7 @@ import { createVizCache, VizCache } from "./v3/vizCache";
 import { createVizContent } from "./v3/createVizContent";
 import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
 import { SlugCache } from "./v3/slugCache";
+import { SvelteCompiler } from "./v3/transformSvelte";
 
 const DEBUG = false;
 
@@ -20,6 +21,7 @@ export const buildHTML = async ({
   vizCache,
   vizId,
   slugCache,
+  getSvelteCompiler,
 }: {
   // Only required for v1 and v2 runtime
   // For v3, EITHER files OR vizCache is required
@@ -34,6 +36,7 @@ export const buildHTML = async ({
   vizCache?: VizCache;
   vizId?: string;
   slugCache?: SlugCache;
+  getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<string> => {
   if (!files && !vizCache) {
     throw new Error("Either files or vizCache is required");
@@ -98,6 +101,7 @@ export const buildHTML = async ({
       vizCache,
       vizId,
       slugCache,
+      getSvelteCompiler,
     });
   }
 

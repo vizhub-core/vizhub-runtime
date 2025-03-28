@@ -18,7 +18,7 @@ export const vizResolve = ({
   slugCache,
 }: {
   vizId: VizId;
-  slugCache: SlugCache;
+  slugCache?: SlugCache;
 }): InputPluginOption => ({
   name: "vizResolve",
   resolveId: async (
