@@ -18,7 +18,7 @@ afterAll(async () => {
 });
 
 describe("VizHub Runtime v4", () => {
-  it.skip("should handle script type=module with import maps", async () => {
+  it("should handle script type=module with import maps", async () => {
     await testInBrowser({
       browser,
       files: jsScriptTagTypeModule,
@@ -26,7 +26,7 @@ describe("VizHub Runtime v4", () => {
     });
   });
 
-  it.skip("should handle script type=module with file imports", async () => {
+  it("should handle script type=module with file imports", async () => {
     await testInBrowser({
       browser,
       files: jsScriptTagTypeModules,
@@ -34,20 +34,11 @@ describe("VizHub Runtime v4", () => {
     });
   });
 
-  it.skip("should handle fetch interception", async () => {
+  it("should handle fetch interception", async () => {
     await testInBrowser({
       browser,
       files: fetchInterception,
       expectedLog: "Fetch intercepted successfully",
     });
   });
-
-  // it.skip("should handle ESM builds for third-party libraries", async () => {
-  //   await testInBrowser({
-  //     browser,
-  //     files: esmBuild,
-  //     // The exact date format will vary, so we just check the log contains something
-  //     expectLogContains: true,
-  //   });
-  // });
 });

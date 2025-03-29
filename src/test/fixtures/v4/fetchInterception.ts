@@ -3,28 +3,16 @@ export const fetchInterception = {
   <html>
     <head>
       <title>Fetch Interception Test</title>
-      <script type="importmap">
-      {
-        "imports": {
-          "data-api": "./data-service.js"
-        }
-      }
-      </script>
     </head>
     <body>
       <script type="module" src="index.js"></script>
     </body>
   </html>`,
-  "index.js": `import { fetchData } from 'data-api';
-
-fetchData().then(data => {
-  console.log(data.message);
-});`,
-  "data-service.js": `export async function fetchData() {
-  const response = await fetch('data.json');
-  return response.json();
-}`,
+  "index.js": `
+    fetch("data.json")
+      .then(response => response.json())
+      .then(data => console.log(data.message));`,
   "data.json": `{
-  "message": "Fetch intercepted successfully"
-}`,
+    "message": "Fetch intercepted successfully"
+ }`,
 };

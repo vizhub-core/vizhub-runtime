@@ -6,12 +6,12 @@ import type { RollupBuild, RollupOptions } from "rollup";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "./v2";
 import { v3Build } from "./v3";
+import { v4Build } from "./v4";
 import { createVizCache, VizCache } from "./v3/vizCache";
 import { createVizContent } from "./v3/createVizContent";
 import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
 import { SlugCache } from "./v3/slugCache";
 import { SvelteCompiler } from "./v3/transformSvelte";
-import { v4 } from "uuid";
 
 const DEBUG = false;
 
@@ -106,12 +106,14 @@ export const buildHTML = async ({
     });
   }
 
-  // TODO: Implement v4 runtime
-  // if (version === "v4") {
-  //   return magicSandbox(
-  //     await v4Build({ files, rollup, enableSourcemap }),
-  //   );
-  // }
+  if (version === "v4") {
+    if (!rollup) {
+      throw new Error("Rollup is required for v4 runtime");
+    }
+    return magicSandbox(
+      await v4Build({ files, rollup, enableSourcemap }),
+    );
+  }
 
   throw new Error(
     `Unsupported runtime version: ${version}`,
