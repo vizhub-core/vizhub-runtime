@@ -11,8 +11,8 @@ export const esmBuild = {
   "index.js": `import { format } from 'date-fns';
 console.log(format(new Date(), 'yyyy-MM-dd'));`,
   "package.json": `{
-  "dependencies": {
-    "date-fns": "^2.30.0"
-  }
-}`,
+    "dependencies": {
+      "date-fns": "2.30.0"
+    }
+  }`,
 };
