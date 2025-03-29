@@ -6,6 +6,7 @@ import type { RollupBuild, RollupOptions } from "rollup";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "./v2";
 import { v3Build } from "./v3";
+import { v4Build } from "./v4";
 import { createVizCache, VizCache } from "./v3/vizCache";
 import { createVizContent } from "./v3/createVizContent";
 import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
@@ -103,6 +104,15 @@ export const buildHTML = async ({
       slugCache,
       getSvelteCompiler,
     });
+  }
+
+  if (version === "v4") {
+    if (!rollup) {
+      throw new Error("Rollup is required for v4 runtime");
+    }
+    return magicSandbox(
+      await v4Build({ files, rollup, enableSourcemap }),
+    );
   }
 
   throw new Error(
