@@ -13,6 +13,12 @@ export const determineRuntimeVersion = (
   const hasIndexJSX = "index.jsx" in files;
 
   if (hasIndexHTML) {
+    const hasModuleScript =
+      files["index.html"].includes('type="module"');
+    if (hasModuleScript) {
+      return "v4";
+    }
+
     if (hasIndexJS || hasIndexJSX) {
       return "v2";
     }

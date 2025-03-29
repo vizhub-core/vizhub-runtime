@@ -11,6 +11,7 @@ import { createVizContent } from "./v3/createVizContent";
 import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
 import { SlugCache } from "./v3/slugCache";
 import { SvelteCompiler } from "./v3/transformSvelte";
+import { v4 } from "uuid";
 
 const DEBUG = false;
 
@@ -104,6 +105,13 @@ export const buildHTML = async ({
       getSvelteCompiler,
     });
   }
+
+  // TODO: Implement v4 runtime
+  // if (version === "v4") {
+  //   return magicSandbox(
+  //     await v4Build({ files, rollup, enableSourcemap }),
+  //   );
+  // }
 
   throw new Error(
     `Unsupported runtime version: ${version}`,

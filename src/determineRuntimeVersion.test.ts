@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { FileCollection } from "./types";
+import {
+  jsScriptTagTypeModule,
+  jsScriptTagTypeModules,
+  fetchInterception,
+  esmBuild,
+} from "./test/fixtures/v4";
 
 describe("determineRuntimeVersion", () => {
   it("should return null when there are no files", () => {
@@ -49,5 +55,73 @@ describe("determineRuntimeVersion", () => {
     };
     const result = determineRuntimeVersion(mockFiles);
     expect(result).toBe(null);
+  });
+
+  it("should return v4 when index.html contains script type=module with importmap", () => {
+    const mockFiles: FileCollection = {
+      "index.html": `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <script type="importmap">
+              { "imports": { "test": "./test.js" } }
+            </script>
+          </head>
+          <body>
+            <script type="module" src="index.js"></script>
+          </body>
+        </html>
+      `,
+      "index.js":
+        'import { hello } from "test"; console.log(hello);',
+      "test.js": 'export const hello = "world";',
+    };
+    const result = determineRuntimeVersion(mockFiles);
+    expect(result).toBe("v4");
+  });
+
+  it("should return v4 when multiple module scripts are present", () => {
+    const mockFiles: FileCollection = {
+      "index.html": `
+        <!DOCTYPE html>
+        <html>
+          <body>
+            <script type="module" src="index.js"></script>
+          </body>
+        </html>
+      `,
+      "index.js":
+        'import { hello } from "./utils.js"; console.log(hello);',
+      "utils.js": 'export const hello = "world";',
+    };
+    const result = determineRuntimeVersion(mockFiles);
+    expect(result).toBe("v4");
+  });
+
+  // Test v4 fixtures
+  it("should detect v4 for jsScriptTagTypeModule fixture", () => {
+    const result = determineRuntimeVersion(
+      jsScriptTagTypeModule,
+    );
+    expect(result).toBe("v4");
+  });
+
+  it("should detect v4 for jsScriptTagTypeModules fixture", () => {
+    const result = determineRuntimeVersion(
+      jsScriptTagTypeModules,
+    );
+    expect(result).toBe("v4");
+  });
+
+  it("should detect v4 for fetchInterception fixture", () => {
+    const result = determineRuntimeVersion(
+      fetchInterception,
+    );
+    expect(result).toBe("v4");
+  });
+
+  it("should detect v4 for esmBuild fixture", () => {
+    const result = determineRuntimeVersion(esmBuild);
+    expect(result).toBe("v4");
   });
 });
