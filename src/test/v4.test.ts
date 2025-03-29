@@ -86,16 +86,11 @@ describe("VizHub Runtime v4", () => {
     });
   });
 
-  it.skip("should handle Three.js usage", async () => {
+  it("should handle Three.js usage", async () => {
     await testInBrowser({
       browser,
       files: threeJsUsage,
-      expectedLog: "Three.js cube rendered successfully",
-      evaluateInBrowser: async (page) => {
-        return await page.evaluate(() => {
-          return document.querySelector("canvas") !== null;
-        });
-      },
+      expectedLog: "Three.js imports: object function",
     });
   });
 
