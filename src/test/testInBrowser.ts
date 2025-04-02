@@ -17,6 +17,7 @@ export async function testInBrowser({
   slugCache,
   vizId,
   expectedLog,
+  evaluateInBrowser,
   getSvelteCompiler,
 }: {
   browser: Browser;
@@ -25,6 +26,7 @@ export async function testInBrowser({
   slugCache?: SlugCache;
   vizId?: VizId;
   expectedLog: string | RegExp;
+  evaluateInBrowser?: (page: Page) => Promise<any>;
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }) {
   const page: Page = await browser.newPage();
@@ -68,6 +70,12 @@ export async function testInBrowser({
         expectedLog.test(log),
       );
       expect(matchingLog).toBeDefined();
+    }
+
+    // If evaluateInBrowser is provided, run it and expect the result to be truthy
+    if (evaluateInBrowser) {
+      const result = await evaluateInBrowser(page);
+      expect(result).toBeTruthy();
     }
   } finally {
     await page.close();

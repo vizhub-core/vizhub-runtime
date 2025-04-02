@@ -1,7 +1,7 @@
 {
-  "name": "your-library-name",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@vizhub/runtime",
+  "version": "0.1.4",
+  "description": "Flexible runtime environment for data visualization sandboxes",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

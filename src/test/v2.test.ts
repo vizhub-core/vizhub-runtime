@@ -8,10 +8,7 @@ import {
   afterAll,
 } from "vitest";
 import { buildHTML } from "../index";
-import {
-  testInBrowser,
-  testStackTrace,
-} from "./testInBrowser";
+import { testInBrowser } from "./testInBrowser";
 import {
   basicBundle,
   d3Import,
@@ -26,7 +23,7 @@ import {
   unicodeSupport,
   d3RosettaImportPkg,
   basicBundleNoExtension,
-  sourceMapErrorFixture,
+  // sourceMapErrorFixture,
 } from "./fixtures/v2";
 import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
