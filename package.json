@@ -1,6 +1,6 @@
 {
   "name": "@vizhub/runtime",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Flexible runtime environment for data visualization sandboxes",
   "type": "module",
   "main": "./dist/index.js",
