@@ -18,6 +18,21 @@ The library automatically detects which runtime version to use based on the file
 - **v3**: When only `index.js` is present (no `index.html`)
 - **v4**: When `index.html` contains ES module scripts with import maps
 
+| Feature               | **V1**            | **V2**                         | **V3**                            | **V4**                       |
+| --------------------- | ----------------- | ------------------------------ | --------------------------------- | ---------------------------- |
+| **When Used**         | Only `index.html` | `index.html` + `index.js/.jsx` | Only `index.js` (no `index.html`) | `index.html` with ES modules |
+| **`index.html`**      | User-provided     | User-provided                  | Auto-generated                    | User-provided                |
+| **ES Modules**        | ☐                 | ✅                             | ✅                                | ✅                           |
+| **UMD Libraries**     | ✅                | ✅                             | ✅                                | ☐                            |
+| **ESM Libraries**     | ☐                 | ☐                              | ☐                                 | ✅                           |
+| **JSX Support**       | ☐                 | ✅                             | ☐                                 | ✅                           |
+| **Svelte Support**    | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Cross-Viz Imports** | ☐                 | ☐                              | ✅                                | ☐                            |
+| **State Management**  | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Import from CSV**   | ☐                 | ☐                              | ✅                                | ☐                            |
+| **`fetch` proxy**     | ✅                | ✅                             | ☐                                 | ✅                           |
+| **Best For**          | Simple HTML demos | React with CDN deps            | Svelte / reusable D3              | Modern module-based apps     |
+
 ## V1 Runtime
 
 The V1 runtime is the simplest version, designed for basic HTML, CSS, and JavaScript projects. This runtime is automatically selected when your project contains only an `index.html` file.
