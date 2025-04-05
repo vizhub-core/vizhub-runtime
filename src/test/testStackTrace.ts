@@ -2,7 +2,7 @@ import { Browser, Page } from "puppeteer";
 import { rollup } from "rollup";
 import { expect } from "vitest";
 import { buildHTML } from "../index";
-import { FileCollection } from "magic-sandbox";
+import { FileCollection } from "@vizhub/viz-types";
 
 const DEBUG = false;
 

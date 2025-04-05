@@ -2,9 +2,8 @@ import { Browser, Page } from "puppeteer";
 import { rollup } from "rollup";
 import { expect } from "vitest";
 import { buildHTML } from "../index";
-import { FileCollection } from "magic-sandbox";
 import { VizCache } from "../v3/vizCache";
-import { VizId } from "@vizhub/viz-types";
+import { FileCollection, VizId } from "@vizhub/viz-types";
 import { SlugCache } from "../v3/slugCache";
 import { SvelteCompiler } from "../v3/transformSvelte";
 

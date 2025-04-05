@@ -1,7 +1,7 @@
-import { FileCollection } from "magic-sandbox";
 import type { RollupBuild, RollupOptions } from "rollup";
 import { getComputedIndexHtml } from "./getComputedIndexHtml";
 import { computeBundleJSV2 } from "./computeBundleJSV2";
+import { FileCollection } from "@vizhub/viz-types";
 
 export const v2Build = async ({
   files,

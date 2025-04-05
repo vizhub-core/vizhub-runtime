@@ -6,7 +6,7 @@ import {
   dependencySource,
   getLicense,
 } from "./packageJson";
-import { FileCollection } from "../types";
+import { FileCollection } from "@vizhub/viz-types";
 
 describe("packageJson", () => {
   const mockFiles: FileCollection = {

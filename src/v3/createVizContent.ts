@@ -1,5 +1,7 @@
-import { VizContent } from "@vizhub/viz-types";
-import { FileCollection } from "magic-sandbox";
+import {
+  FileCollection,
+  VizContent,
+} from "@vizhub/viz-types";
 import { v4 as uuidv4 } from "uuid";
 
 /**

@@ -1,4 +1,3 @@
-import { FileCollection } from "../types";
 import { virtualFileSystem } from "../common/virtualFileSystem";
 import { sucrasePlugin } from "../common/sucrasePlugin";
 import type {
@@ -10,6 +9,7 @@ import {
   getGlobals,
   packageJSON,
 } from "../common/packageJson";
+import { FileCollection } from "@vizhub/viz-types";
 
 export const computeBundleJSV2 = async ({
   files,

@@ -1,5 +1,3 @@
-import { FileCollection } from "../types";
-import { virtualFileSystem } from "../common/virtualFileSystem";
 import { sucrasePlugin } from "../common/sucrasePlugin";
 import type {
   RollupBuild,
@@ -13,7 +11,7 @@ import {
 import { transformDSV } from "./transformDSV";
 import { vizResolve } from "./vizResolve";
 import { VizCache } from "./vizCache";
-import { VizId } from "@vizhub/viz-types";
+import { FileCollection, VizId } from "@vizhub/viz-types";
 import { vizLoad } from "./vizLoad";
 import { SlugCache } from "./slugCache";
 import {
