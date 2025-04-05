@@ -3,7 +3,7 @@ import { ResolvedVizFileId } from "./types";
 import { parseId } from "./parseId";
 import { VizCache } from "./vizCache";
 import { VizContent } from "@vizhub/viz-types";
-import { getFileText } from "../utils/getFileText";
+import { getFileText } from "@vizhub/viz-utils";
 
 const debug = false;
 

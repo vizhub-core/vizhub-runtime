@@ -1,10 +1,10 @@
+import { FileCollection } from "@vizhub/viz-types";
 import {
   dependencies,
   getConfiguredLibraries,
   dependencySource,
 } from "../common/packageJson";
 import type { JSDOM } from "jsdom";
-import { FileCollection } from "../types";
 
 let parser: DOMParser;
 

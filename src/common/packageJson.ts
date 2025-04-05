@@ -1,4 +1,4 @@
-import { FileCollection } from "../types";
+import { FileCollection } from "@vizhub/viz-types";
 
 export type Licence = string;
 

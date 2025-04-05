@@ -1,5 +1,7 @@
-import type { VizContent } from "@vizhub/viz-types";
-import type { FileCollection } from "magic-sandbox";
+import type {
+  FileCollection,
+  VizContent,
+} from "@vizhub/viz-types";
 
 /**
  * Converts VizContent format to FileCollection format

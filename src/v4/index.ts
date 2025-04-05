@@ -1,4 +1,3 @@
-import { FileCollection } from "magic-sandbox";
 import type {
   RollupBuild,
   RollupOptions,
@@ -12,6 +11,7 @@ import {
   getConfiguredLibraries,
   dependencySource,
 } from "../common/packageJson";
+import { FileCollection } from "@vizhub/viz-types";
 
 const DEBUG = false;
 

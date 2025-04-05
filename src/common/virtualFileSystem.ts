@@ -1,5 +1,5 @@
+import { FileCollection } from "@vizhub/viz-types";
 import { Plugin } from "rollup";
-import { FileCollection } from "../types";
 
 const normalizePath = (filepath: string): string => {
   // Remove leading ./

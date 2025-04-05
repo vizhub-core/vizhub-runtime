@@ -1,14 +1,13 @@
 import { RollupBuild, RollupOptions } from "rollup";
-import { FileCollection } from "../types";
 import { computeBundleJSV3 } from "./computeBundleJSV3";
 import { htmlTemplate } from "./htmlTemplate";
 import { VizCache } from "./vizCache";
-import { VizId } from "@vizhub/viz-types";
+import { FileCollection, VizId } from "@vizhub/viz-types";
 import { parseId } from "./parseId";
-import { getFileText } from "../utils/getFileText";
 import { ResolvedVizFileId } from "./types";
 import { SlugCache } from "./slugCache";
 import { SvelteCompiler } from "./transformSvelte";
+import { getFileText } from "@vizhub/viz-utils";
 
 export const v3Build = async ({
   files,

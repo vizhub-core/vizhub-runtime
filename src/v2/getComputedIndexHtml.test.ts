@@ -3,9 +3,9 @@ import {
   getComputedIndexHtml,
   setJSDOM,
 } from "./getComputedIndexHtml";
-import { FileCollection } from "../types";
 import { JSDOM } from "jsdom";
 import { d3ImportPkg } from "../test/fixtures/v2/d3ImportPkg";
+import { FileCollection } from "@vizhub/viz-types";
 
 setJSDOM(JSDOM);
 

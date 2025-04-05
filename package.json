@@ -20,28 +20,30 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "prettier": "prettier {*.*,**/*.*} --write"
+    "prettier": "prettier {*.*,**/*.*} --write",
+    "upgrade": "ncu -x svelte -u"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.13",
+    "@types/node": "^22.14.0",
     "@types/uuid": "^10.0.0",
     "jsdom": "^26.0.0",
+    "npm-check-updates": "^17.1.16",
     "prettier": "^3.5.3",
-    "puppeteer": "^24.4.0",
-    "rollup": "^4.37.0",
+    "puppeteer": "^24.6.0",
+    "rollup": "^4.39.0",
     "sucrase": "^3.35.0",
     "svelte": "4.2.9",
-    "typescript": "^5.8.2",
-    "vitest": "^3.0.9"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
   },
   "dependencies": {
-    "@vizhub/viz-types": "^0.0.2",
-    "@vizhub/viz-utils": "^0.0.1",
-    "magic-sandbox": "^2.1.0",
+    "@vizhub/viz-types": "^0.1.0",
+    "@vizhub/viz-utils": "^0.1.0",
+    "magic-sandbox": "^2.2.0",
     "uuid": "^11.1.0"
   }
 }
