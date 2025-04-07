@@ -4,3 +4,4 @@ export {
   createSlugCache,
   SlugCache,
 } from "./v3/slugCache.js";
+export { vizContentToFileCollection } from "./utils/vizContentToFileCollection.js";
