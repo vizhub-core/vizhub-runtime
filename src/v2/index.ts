@@ -1,1 +1,1 @@
-export { v2Build } from "./v2Build";
+export { v2Build } from "./v2Build.js";

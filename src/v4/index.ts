@@ -4,14 +4,14 @@ import type {
   OutputOptions,
 } from "rollup";
 import { JSDOM } from "jsdom";
-import { virtualFileSystem } from "../common/virtualFileSystem";
-import { sucrasePlugin } from "../common/sucrasePlugin";
+import { FileCollection } from "@vizhub/viz-types";
+import { virtualFileSystem } from "../common/virtualFileSystem.js";
+import { sucrasePlugin } from "../common/sucrasePlugin.js";
 import {
   dependencies,
   getConfiguredLibraries,
   dependencySource,
-} from "../common/packageJson";
-import { FileCollection } from "@vizhub/viz-types";
+} from "../common/packageJson.js";
 
 const DEBUG = false;
 
