@@ -1,4 +1,5 @@
 import { magicSandbox } from "magic-sandbox";
+import { FileCollection } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "./v2";
@@ -9,7 +10,6 @@ import { createVizContent } from "./v3/createVizContent";
 import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
 import { SlugCache } from "./v3/slugCache";
 import { SvelteCompiler } from "./v3/transformSvelte";
-import { FileCollection } from "@vizhub/viz-types";
 
 const DEBUG = false;
 
