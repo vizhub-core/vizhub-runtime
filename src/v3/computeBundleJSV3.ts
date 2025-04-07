@@ -1,23 +1,23 @@
-import { sucrasePlugin } from "../common/sucrasePlugin";
+import { sucrasePlugin } from "../common/sucrasePlugin.js";
 import type {
   RollupBuild,
   RollupOptions,
   OutputOptions,
 } from "rollup";
+import { FileCollection, VizId } from "@vizhub/viz-types";
 import {
   getGlobals,
   packageJSON,
-} from "../common/packageJson";
-import { transformDSV } from "./transformDSV";
-import { vizResolve } from "./vizResolve";
-import { VizCache } from "./vizCache";
-import { FileCollection, VizId } from "@vizhub/viz-types";
-import { vizLoad } from "./vizLoad";
-import { SlugCache } from "./slugCache";
+} from "../common/packageJson.js";
+import { transformDSV } from "./transformDSV/index.js";
+import { vizResolve } from "./vizResolve.js";
+import { VizCache } from "./vizCache.js";
+import { vizLoad } from "./vizLoad.js";
+import { SlugCache } from "./slugCache.js";
 import {
   SvelteCompiler,
   transformSvelte,
-} from "./transformSvelte";
+} from "./transformSvelte.js";
 
 export const computeBundleJSV3 = async ({
   files,

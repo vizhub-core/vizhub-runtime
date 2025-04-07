@@ -1,4 +1,4 @@
-import { VizContent, VizId } from "@vizhub/viz-types";
+import type { VizContent, VizId } from "@vizhub/viz-types";
 import type { PackageJson } from "../common/packageJson";
 
 // The result of a build.
