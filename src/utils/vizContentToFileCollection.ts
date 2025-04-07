@@ -7,6 +7,7 @@ import type {
  * Converts VizContent format to FileCollection format
  * VizContent has files as {id: {name, text}} structure
  * FileCollection is a simple {name: text} structure
+ * TODO move to viz-utils
  */
 export const vizContentToFileCollection = (
   vizContent: VizContent,
