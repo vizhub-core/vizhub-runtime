@@ -42,15 +42,14 @@
     "prettier": "^3.5.3",
     "puppeteer": "^24.6.0",
     "rollup": "^4.39.0",
-    "sucrase": "^3.35.0",
     "svelte": "4.2.9",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1"
   },
   "dependencies": {
+    "sucrase": "^3.35.0",
     "@vizhub/viz-types": "^0.1.0",
     "@vizhub/viz-utils": "^0.1.0",
-    "magic-sandbox": "^2.2.0",
-    "uuid": "^11.1.0"
+    "magic-sandbox": "^2.2.0"
   }
 }
