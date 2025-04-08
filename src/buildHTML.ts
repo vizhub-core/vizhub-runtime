@@ -33,8 +33,14 @@ export const buildHTML = async ({
   // Only required for v3 runtime
   // For v3, EITHER files OR vizCache is required
   vizCache?: VizCache;
+
+  // Only required for v3 runtime
   vizId?: string;
+
+  // Only required for v3 runtime
   slugCache?: SlugCache;
+
+  // Only required for v3 runtime
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<string> => {
   if (!files && !vizCache) {
