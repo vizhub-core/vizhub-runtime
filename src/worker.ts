@@ -1,4 +1,6 @@
 import { buildHTML } from "./buildHTML";
+
+// TODO try pulling the Rollup browser build from jsdelivr
 import { rollup } from "@rollup/browser";
 import type { RollupBuild, RollupOptions } from "rollup";
 import { svelteCompilerUrl } from "./v3/transformSvelte";
@@ -11,7 +13,6 @@ const debug = false;
 // https://github.com/sveltejs/sites/blob/master/packages/repl/src/lib/workers/bundler/index.js#L44
 // unpkg doesn't set the correct MIME type for .cjs files
 // https://github.com/mjackson/unpkg/issues/355
-// TODO try it from jsdelivr without using `eval`
 const getSvelteCompiler = async () => {
   const compiler = await fetch(svelteCompilerUrl).then(
     (r) => r.text(),
@@ -22,6 +23,21 @@ const getSvelteCompiler = async () => {
   // @ts-ignore
   return self.svelte.compile;
 };
+
+// TODO try it from jsdelivr without using `eval`
+// // Load Svelte compiler as an ES module from jsDelivr
+// const getSvelteCompiler = async () => {
+//   // Note: You can lock the version if needed (e.g., svelte@3.55.0)
+//   const svelteModule = await import('https://cdn.jsdelivr.net/npm/svelte@latest/compiler.mjs');
+//   return svelteModule.compile;
+// };
+
+// // Load Rollup for browser use as an ES module from jsDelivr
+// const getRollup = async () => {
+//   // Here too, version locking can be applied (e.g., @rollup/browser@4.0.0)
+//   const rollupModule = await import('https://cdn.jsdelivr.net/npm/@rollup/browser/dist/rollup.browser.js?module');
+//   return rollupModule.rollup;
+// };
 
 // Handle messages from the main thread
 addEventListener("message", async (event) => {
