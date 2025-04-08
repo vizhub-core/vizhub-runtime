@@ -1,15 +1,15 @@
-import { virtualFileSystem } from "../common/virtualFileSystem";
-import { sucrasePlugin } from "../common/sucrasePlugin";
 import type {
   RollupBuild,
   RollupOptions,
   OutputOptions,
 } from "rollup";
+import { FileCollection } from "@vizhub/viz-types";
+import { virtualFileSystem } from "../common/virtualFileSystem.js";
+import { sucrasePlugin } from "../common/sucrasePlugin.js";
 import {
   getGlobals,
   packageJSON,
-} from "../common/packageJson";
-import { FileCollection } from "@vizhub/viz-types";
+} from "../common/packageJson.js";
 
 export const computeBundleJSV2 = async ({
   files,

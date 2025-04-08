@@ -3,7 +3,7 @@ import {
   dependencies,
   getConfiguredLibraries,
   dependencySource,
-} from "../common/packageJson";
+} from "../common/packageJson.js";
 import type { JSDOM } from "jsdom";
 
 let parser: DOMParser;

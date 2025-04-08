@@ -4,12 +4,12 @@
 // Unified Rollup plugin for virtual file system and viz imports
 // Combines functionalities of 'virtual' and 'importFromViz' plugins
 import { InputPluginOption } from "rollup";
-import { extractVizImport } from "./extractVizImport";
-import { ResolvedVizFileId } from "./types";
-import { parseId } from "./parseId";
 import { VizId } from "@vizhub/viz-types";
 import { isVizId } from "@vizhub/viz-utils";
-import { SlugCache } from "./slugCache";
+import { extractVizImport } from "./extractVizImport.js";
+import type { ResolvedVizFileId } from "./types.js";
+import { parseId } from "./parseId.js";
+import { SlugCache } from "./slugCache.js";
 
 const debug = false;
 

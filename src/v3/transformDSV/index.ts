@@ -1,7 +1,7 @@
 import { InputPluginOption } from "rollup";
-import { ResolvedVizFileId } from "../types";
-import { parseId } from "../parseId";
-import { dsvParseSrc } from "./dsvParseSrc";
+import type { ResolvedVizFileId } from "../types";
+import { parseId } from "../parseId.js";
+import { dsvParseSrc } from "./dsvParseSrc.js";
 
 const DEBUG = false;
 

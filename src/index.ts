@@ -1,3 +1,8 @@
-export { buildHTML } from "./buildHTML";
-export { createVizCache, VizCache } from "./v3/vizCache";
-export { createSlugCache, SlugCache } from "./v3/slugCache";
+export { buildHTML } from "./buildHTML.js";
+export { createVizCache, VizCache } from "./v3/vizCache.js";
+export {
+  createSlugCache,
+  SlugCache,
+} from "./v3/slugCache.js";
+export { vizContentToFileCollection } from "./utils/vizContentToFileCollection.js";
+export { svelteCompilerUrl } from "./v3/transformSvelte.js";

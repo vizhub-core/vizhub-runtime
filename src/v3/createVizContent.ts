@@ -2,7 +2,7 @@ import {
   FileCollection,
   VizContent,
 } from "@vizhub/viz-types";
-import { v4 as uuidv4 } from "uuid";
+import { generateVizId } from "@vizhub/viz-utils";
 
 /**
  * Creates a VizContent object with the given files
@@ -14,7 +14,7 @@ export const createVizContent = (
   files: FileCollection,
   title = "Sample Content for Exporting",
 ): VizContent => {
-  const contentId = uuidv4().replace(/-/g, "");
+  const contentId = generateVizId();
 
   const contentFiles: Record<
     string,

@@ -1,15 +1,15 @@
 import { magicSandbox } from "magic-sandbox";
-import type { RollupBuild, RollupOptions } from "rollup";
-import { determineRuntimeVersion } from "./determineRuntimeVersion";
-import { v2Build } from "./v2";
-import { v3Build } from "./v3";
-import { v4Build } from "./v4";
-import { createVizCache, VizCache } from "./v3/vizCache";
-import { createVizContent } from "./v3/createVizContent";
-import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
-import { SlugCache } from "./v3/slugCache";
-import { SvelteCompiler } from "./v3/transformSvelte";
 import { FileCollection } from "@vizhub/viz-types";
+import type { RollupBuild, RollupOptions } from "rollup";
+import { determineRuntimeVersion } from "./determineRuntimeVersion.js";
+import { v2Build } from "./v2/index.js";
+import { v3Build } from "./v3/index.js";
+import { v4Build } from "./v4/index.js";
+import { createVizCache, VizCache } from "./v3/vizCache.js";
+import { createVizContent } from "./v3/createVizContent.js";
+import { vizContentToFileCollection } from "./utils/vizContentToFileCollection.js";
+import { SlugCache } from "./v3/slugCache.js";
+import { SvelteCompiler } from "./v3/transformSvelte.js";
 
 const DEBUG = false;
 

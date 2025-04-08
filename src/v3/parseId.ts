@@ -1,5 +1,5 @@
 import { VizId } from "@vizhub/viz-types";
-import { ResolvedVizFileId } from "./types";
+import type { ResolvedVizFileId } from "./types";
 
 export const parseId = (
   id: ResolvedVizFileId,

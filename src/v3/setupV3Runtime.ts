@@ -1,13 +1,13 @@
+import { VizContent, VizId } from "@vizhub/viz-types";
+import { getFileText } from "@vizhub/viz-utils";
 import {
   ResolvedVizFileId,
   V3BuildResult,
   V3WindowMessage,
   V3WorkerMessage,
 } from "./types";
-import { parseId } from "./parseId";
-import { cleanRollupErrorMessage } from "./cleanRollupErrorMessage";
-import { VizContent, VizId } from "@vizhub/viz-types";
-import { getFileText } from "@vizhub/viz-utils";
+import { parseId } from "./parseId.js";
+import { cleanRollupErrorMessage } from "./cleanRollupErrorMessage.js";
 
 // Flag for debugging.
 const debug = false;
