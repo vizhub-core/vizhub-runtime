@@ -47,9 +47,10 @@
     "vitest": "^3.1.1"
   },
   "dependencies": {
-    "sucrase": "^3.35.0",
+    "@rollup/browser": "^4.39.0",
     "@vizhub/viz-types": "^0.1.0",
     "@vizhub/viz-utils": "^0.1.0",
-    "magic-sandbox": "^2.2.0"
+    "magic-sandbox": "^2.2.0",
+    "sucrase": "^3.35.0"
   }
 }
