@@ -1,7 +1,7 @@
 import { RollupBuild, RollupOptions } from "rollup";
 import { getFileText } from "@vizhub/viz-utils";
-import { computeBundleJSV3 } from "./computeBundleJSV3.js";
-import { htmlTemplate } from "./htmlTemplate.js";
+import { computeBundleJSV3 } from "./computeBundleJSV3";
+import { htmlTemplate } from "./htmlTemplate";
 import { VizCache } from "./vizCache.js";
 import { FileCollection, VizId } from "@vizhub/viz-types";
 import { parseId } from "./parseId.js";

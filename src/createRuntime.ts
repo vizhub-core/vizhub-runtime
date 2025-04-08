@@ -1,5 +1,5 @@
 import { VizContent } from "@vizhub/viz-types";
-import { vizContentToFileCollection } from "./utils/vizContentToFileCollection";
+import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 // Flag for debugging.
 const debug = false;
@@ -53,7 +53,7 @@ export const createRuntime = ({
     // Simply reset the srcdoc when code changes
     const message = {
       type: "buildHTMLRequest",
-      files: vizContentToFileCollection(content),
+      files: vizFilesToFileCollection(content?.files),
     };
     worker.postMessage(message);
   };

@@ -4,7 +4,7 @@
 import { expect } from "vitest";
 import { VizContent } from "@vizhub/viz-types";
 import { createRuntime } from "../createRuntime";
-import { vizContentToFileCollection } from "../utils/vizContentToFileCollection";
+import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 // Mock implementation of Worker for testing
 class MockWorker {
@@ -114,7 +114,7 @@ export async function testInIframeWithWorker({
     "buildHTMLRequest",
   );
   expect(mockWorker.lastMessage.files).toEqual(
-    vizContentToFileCollection(vizContent),
+    vizFilesToFileCollection(vizContent.files),
   );
 
   // Verify iframe was updated if expected

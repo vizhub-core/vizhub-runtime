@@ -3,15 +3,14 @@
   "version": "0.3.8",
   "description": "Flexible runtime environment for data visualization sandboxes",
   "type": "module",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -19,10 +18,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
-    "build:types": "tsc --emitDeclarationOnly --declarationDir ./dist/types",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "prepublishOnly": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -44,12 +40,13 @@
     "rollup": "^4.39.0",
     "svelte": "4.2.9",
     "typescript": "^5.8.3",
+    "vite": "^6.2.5",
     "vitest": "^3.1.1"
   },
   "dependencies": {
     "@rollup/browser": "^4.39.0",
     "@vizhub/viz-types": "^0.1.0",
-    "@vizhub/viz-utils": "^0.1.0",
+    "@vizhub/viz-utils": "^1.0.1",
     "magic-sandbox": "^2.2.0",
     "sucrase": "^3.35.0"
   }

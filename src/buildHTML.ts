@@ -7,9 +7,9 @@ import { v3Build } from "./v3/index.js";
 import { v4Build } from "./v4/index.js";
 import { createVizCache, VizCache } from "./v3/vizCache.js";
 import { createVizContent } from "./v3/createVizContent.js";
-import { vizContentToFileCollection } from "./utils/vizContentToFileCollection.js";
 import { SlugCache } from "./v3/slugCache.js";
 import { SvelteCompiler } from "./v3/transformSvelte.js";
+import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 const DEBUG = false;
 
@@ -54,8 +54,8 @@ export const buildHTML = async ({
   }
 
   if (!files && vizCache && vizId) {
-    files = vizContentToFileCollection(
-      await vizCache.get(vizId),
+    files = vizFilesToFileCollection(
+      (await vizCache.get(vizId))?.files,
     );
   }
 

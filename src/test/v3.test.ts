@@ -16,12 +16,12 @@ import {
   sampleContentVizImportWithCSS,
   sourcemap,
 } from "./fixtures/v3";
-import { setJSDOM } from "../v2/getComputedIndexHtml";
-import { JSDOM } from "jsdom";
 import { createVizCache } from "../v3/vizCache";
 import { createSlugCache } from "../v3/slugCache";
 import { SvelteCompiler } from "../v3/transformSvelte";
 import { testStackTrace } from "./testStackTrace";
+import { JSDOM } from "jsdom";
+import { setJSDOM } from "../common/domParser";
 
 setJSDOM(JSDOM);
 

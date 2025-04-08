@@ -1,5 +1,5 @@
-import { InputPluginOption } from "rollup";
-import { parseId } from "./parseId.js";
+import type { InputPluginOption } from "rollup";
+import { parseId } from "./parseId";
 import type { ResolvedVizFileId } from "./types";
 
 const debug = false;

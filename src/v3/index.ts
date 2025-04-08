@@ -1,1 +1,1 @@
-export { v3Build } from "./v3Build.js";
+export { v3Build } from "./v3Build";

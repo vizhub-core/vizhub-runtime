@@ -23,10 +23,9 @@ import {
   unicodeSupport,
   d3RosettaImportPkg,
   basicBundleNoExtension,
-  // sourceMapErrorFixture,
 } from "./fixtures/v2";
-import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
+import { setJSDOM } from "../common/domParser";
 
 setJSDOM(JSDOM);
 

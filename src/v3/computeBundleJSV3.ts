@@ -1,4 +1,4 @@
-import { sucrasePlugin } from "../common/sucrasePlugin.js";
+import { sucrasePlugin } from "../common/sucrasePlugin";
 import type {
   RollupBuild,
   RollupOptions,

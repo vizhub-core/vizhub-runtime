@@ -4,6 +4,7 @@ import type {
   OutputOptions,
 } from "rollup";
 import { JSDOM } from "jsdom";
+import { getParser } from "../common/domParser";
 import { FileCollection } from "@vizhub/viz-types";
 import { virtualFileSystem } from "../common/virtualFileSystem.js";
 import { sucrasePlugin } from "../common/sucrasePlugin.js";
@@ -21,8 +22,10 @@ const DEBUG = false;
 const extractModuleEntryPoints = (
   html: string,
 ): string[] => {
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+  const document = getParser().parseFromString(
+    html,
+    "text/html",
+  );
 
   const moduleScripts = document.querySelectorAll(
     'script[type="module"]',
@@ -111,8 +114,10 @@ const updateHTML = (
     return "";
   }
 
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+  const document = getParser().parseFromString(
+    html,
+    "text/html",
+  );
 
   // Replace script src with bundled content
   bundledModules.forEach((code, src) => {

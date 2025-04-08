@@ -16,8 +16,8 @@ import {
   xmlTest,
   protocolTest,
 } from "./fixtures/v1";
-import { setJSDOM } from "../v2/getComputedIndexHtml";
 import { JSDOM } from "jsdom";
+import { setJSDOM } from "../common/domParser";
 
 setJSDOM(JSDOM);
 

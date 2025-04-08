@@ -3,38 +3,16 @@ import {
   dependencies,
   getConfiguredLibraries,
   dependencySource,
-} from "../common/packageJson.js";
-import type { JSDOM } from "jsdom";
-
-let parser: DOMParser;
+} from "../common/packageJson";
+import { getParser } from "../common/domParser";
 
 const DEBUG = false;
-
-// Expose a way to inject a DOMParser implementation
-// when we're in a Node environment (tests, API server).
-export const setJSDOM = (
-  JSDOMInstance: typeof JSDOM,
-): void => {
-  const dom = new JSDOMInstance();
-  parser = new dom.window.DOMParser();
-};
-
-// If we're in the browser, use native DOMParser.
-if (typeof window !== "undefined") {
-  parser = new DOMParser();
-}
 
 const injectScripts = (
   htmlTemplate: string,
   files: FileCollection,
 ) => {
-  if (!parser) {
-    throw new Error(
-      "DOM parser is not defined. Did you forget to call setJSDOM()?",
-    );
-  }
-
-  const doc = parser.parseFromString(
+  const doc = getParser().parseFromString(
     htmlTemplate,
     "text/html",
   );
