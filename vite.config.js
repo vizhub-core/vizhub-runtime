@@ -15,12 +15,12 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       external: [
-        'react',
-        '@rollup/browser',
-        '@vizhub/viz-types',
-        '@vizhub/viz-utils',
-        'magic-sandbox',
-        'sucrase'
+        "react",
+        "@rollup/browser",
+        "@vizhub/viz-types",
+        "@vizhub/viz-utils",
+        "magic-sandbox",
+        "sucrase",
       ],
     },
   },

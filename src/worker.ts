@@ -7,7 +7,7 @@ import { svelteCompilerUrl } from "./v3/transformSvelte";
 import { FileCollection } from "@vizhub/viz-types";
 
 // Flag for debugging
-const debug = false;
+const DEBUG = false;
 
 export const initWorker = () => {
   // Inspired by
@@ -44,9 +44,8 @@ export const initWorker = () => {
   addEventListener("message", async (event) => {
     const { data } = event;
 
-    if (debug) {
+    DEBUG &&
       console.log("[worker] received message:", data);
-    }
 
     if (data.type === "buildHTMLRequest") {
       const files: FileCollection = data.files;
@@ -68,9 +67,8 @@ export const initWorker = () => {
           html,
         });
       } catch (error) {
-        if (debug) {
+        DEBUG &&
           console.error("[worker] build error:", error);
-        }
 
         // Send the error back to the main thread
         postMessage({

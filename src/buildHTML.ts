@@ -94,10 +94,14 @@ export const buildHTML = async ({
       });
     }
 
-    if (!vizCache || !vizId) {
+    if (!vizCache) {
       throw new Error(
-        "vizCache and vizId are required for v3 runtime",
+        "vizCache is required for v3 runtime",
       );
+    }
+
+    if (!vizId) {
+      throw new Error("vizId is required for v3 runtime");
     }
 
     return await v3Build({

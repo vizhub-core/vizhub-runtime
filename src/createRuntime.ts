@@ -2,7 +2,7 @@ import { FileCollection } from "@vizhub/viz-types";
 import { BuildWorkerMessage, VizHubRuntime } from "./types";
 
 // Flag for debugging.
-const DEBUG = true;
+const DEBUG = false;
 
 export const createRuntime = ({
   iframe,
