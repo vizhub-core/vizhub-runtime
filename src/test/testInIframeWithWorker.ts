@@ -37,7 +37,10 @@ class MockWorker {
 
   postMessage(message: any) {
     // Store the last message for inspection
-    this.lastMessage = message;
+    this.lastMessage = {
+      type: message.type,
+      files: message.fileCollection,
+    };
 
     // If this is a build request, simulate a response
     if (message.type === "buildHTMLRequest") {
@@ -102,7 +105,9 @@ export async function testInIframeWithWorker({
   });
 
   // Trigger a code change
-  runtime.handleCodeChange(vizContent);
+  runtime.handleCodeChange(
+    vizFilesToFileCollection(vizContent.files),
+  );
 
   // Wait for async operations
   await new Promise((resolve) => setTimeout(resolve, 50));

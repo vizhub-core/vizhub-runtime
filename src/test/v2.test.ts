@@ -23,6 +23,7 @@ import {
   unicodeSupport,
   d3RosettaImportPkg,
   basicBundleNoExtension,
+  syntaxError,
 } from "./fixtures/v2";
 import { JSDOM } from "jsdom";
 import { setJSDOM } from "../common/domParser";
@@ -144,15 +145,15 @@ describe("VizHub Runtime v2", () => {
     });
   });
 
-  // it("should handle CSS imports", async () => {
-  // TODO: Add test for CSS imports
-  // });
-  // TODO get this working
-
-  // it("should provide sourcemaps with correct line numbers in stack traces", async () => {
-  //   await testStackTrace(browser, sourceMapErrorFixture, {
-  //     sourceFile: "error.js", // Note: The actual filename may not appear in stack traces
-  //     sourceLine: 3,
-  //   });
-  // });
+  it("should handle syntax error", async () => {
+    await expect(
+      testInBrowser({
+        browser,
+        files: syntaxError,
+        expectedLog: "function",
+      }),
+    ).rejects.toThrow(
+      /Error transforming foo\.js: Unexpected token/,
+    );
+  });
 });

@@ -115,14 +115,7 @@ describe("Iframe and Worker Management", () => {
       });
 
       runtime.handleCodeChange({
-        id: "test-viz-id",
-        title: "Test Viz",
-        files: {
-          "index.js": {
-            name: "index.js",
-            text: "console.log('Hello from test');",
-          },
-        },
+        "index.js": "console.log('Hello from test');",
       });
 
       // Wait for async operations

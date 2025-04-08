@@ -3,15 +3,25 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: "./src/index.ts",
+      entry: {
+        index: "./src/index.ts",
+        worker: "./src/worker.ts",
+      },
       formats: ["es", "cjs"],
-      fileName: (format) =>
-        `index.${format === "es" ? "js" : "cjs"}`,
+      fileName: (format, entryName) =>
+        `${entryName}.${format === "es" ? "js" : "cjs"}`,
     },
     outDir: "dist",
     sourcemap: true,
     rollupOptions: {
-      external: [], // Add external dependencies here if needed
+      external: [
+        'react',
+        '@rollup/browser',
+        '@vizhub/viz-types',
+        '@vizhub/viz-utils',
+        'magic-sandbox',
+        'sucrase'
+      ],
     },
   },
 });

@@ -1,15 +1,8 @@
-import { VizContent } from "@vizhub/viz-types";
-import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import { FileCollection } from "@vizhub/viz-types";
+import { BuildWorkerMessage, VizHubRuntime } from "./types";
 
 // Flag for debugging.
-const debug = false;
-
-export type VizHubRuntime = {
-  // Resets the iframe srcdoc when code changes.
-  handleCodeChange: (content: VizContent) => void;
-  // Cleans up the event listener from the Worker.
-  cleanup: () => void;
-};
+const DEBUG = true;
 
 export const createRuntime = ({
   iframe,
@@ -23,6 +16,8 @@ export const createRuntime = ({
   // This runs when the build worker sends a message.
   const listener: (e: MessageEvent) => void = ({
     data,
+  }: {
+    data: BuildWorkerMessage;
   }) => {
     if (data.type === "buildHTMLResponse") {
       const html: string | undefined = data.html;
@@ -45,15 +40,15 @@ export const createRuntime = ({
     worker.removeEventListener("message", listener);
   };
 
-  const handleCodeChange = (content: VizContent) => {
-    if (debug) {
-      console.log("[v2 runtime] handleCodeChange");
-    }
+  const handleCodeChange = (
+    fileCollection: FileCollection,
+  ) => {
+    DEBUG && console.log("[v2 runtime] handleCodeChange");
 
     // Simply reset the srcdoc when code changes
-    const message = {
+    const message: BuildWorkerMessage = {
       type: "buildHTMLRequest",
-      files: vizFilesToFileCollection(content?.files),
+      fileCollection,
     };
     worker.postMessage(message);
   };
