@@ -1,5 +1,7 @@
 export const helloWorldDemoV1 = {
-  "index.html": `<!DOCTYPE html>
+  label: "Hello World Demo (v1)",
+  files: {
+    "index.html": `<!DOCTYPE html>
   <html>
     <head>
       <title>Hello World</title>
@@ -42,4 +44,5 @@ export const helloWorldDemoV1 = {
       </div>
     </body>
   </html>`,
+  },
 };

@@ -1,9 +1,11 @@
 export const reactDemoV2 = {
-  "index.html": `
+  label: "React Demo (v2)",
+  files: {
+    "index.html": `
     <div id="root"></div>
     <script src='bundle.js'></script>
   `,
-  "index.js": `
+    "index.js": `
     import React, { useState } from 'react';
     import ReactDOM from 'react-dom';
     
@@ -41,7 +43,7 @@ export const reactDemoV2 = {
       document.getElementById('root')
     );
   `,
-  "package.json": `{
+    "package.json": `{
     "dependencies": {
       "react": "18.2.0",
       "react-dom": "18.2.0"
@@ -59,4 +61,5 @@ export const reactDemoV2 = {
       }
     }
   }`,
+  },
 };

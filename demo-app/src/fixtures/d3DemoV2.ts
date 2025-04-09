@@ -1,5 +1,7 @@
 export const d3DemoV2 = {
-  "index.html": `
+  label: "D3 Demo (v2)",
+  files: {
+    "index.html": `
   <html>
     <head>
       <style>
@@ -14,7 +16,7 @@ export const d3DemoV2 = {
       <script src='bundle.js'></script>
     </body>
   `,
-  "index.js": `
+    "index.js": `
     import { select } from "d3";
     
     // Data for our bar chart
@@ -67,7 +69,7 @@ export const d3DemoV2 = {
     g.append('g')
       .call(d3.axisLeft(yScale));
   `,
-  "package.json": `{
+    "package.json": `{
     "dependencies": {
       "d3": "6.7.0"
     },
@@ -80,4 +82,5 @@ export const d3DemoV2 = {
       }
     }
   }`,
+  },
 };

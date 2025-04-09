@@ -25,9 +25,9 @@ export const bundleESModule = async ({
   const inputOptions: RollupOptions = {
     input: `./${entryPoint}`,
     plugins: [virtualFileSystem(files), sucrasePlugin()],
-    external: (source: string) => {
-      return !source.startsWith(".");
-    },
+    // external: (source: string) => {
+    //   return files[source] === undefined; // Treat all files not in the collection as external
+    // },
     onwarn(w, warn) {
       if (w.code === "UNRESOLVED_IMPORT") return; // quiet noisy warnings
       warn(w);

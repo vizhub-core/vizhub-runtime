@@ -1,5 +1,7 @@
 export const threeJsDemoV4 = {
-  "index.html": `<!DOCTYPE html>
+  label: "ThreeJS Demo (v4)",
+  files: {
+    "index.html": `<!DOCTYPE html>
   <html>
     <head>
       <title>Three.js Test</title>
@@ -27,7 +29,7 @@ export const threeJsDemoV4 = {
       <script type="module" src="index.js"></script>
     </body>
   </html>`,
-  "index.js": `
+    "index.js": `
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -146,4 +148,5 @@ export const threeJsDemoV4 = {
     
     animate();
   `,
+  },
 };

@@ -1,11 +1,13 @@
 export const d3DemoV3 = {
-  "index.js": `
+  label: "D3 Demo (v3)",
+  files: {
+    "index.js": `
     import { select } from 'd3';
     export const main = () => {
       console.log(typeof select);
     }
   `,
-  "package.json": `{
+    "package.json": `{
     "dependencies": {
       "d3": "7.9.0"
     },
@@ -18,4 +20,5 @@ export const d3DemoV3 = {
       }
     }
   }`,
+  },
 };
