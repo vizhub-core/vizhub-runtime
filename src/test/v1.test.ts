@@ -16,10 +16,10 @@ import {
   xmlTest,
   protocolTest,
 } from "./fixtures/v1";
-import { JSDOM } from "jsdom";
-import { setJSDOM } from "../common/domParser";
+// import { JSDOM } from "jsdom";
+// import { setJSDOM } from "../common/domParser";
 
-setJSDOM(JSDOM);
+// setJSDOM(JSDOM);
 
 let browser: Browser;
 

@@ -1,19 +1,19 @@
-// import { rollup } from '@rollup/browser';
+// import { rollup } from "@rollup/browser";
 // import {
 //   VizCache,
 //   buildHTML,
 //   createVizCache,
 //   createSlugCache,
 //   svelteCompilerUrl,
-// } from '@vizhub/runtime';
-// import { V3BuildResult, V3WorkerMessage } from './types';
-// import { VizContent, VizId } from '@vizhub/viz-types';
+// } from "@vizhub/runtime";
+// import { V3BuildResult, V3WorkerMessage } from "./types";
+// import { VizContent, VizId } from "@vizhub/viz-types";
 
 // const debug = false;
 
 // // Generate a unique request ID
 // const generateRequestId = (): string =>
-//   (Math.random() + '').slice(2);
+//   (Math.random() + "").slice(2);
 
 // // Tracks pending promises for 'contentResponse' messages
 // const pendingContentResponsePromises = new Map();
@@ -28,13 +28,13 @@
 //     vizId: VizId,
 //   ): Promise<VizContent> => {
 //     const message: V3WorkerMessage = {
-//       type: 'contentRequest',
+//       type: "contentRequest",
 //       vizId,
 //     };
 
 //     if (debug) {
 //       console.log(
-//         '[build worker] sending content request message to main thread',
+//         "[build worker] sending content request message to main thread",
 //         message,
 //       );
 //     }
@@ -52,14 +52,14 @@
 //   handleCacheMiss: async (slug) => {
 //     const requestId = generateRequestId();
 //     const message: V3WorkerMessage = {
-//       type: 'resolveSlugRequest',
+//       type: "resolveSlugRequest",
 //       slugKey: slug,
 //       requestId,
 //     };
 
 //     if (debug) {
 //       console.log(
-//         '[build worker] sending resolve slug request message to main thread',
+//         "[build worker] sending resolve slug request message to main thread",
 //         message,
 //       );
 //     }
@@ -90,16 +90,16 @@
 // };
 
 // // Handle messages from the main thread
-// addEventListener('message', async ({ data }) => {
+// addEventListener("message", async ({ data }) => {
 //   const message: V3WorkerMessage = data as V3WorkerMessage;
 
 //   switch (message.type) {
-//     case 'buildRequest': {
+//     case "buildRequest": {
 //       const { vizId, enableSourcemap } = message;
 
 //       if (debug) {
 //         console.log(
-//           '[build worker] received build request message from main thread',
+//           "[build worker] received build request message from main thread",
 //           message,
 //         );
 //       }
@@ -131,7 +131,7 @@
 
 //       // Post the result of the build process
 //       const responseMessage: V3WorkerMessage = {
-//         type: 'buildResponse',
+//         type: "buildResponse",
 //         buildResult,
 //         error,
 //       };
@@ -139,7 +139,7 @@
 //       break;
 //     }
 
-//     case 'contentResponse': {
+//     case "contentResponse": {
 //       // Resolve pending promises for content snapshots
 //       const resolver = pendingContentResponsePromises.get(
 //         message.vizId,
@@ -153,10 +153,10 @@
 //       break;
 //     }
 
-//     case 'invalidateVizCacheRequest': {
+//     case "invalidateVizCacheRequest": {
 //       if (debug) {
 //         console.log(
-//           '[build worker] received invalidateVizCacheRequest',
+//           "[build worker] received invalidateVizCacheRequest",
 //           message,
 //         );
 //       }
@@ -170,14 +170,14 @@
 //       }
 
 //       const responseMessage: V3WorkerMessage = {
-//         type: 'invalidateVizCacheResponse',
+//         type: "invalidateVizCacheResponse",
 //       };
 //       postMessage(responseMessage);
 //       break;
 //     }
 
 //     // Resolve pending promises for slug resolution
-//     case 'resolveSlugResponse': {
+//     case "resolveSlugResponse": {
 //       const resolver =
 //         pendingResolveSlugResponsePromises.get(
 //           message.requestId,
@@ -191,7 +191,7 @@
 //       break;
 //     }
 
-//     case 'resetSrcdocRequest': {
+//     case "resetSrcdocRequest": {
 //       // Invalidate viz cache for changed vizzes.
 //       const { vizId, changedVizIds } = message;
 //       for (const changedVizId of changedVizIds) {
@@ -225,7 +225,7 @@
 
 //       // Post the result of the build process
 //       const responseMessage: V3WorkerMessage = {
-//         type: 'resetSrcdocResponse',
+//         type: "resetSrcdocResponse",
 //         srcdoc,
 //         error,
 //       };

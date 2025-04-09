@@ -21,10 +21,10 @@ import { createVizCache } from "../v3/vizCache";
 import { createSlugCache } from "../v3/slugCache";
 import { SvelteCompiler } from "../v3/transformSvelte";
 import { testStackTrace } from "./testStackTrace";
-import { JSDOM } from "jsdom";
-import { setJSDOM } from "../common/domParser";
+// import { JSDOM } from "jsdom";
+// import { setJSDOM } from "../common/domParser";
 
-setJSDOM(JSDOM);
+// setJSDOM(JSDOM);
 
 let browser: Browser;
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { testInIframeWithWorker } from "./testInIframeWithWorker";
+import { testMockedIframeWithWorker } from "./testMockedIframeWithWorker";
 import { createRuntime } from "../createRuntime";
 
 // Mock Worker since it's not available in Node.js environment
@@ -13,9 +13,19 @@ class MockWorker {
 // Set up global Worker
 global.Worker = MockWorker as any;
 
+// Mock window since it's not available in Node.js environment
+const mockWindow = {
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  postMessage: vi.fn(),
+};
+
+// Set up global window
+global.window = mockWindow as any;
+
 describe("Iframe and Worker Management", () => {
   it("should send file collection to worker when code changes", async () => {
-    await testInIframeWithWorker({
+    await testMockedIframeWithWorker({
       vizContent: {
         id: "test-viz-id",
         title: "Test Viz",
@@ -30,7 +40,7 @@ describe("Iframe and Worker Management", () => {
   });
 
   it("should update iframe srcdoc when worker responds with HTML", async () => {
-    await testInIframeWithWorker({
+    await testMockedIframeWithWorker({
       vizContent: {
         id: "test-viz-id",
         title: "Test Viz",

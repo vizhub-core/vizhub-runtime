@@ -1,5 +1,5 @@
-// import { VizContent, VizId } from '@vizhub/viz-types';
-// import { V3PackageJson } from 'entities';
+// import { VizContent, VizId } from "@vizhub/viz-types";
+// import { V3PackageJson } from "entities";
 
 // // The result of a build.
 // export type V3BuildResult = {
@@ -32,13 +32,13 @@
 //   //  * When the worker requests the content of an imported viz.
 //   //  * The main thread should respond with a `getContentResponse` message.
 //   //  * This supports the worker's VizCache when it has a cache miss.
-//   | { type: 'contentRequest'; vizId: VizId }
+//   | { type: "contentRequest"; vizId: VizId }
 
 //   // `contentResponse`
 //   //  * Sent from the main thread to the worker.
 //   //  * When the main thread responds to a `contentRequest` message.
 //   | {
-//       type: 'contentResponse';
+//       type: "contentResponse";
 //       vizId: VizId;
 //       content: VizContent;
 //     }
@@ -47,7 +47,7 @@
 //   //  * Sent from the main thread to the worker.
 //   //  * When the main thread requests a build.
 //   | {
-//       type: 'buildRequest';
+//       type: "buildRequest";
 //       vizId: VizId;
 //       enableSourcemap: boolean;
 //     }
@@ -60,7 +60,7 @@
 //   //  * EITHER `buildResult` the result of the build
 //   //  * OR `error` if the build failed.
 //   | {
-//       type: 'buildResponse';
+//       type: "buildResponse";
 //       buildResult?: V3BuildResult;
 //       error?: Error;
 //     }
@@ -70,7 +70,7 @@
 //   //  * When the main thread wants to invalidate the VizCache.
 //   //  * This happens when an imported viz changes.
 //   | {
-//       type: 'invalidateVizCacheRequest';
+//       type: "invalidateVizCacheRequest";
 //       changedVizIds: Array<VizId>;
 //     }
 
@@ -78,14 +78,14 @@
 //   //  * Sent from the worker to the main thread.
 //   //  * When the worker responds to a `invalidateVizCacheRequest` message.
 //   | {
-//       type: 'invalidateVizCacheResponse';
+//       type: "invalidateVizCacheResponse";
 //     }
 
 //   // `resolveSlugRequest`
 //   //  * Sent from the worker to the main thread.
 //   //  * When the worker requests a viz ID for a slug.
 //   | {
-//       type: 'resolveSlugRequest';
+//       type: "resolveSlugRequest";
 //       slugKey: string;
 //       requestId: string;
 //     }
@@ -94,7 +94,7 @@
 //   //  * Sent from the main thread to the worker.
 //   //  * When the main thread responds to a `resolveSlugRequest` message.
 //   | {
-//       type: 'resolveSlugResponse';
+//       type: "resolveSlugResponse";
 //       slugKey: string;
 //       vizId: VizId;
 //       requestId: string;
@@ -105,7 +105,7 @@
 //   //  * When the main thread wants to reset the runtime
 //   //  * This happens when an error occurs.
 //   | {
-//       type: 'resetSrcdocRequest';
+//       type: "resetSrcdocRequest";
 //       vizId: VizId;
 //       changedVizIds: Array<VizId>;
 //     }
@@ -117,7 +117,7 @@
 //   //  * EITHER a fresh `srcdoc` for the iframe
 //   //  * OR an `error` if the build failed.
 //   | {
-//       type: 'resetSrcdocResponse';
+//       type: "resetSrcdocResponse";
 //       srcdoc?: string;
 //       error?: Error;
 //     };
@@ -128,7 +128,7 @@
 //   //  * Sent from the main thread to the IFrame.
 //   //  * Triggers hot reloading within the V3 runtime.
 //   | {
-//       type: 'runJS';
+//       type: "runJS";
 //       src: string;
 //     }
 
@@ -136,7 +136,7 @@
 //   //  * Sent from the main thread to the IFrame.
 //   //  * Triggers hot reloading of CSS within the V3 runtime.
 //   | {
-//       type: 'runCSS';
+//       type: "runCSS";
 //       src: string;
 //       id: ResolvedVizFileId;
 //     }
@@ -146,7 +146,7 @@
 //   //  * Indicates that the V3 runtime has finished running the JS.
 //   //  * If this was sent, there were no immediate runtime errors.
 //   | {
-//       type: 'runDone';
+//       type: "runDone";
 //     }
 
 //   // `runError`
@@ -154,6 +154,6 @@
 //   //  * Indicates that the V3 runtime has finished running the JS.
 //   //  * If this was sent, there was an immediate runtime error.
 //   | {
-//       type: 'runError';
+//       type: "runError";
 //       error: Error;
 //     };

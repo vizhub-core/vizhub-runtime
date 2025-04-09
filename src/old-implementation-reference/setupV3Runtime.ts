@@ -1,38 +1,38 @@
 // // @ts-ignore
-// import Worker from './worker.ts?worker';
+// import Worker from "./worker.ts?worker";
 
 // import {
 //   ResolvedVizFileId,
 //   V3BuildResult,
 //   V3WindowMessage,
 //   V3WorkerMessage,
-// } from './types';
-// import { getFileText } from 'entities';
+// } from "./types";
+// import { getFileText } from "entities";
 // import {
 //   parseId,
 //   cleanRollupErrorMessage,
-// } from '@vizhub/runtime';
-// import { cleanRollupErrorMessage } from './cleanRollupErrorMessage';
-// import { VizContent, VizId } from '@vizhub/viz-types';
+// } from "@vizhub/runtime";
+// import { cleanRollupErrorMessage } from "./cleanRollupErrorMessage";
+// import { VizContent, VizId } from "@vizhub/viz-types";
 
 // // Flag for debugging.
 // const debug = false;
 
 // // Nothing happening.
-// const IDLE = 'IDLE';
+// const IDLE = "IDLE";
 
 // // An update has been enqueued
 // // via requestAnimationFrame.
-// const ENQUEUED = 'ENQUEUED';
+// const ENQUEUED = "ENQUEUED";
 
 // // An update (build and run) is pending,
 // // and the files have not changed.
-// const PENDING_CLEAN = 'PENDING_CLEAN';
+// const PENDING_CLEAN = "PENDING_CLEAN";
 
 // // An update (build and run) is pending,
 // // and the files have changed
 // // while this run is taking place.
-// const PENDING_DIRTY = 'PENDING_DIRTY';
+// const PENDING_DIRTY = "PENDING_DIRTY";
 
 // export type V3Runtime = {
 //   // Performs a hot reload of a new build.
@@ -98,7 +98,7 @@
 
 //   if (debug) {
 //     setInterval(() => {
-//       console.log('state', state);
+//       console.log("state", state);
 //     }, 1000);
 //   }
 
@@ -116,14 +116,14 @@
 //   const n = 100;
 
 //   // This runs when the build worker sends a message.
-//   worker.addEventListener('message', async ({ data }) => {
+//   worker.addEventListener("message", async ({ data }) => {
 //     const message: V3WorkerMessage =
 //       data as V3WorkerMessage;
 
 //     // Handle 'buildResponse' messages.
 //     // These are sent by the build worker in response
 //     // to a 'buildRequest' message.
-//     if (message.type === 'buildResponse') {
+//     if (message.type === "buildResponse") {
 //       const buildResult: V3BuildResult | undefined =
 //         message.buildResult;
 //       const error: Error | undefined = message.error;
@@ -133,9 +133,9 @@
 //         // Every n times, log the rolling average.
 //         if (buildTimes.length % n === 0) {
 //           console.log(
-//             'Average build time: ' +
+//             "Average build time: " +
 //               avg(buildTimes) +
-//               ' ms',
+//               " ms",
 //           );
 //           buildTimes = [];
 //         }
@@ -163,20 +163,20 @@
 //     // These are sent by the worker when it needs
 //     // to get the content of a file, in order to
 //     // populate its VizCache.
-//     if (message.type === 'contentRequest') {
+//     if (message.type === "contentRequest") {
 //       const { vizId } = message;
 
 //       const content = await getLatestContent(vizId);
 
 //       const contentResponseMessage: V3WorkerMessage = {
-//         type: 'contentResponse',
+//         type: "contentResponse",
 //         vizId: message.vizId,
 //         content,
 //       };
 
 //       if (debug) {
 //         console.log(
-//           '[v3 runtime] received contentRequest, sending contentResponse',
+//           "[v3 runtime] received contentRequest, sending contentResponse",
 //           contentResponseMessage,
 //         );
 //       }
@@ -188,11 +188,11 @@
 //     // Handle 'resolveSlugRequest' messages.
 //     // These are sent by the worker when it needs
 //     // to resolve a slug import to a viz ID.
-//     if (message.type === 'resolveSlugRequest') {
+//     if (message.type === "resolveSlugRequest") {
 //       const { slugKey } = message;
 
 //       const resolveSlugResponseMessage: V3WorkerMessage = {
-//         type: 'resolveSlugResponse',
+//         type: "resolveSlugResponse",
 //         slugKey,
 //         requestId: message.requestId,
 //         vizId: await resolveSlugKey(slugKey),
@@ -200,7 +200,7 @@
 
 //       if (debug) {
 //         console.log(
-//           '[v3 runtime] received resolveSlugRequest, sending resolveSlugResponse',
+//           "[v3 runtime] received resolveSlugRequest, sending resolveSlugResponse",
 //           resolveSlugResponseMessage,
 //         );
 //       }
@@ -211,10 +211,10 @@
 //     // Handle 'invalidateVizCacheResponse' messages.
 //     // These are sent by the worker in response to
 //     // an 'invalidateVizCacheRequest' message.
-//     if (message.type === 'invalidateVizCacheResponse') {
+//     if (message.type === "invalidateVizCacheResponse") {
 //       if (debug) {
 //         console.log(
-//           '[v3 runtime] received invalidateVizCacheResponse',
+//           "[v3 runtime] received invalidateVizCacheResponse",
 //           message,
 //         );
 //       }
@@ -222,7 +222,7 @@
 //       handleCodeChange();
 //     }
 
-//     if (message.type === 'resetSrcdocResponse') {
+//     if (message.type === "resetSrcdocResponse") {
 //       const srcdoc: string | undefined = message.srcdoc;
 //       const error: Error | undefined = message.error;
 
@@ -246,12 +246,12 @@
 //   });
 
 //   // This runs when the IFrame sends a message.
-//   window.addEventListener('message', ({ data }) => {
+//   window.addEventListener("message", ({ data }) => {
 //     // Handle 'runDone' and 'runError' messages.
 //     // These happen in response to sending a 'runJS' message.
 //     if (
-//       data.type === 'runDone' ||
-//       data.type === 'runError'
+//       data.type === "runDone" ||
+//       data.type === "runError"
 //     ) {
 //       // console.log('got ' + data.type);
 //       if (pendingRunPromise) {
@@ -261,10 +261,10 @@
 //         pendingRunPromise = null;
 //       }
 //     }
-//     if (data.type === 'runError') {
+//     if (data.type === "runError") {
 //       setSrcdocErrorMessage(data.error.message);
 //     }
-//     if (data.type === 'writeFile') {
+//     if (data.type === "writeFile") {
 //       if (data.fileName && data.content) {
 //         writeFile(data.fileName, data.content);
 //       }
@@ -286,7 +286,7 @@
 //   ): void => {
 //     // Send a message to the worker to invalidate the cache.
 //     const message: V3WorkerMessage = {
-//       type: 'invalidateVizCacheRequest',
+//       type: "invalidateVizCacheRequest",
 //       changedVizIds,
 //     };
 //     worker.postMessage(message);
@@ -299,9 +299,9 @@
 //       if (debug && updateCount > 0) {
 //         console.log(
 //           updateCount +
-//             ' hot reload' +
-//             (updateCount !== 1 ? 's' : '') +
-//             ' in the last second',
+//             " hot reload" +
+//             (updateCount !== 1 ? "s" : "") +
+//             " in the last second",
 //         );
 //       }
 //       updateCount = 0;
@@ -313,7 +313,7 @@
 //       (resolve) => {
 //         pendingBuildPromise = resolve;
 //         const message: V3WorkerMessage = {
-//           type: 'buildRequest',
+//           type: "buildRequest",
 //           vizId,
 //           enableSourcemap: true,
 //         };
@@ -326,7 +326,7 @@
 //   const update = async () => {
 //     state = PENDING_CLEAN;
 //     if (debug) {
-//       console.log('update: before run');
+//       console.log("update: before run");
 //     }
 
 //     // Build the code. This may fail and return `undefined`.
@@ -339,7 +339,7 @@
 //     }
 
 //     if (debug) {
-//       console.log('update: after run');
+//       console.log("update: after run");
 //     }
 //     updateCount++;
 //     // TypeScript can't comprehend that `state`
@@ -365,11 +365,11 @@
 //       if (src === undefined) {
 //         if (debug) {
 //           console.log(
-//             '[v3 runtime] src is undefined, but no errors!',
+//             "[v3 runtime] src is undefined, but no errors!",
 //           );
 //         }
 //         throw new Error(
-//           '[v3 runtime] src is undefined, but no errors!',
+//           "[v3 runtime] src is undefined, but no errors!",
 //         );
 //       }
 
@@ -384,7 +384,7 @@
 //         setSrcdocErrorMessage(
 //           warnings
 //             .map((warning) => warning.message)
-//             .join('\n\n'),
+//             .join("\n\n"),
 //         );
 //       } else {
 //         setSrcdocErrorMessage(null); // Clear error message if no warnings
@@ -410,13 +410,13 @@
 
 //             // TODO only inject CSS if it has changed.
 //             const runCSSMessage: V3WindowMessage = {
-//               type: 'runCSS',
+//               type: "runCSS",
 //               id: cssFile,
 //               src,
 //             };
 
 //             if (debug) {
-//               console.log('runCSSMessage', runCSSMessage);
+//               console.log("runCSSMessage", runCSSMessage);
 //             }
 
 //             iframe.contentWindow?.postMessage(
@@ -433,13 +433,13 @@
 //         );
 //         previousCSSFiles = cssFiles;
 //         if (debug) {
-//           console.log('removedCSSFiles', removedCSSFiles);
+//           console.log("removedCSSFiles", removedCSSFiles);
 //         }
 //         for (const id of removedCSSFiles) {
 //           const removeCSSMessage: V3WindowMessage = {
-//             type: 'runCSS',
+//             type: "runCSS",
 //             id,
-//             src: '',
+//             src: "",
 //           };
 //           iframe.contentWindow?.postMessage(
 //             removeCSSMessage,
@@ -451,7 +451,7 @@
 //         console.clear();
 
 //         const runJSMessage: V3WindowMessage = {
-//           type: 'runJS',
+//           type: "runJS",
 //           src,
 //         };
 //         iframe.contentWindow.postMessage(
@@ -467,7 +467,7 @@
 //     pendingBuildPromise = null;
 //     pendingRunPromise = null;
 //     const message: V3WorkerMessage = {
-//       type: 'resetSrcdocRequest',
+//       type: "resetSrcdocRequest",
 //       vizId,
 //       changedVizIds,
 //     };

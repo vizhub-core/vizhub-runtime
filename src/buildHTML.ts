@@ -11,7 +11,7 @@ import { SlugCache } from "./v3/slugCache.js";
 import { SvelteCompiler } from "./v3/transformSvelte.js";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
-const DEBUG = false;
+const DEBUG = true;
 
 export const buildHTML = async ({
   files,
@@ -118,6 +118,12 @@ export const buildHTML = async ({
     if (!rollup) {
       throw new Error("Rollup is required for v4 runtime");
     }
+    DEBUG &&
+      console.log("[buildHTML] v4Build", {
+        files,
+        rollup,
+        enableSourcemap,
+      });
     return magicSandbox(
       await v4Build({ files, rollup, enableSourcemap }),
     );

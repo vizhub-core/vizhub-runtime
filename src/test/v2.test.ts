@@ -25,10 +25,10 @@ import {
   basicBundleNoExtension,
   syntaxError,
 } from "./fixtures/v2";
-import { JSDOM } from "jsdom";
-import { setJSDOM } from "../common/domParser";
+// import { JSDOM } from "jsdom";
+// import { setJSDOM } from "../common/domParser";
 
-setJSDOM(JSDOM);
+// setJSDOM(JSDOM);
 
 let browser: Browser;
 

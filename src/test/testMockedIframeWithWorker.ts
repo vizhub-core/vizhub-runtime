@@ -69,7 +69,7 @@ class MockIframe {
   srcdoc: string = "";
 }
 
-export async function testInIframeWithWorker({
+export async function testMockedIframeWithWorker({
   vizContent,
   expectedHtmlUpdate = true,
   expectError = false,
