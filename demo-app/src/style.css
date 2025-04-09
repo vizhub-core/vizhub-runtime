@@ -25,16 +25,17 @@ html {
   border-radius: 4px;
   cursor: pointer;
   margin-right: 10px;
+  font-weight: bold;
 }
 
 .status-working {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #98e09b;
+  color: #2c662f;
 }
 
 .status-failing {
-  background-color: #f44336;
-  color: white;
+  background-color: #ffb3b3;
+  color: #993333;
 }
 
 #button-container button:last-child {
