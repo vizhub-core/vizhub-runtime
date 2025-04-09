@@ -49,11 +49,13 @@ export const computeBundleJSV3 = async ({
   const inputOptions: RollupOptions = {
     input: "./index.js",
     plugins: [
-      vizResolve({ vizId, slugCache }),
+      ...(vizId ? [vizResolve({ vizId, slugCache })] : []),
       transformDSV(),
       sucrasePlugin(),
       transformSvelte({ getSvelteCompiler }),
-      vizLoad({ vizCache, trackCSSImport }),
+      ...(vizCache
+        ? [vizLoad({ vizCache, trackCSSImport })]
+        : []),
     ],
     onwarn(warning, warn) {
       // Suppress "treating module as external dependency" warnings
@@ -62,18 +64,23 @@ export const computeBundleJSV3 = async ({
     },
   };
 
-  const bundle = await rollup(inputOptions);
-
-  const pkg = packageJSON(files);
-  const globals = getGlobals(pkg);
-
   const outputOptions: OutputOptions = {
     format: "umd",
     name: "Viz",
     sourcemap: enableSourcemap ? true : false,
     compact: true,
-    globals,
   };
+
+  const pkg = packageJSON(files);
+  if (pkg) {
+    const globals = getGlobals(pkg);
+    if (globals) {
+      inputOptions.external = Object.keys(globals);
+      outputOptions.globals = globals;
+    }
+  }
+
+  const bundle = await rollup(inputOptions);
 
   const { output } = await bundle.generate(outputOptions);
   return {
