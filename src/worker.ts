@@ -7,7 +7,7 @@ import { createVizCache } from "./v3/vizCache";
 import { createSlugCache } from "./v3/slugCache";
 
 // Flag for debugging
-const DEBUG = false;
+const DEBUG = true;
 
 export const initWorker = () => {
   DEBUG && console.log("[worker] initializing...");
@@ -121,7 +121,7 @@ export const initWorker = () => {
           });
         } catch (error) {
           DEBUG &&
-            console.error("[worker] build error:", error);
+            console.log("[worker] build error:", error);
 
           // Send the error back to the main thread
           postMessage({

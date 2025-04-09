@@ -1,7 +1,18 @@
-export const d3Demo = {
+export const d3DemoV2 = {
   "index.html": `
-    <div id="chart"></div>
-    <script src='bundle.js'></script>
+  <html>
+    <head>
+      <style>
+        body {
+          margin: 0;
+          overflow: hidden;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="chart"></div>
+      <script src='bundle.js'></script>
+    </body>
   `,
   "index.js": `
     import { select } from "d3";
@@ -10,8 +21,8 @@ export const d3Demo = {
     const data = [30, 86, 168, 281, 303, 365];
     
     // Set dimensions and margins
-    const width = 600;
-    const height = 400;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     const margin = { top: 20, right: 20, bottom: 30, left: 40 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;

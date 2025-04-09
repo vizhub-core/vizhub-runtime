@@ -18,6 +18,9 @@ const worker = new BuildWorker();
 const runtime: VizHubRuntime = createRuntime({
   iframe,
   worker,
+  setBuildErrorMessage: (message) => {
+    console.error("Build error:", message);
+  },
 });
 
 // Expose runtime on the parent window for testing

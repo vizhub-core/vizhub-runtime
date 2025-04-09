@@ -1,4 +1,4 @@
-export const threeJsUsage = {
+export const threeJsDemoV4 = {
   "index.html": `<!DOCTYPE html>
   <html>
     <head>

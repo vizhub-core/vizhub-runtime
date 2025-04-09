@@ -1,13 +1,16 @@
 import { VizHubRuntime } from "@vizhub/runtime";
-import { d3Demo } from "./fixtures/d3Demo";
-import { reactDemo } from "./fixtures/reactDemo";
-import { helloWorldDemo } from "./fixtures/helloWorldDemo";
-import { threeJsUsage } from "./fixtures/threeJsUsage";
+import { d3DemoV2 } from "./fixtures/d3DemoV2";
+import { d3DemoV4 } from "./fixtures/d3DemoV4";
+import { reactDemoV2 } from "./fixtures/reactDemoV2";
+import { helloWorldDemoV1 } from "./fixtures/helloWorldDemoV1";
+import { threeJsDemoV4 } from "./fixtures/threeJsDemoV4";
 
 export const demoButtons = (runtime: VizHubRuntime) => {
   // Get the button container from the DOM
-  const buttonContainer = document.getElementById("button-container");
-  
+  const buttonContainer = document.getElementById(
+    "button-container",
+  );
+
   if (!buttonContainer) {
     console.error("Button container not found");
     return;
@@ -19,25 +22,31 @@ export const demoButtons = (runtime: VizHubRuntime) => {
       text: "Hello World (v1)",
       backgroundColor: "#34a853",
       color: "white",
-      demo: helloWorldDemo,
+      demo: helloWorldDemoV1,
     },
     {
       text: "D3 Demo (v2)",
       backgroundColor: "#4285f4",
       color: "white",
-      demo: d3Demo,
+      demo: d3DemoV2,
     },
     {
       text: "React Demo (v2)",
       backgroundColor: "#61dafb",
       color: "black",
-      demo: reactDemo,
+      demo: reactDemoV2,
     },
     {
       text: "Three.js Demo (v4)",
       backgroundColor: "#ffcc00",
       color: "black",
-      demo: threeJsUsage,
+      demo: threeJsDemoV4,
+    },
+    {
+      text: "D3 Demo (v4)",
+      backgroundColor: "#ffcc00",
+      color: "black",
+      demo: d3DemoV4,
     },
   ];
 

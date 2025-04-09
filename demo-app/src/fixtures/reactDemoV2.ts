@@ -1,4 +1,4 @@
-export const reactDemo = {
+export const reactDemoV2 = {
   "index.html": `
     <div id="root"></div>
     <script src='bundle.js'></script>

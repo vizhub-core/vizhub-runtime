@@ -1,4 +1,4 @@
-export const helloWorldDemo = {
+export const helloWorldDemoV1 = {
   "index.html": `<!DOCTYPE html>
   <html>
     <head>
