@@ -1,5 +1,6 @@
 export const d3DemoV3 = {
   label: "D3 Demo (v3)",
+  status: "failing",
   files: {
     "index.js": `
     import { select } from 'd3';

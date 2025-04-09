@@ -10,9 +10,10 @@ import { fixtures } from "./fixtures";
 import { VizContent, VizId } from "@vizhub/viz-types";
 
 const vizContentsArray = fixtures.map(
-  ({ label, files }) => {
+  ({ label, files, status }) => {
     return {
       label,
+      status,
       vizContent: createVizContent(files),
     };
   },

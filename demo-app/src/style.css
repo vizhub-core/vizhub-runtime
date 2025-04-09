@@ -27,6 +27,16 @@ html {
   margin-right: 10px;
 }
 
+.status-working {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-failing {
+  background-color: #f44336;
+  color: white;
+}
+
 #button-container button:last-child {
   margin-right: 0;
 }

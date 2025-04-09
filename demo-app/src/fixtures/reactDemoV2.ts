@@ -1,5 +1,6 @@
 export const reactDemoV2 = {
   label: "React Demo (v2)",
+  status: "working",
   files: {
     "index.html": `
     <div id="root"></div>

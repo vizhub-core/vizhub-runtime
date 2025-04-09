@@ -1,5 +1,6 @@
 export const d3DemoV2 = {
   label: "D3 Demo (v2)",
+  status: "working",
   files: {
     "index.html": `
   <html>

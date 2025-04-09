@@ -1,5 +1,6 @@
 export const threeJsDemoV4 = {
   label: "ThreeJS Demo (v4)",
+  status: "failing",
   files: {
     "index.html": `<!DOCTYPE html>
   <html>

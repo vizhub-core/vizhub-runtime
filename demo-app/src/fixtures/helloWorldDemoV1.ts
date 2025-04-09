@@ -1,5 +1,6 @@
 export const helloWorldDemoV1 = {
   label: "Hello World Demo (v1)",
+  status: "working",
   files: {
     "index.html": `<!DOCTYPE html>
   <html>

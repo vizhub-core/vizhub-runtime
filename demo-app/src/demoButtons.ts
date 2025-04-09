@@ -1,10 +1,12 @@
 import { VizHubRuntime } from "@vizhub/runtime";
 import { VizContent } from "@vizhub/viz-types";
+import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 export const demoButtons = (
   runtime: VizHubRuntime,
   vizContentsArray: Array<{
     label: string;
+    status: string;
     vizContent: VizContent;
   }>,
 ) => {
@@ -19,16 +21,21 @@ export const demoButtons = (
   }
 
   // Create buttons from configurations
-  vizContentsArray.forEach(({ label, vizContent }) => {
-    const button = document.createElement("button");
-    button.textContent = label;
+  vizContentsArray.forEach(
+    ({ label, vizContent, status }) => {
+      const button = document.createElement("button");
+      button.textContent = label;
+      button.className = "status-" + status;
 
-    // Add event listener
-    button.addEventListener("click", () => {
-      console.log(`Loading ${label}...`);
-      runtime.setVizId(vizContent.id);
-    });
+      // Add event listener
+      button.addEventListener("click", () => {
+        console.log(`Loading ${label}...`);
+        runtime.handleCodeChange(
+          vizFilesToFileCollection(vizContent.files),
+        );
+      });
 
-    buttonContainer.appendChild(button);
-  });
+      buttonContainer.appendChild(button);
+    },
+  );
 };

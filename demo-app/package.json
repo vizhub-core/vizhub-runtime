@@ -13,6 +13,8 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@vizhub/runtime": "file:.."
+    "@vizhub/runtime": "file:..",
+    "@vizhub/viz-types": "^0.1.0",
+    "@vizhub/viz-utils": "^1.0.1"
   }
 }
