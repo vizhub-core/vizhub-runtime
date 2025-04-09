@@ -7,7 +7,7 @@ import { BuildWorkerMessage, VizHubRuntime } from "./types";
 import { createSlugCache } from "./v3/slugCache";
 
 // Flag for debugging.
-const DEBUG = true;
+const DEBUG = false;
 
 // State constants
 const IDLE = "IDLE";

@@ -11,7 +11,7 @@ import { SlugCache } from "./v3/slugCache.js";
 import { SvelteCompiler } from "./v3/transformSvelte.js";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export const buildHTML = async ({
   files,

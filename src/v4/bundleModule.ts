@@ -25,21 +25,14 @@ export const bundleESModule = async ({
   const inputOptions: RollupOptions = {
     input: `./${entryPoint}`,
     plugins: [virtualFileSystem(files), sucrasePlugin()],
-    // external: (source: string) => {
-    //   console.log("external", source);
-    //   return !source.startsWith(".");
-    // },
+    external: (source: string) => {
+      return !source.startsWith(".");
+    },
     onwarn(w, warn) {
       if (w.code === "UNRESOLVED_IMPORT") return; // quiet noisy warnings
       warn(w);
     },
   };
-
-  // if (dependencies(files)) {
-  //   inputOptions.external = Object.keys(
-  //     dependencies(files),
-  //   );
-  // }
 
   const bundle = await rollup(inputOptions);
   const { output } = await bundle.generate({
