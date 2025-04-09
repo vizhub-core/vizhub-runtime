@@ -11,6 +11,16 @@ export const threeJsUsage = {
           }
         }
       </script>
+      <style>
+        body {
+          margin: 0;
+          overflow: hidden;
+        }
+        #container {
+          width: 100vw;
+          height: 100vh;
+        }
+      </style>
     </head>
     <body>
       <div id="container"></div>

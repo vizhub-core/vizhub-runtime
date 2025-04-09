@@ -5,14 +5,13 @@ import { helloWorldDemo } from "./fixtures/helloWorldDemo";
 import { threeJsUsage } from "./fixtures/threeJsUsage";
 
 export const demoButtons = (runtime: VizHubRuntime) => {
-  // Create container for buttons
-  // TODO define this in index.html
-  const buttonContainer = document.createElement("div");
-  buttonContainer.style.position = "fixed";
-  buttonContainer.style.top = "10px";
-  buttonContainer.style.left = "10px";
-  buttonContainer.style.zIndex = "1000";
-  document.body.appendChild(buttonContainer);
+  // Get the button container from the DOM
+  const buttonContainer = document.getElementById("button-container");
+  
+  if (!buttonContainer) {
+    console.error("Button container not found");
+    return;
+  }
 
   // Define button configurations
   const buttonConfigs = [
@@ -43,20 +42,11 @@ export const demoButtons = (runtime: VizHubRuntime) => {
   ];
 
   // Create buttons from configurations
-  buttonConfigs.forEach((config, index) => {
+  buttonConfigs.forEach((config) => {
     const button = document.createElement("button");
     button.textContent = config.text;
-    button.style.padding = "8px 16px";
     button.style.backgroundColor = config.backgroundColor;
     button.style.color = config.color;
-    button.style.border = "none";
-    button.style.borderRadius = "4px";
-    button.style.cursor = "pointer";
-
-    // Add margin to all but the last button
-    if (index < buttonConfigs.length - 1) {
-      button.style.marginRight = "10px";
-    }
 
     // Add event listener
     button.addEventListener("click", () => {
