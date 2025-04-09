@@ -4,7 +4,6 @@ import {
   VizId,
 } from "@vizhub/viz-types";
 import { BuildWorkerMessage, VizHubRuntime } from "./types";
-import { createSlugCache } from "./v3/slugCache";
 
 // Flag for debugging.
 const DEBUG = true;
@@ -44,20 +43,6 @@ export const createRuntime = ({
     | ((html?: string) => void)
     | null = null;
   let pendingRunPromise: (() => void) | null = null;
-
-  // Create a slug cache that's backed by the main thread
-  const slugCache = createSlugCache({
-    initialMappings: {},
-    handleCacheMiss: async (slug) => {
-      if (!resolveSlugKey) {
-        throw new Error(
-          `Unresolved slug ${slug}, cache miss handler not provided.`,
-        );
-      }
-
-      return resolveSlugKey(slug);
-    },
-  });
 
   // This runs when the build worker sends a message.
   const workerListener: (e: MessageEvent) => void = ({

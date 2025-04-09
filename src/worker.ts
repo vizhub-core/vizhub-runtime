@@ -100,6 +100,8 @@ export const initWorker = () => {
         const { fileCollection, vizId, enableSourcemap } =
           data;
 
+        console.log("vizId", vizId);
+
         try {
           // Build HTML from the files
           const html = await buildHTML({

@@ -1,6 +1,6 @@
 import { VizHubRuntime } from "@vizhub/runtime";
 import { d3DemoV2 } from "./fixtures/d3DemoV2";
-import { d3DemoV4 } from "./fixtures/d3DemoV4";
+import { d3DemoV3 } from "./fixtures/d3DemoV3";
 import { reactDemoV2 } from "./fixtures/reactDemoV2";
 import { helloWorldDemoV1 } from "./fixtures/helloWorldDemoV1";
 import { threeJsDemoV4 } from "./fixtures/threeJsDemoV4";
@@ -37,16 +37,16 @@ export const demoButtons = (runtime: VizHubRuntime) => {
       demo: reactDemoV2,
     },
     {
+      text: "D3 Demo (v3)",
+      backgroundColor: "rgb(30 255 0)",
+      color: "black",
+      demo: d3DemoV3,
+    },
+    {
       text: "Three.js Demo (v4)",
       backgroundColor: "#ffcc00",
       color: "black",
       demo: threeJsDemoV4,
-    },
-    {
-      text: "D3 Demo (v4)",
-      backgroundColor: "#ffcc00",
-      color: "black",
-      demo: d3DemoV4,
     },
   ];
 
