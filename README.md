@@ -18,19 +18,20 @@ The library automatically detects which runtime version to use based on the file
 - **v3**: When only `index.js` is present (no `index.html`)
 - **v4**: When `index.html` contains ES module scripts with import maps
 
-| Feature               | **V1**            | **V2**                         | **V3**                            | **V4**                       |
-| --------------------- | ----------------- | ------------------------------ | --------------------------------- | ---------------------------- |
-| **`index.html`**      | ✅                | ✅                             | ☐                                 | ✅                           |
-| **ES Modules**        | ☐                 | ✅                             | ✅                                | ✅                           |
-| **UMD Libraries**     | ✅                | ✅                             | ✅                                | ☐                            |
-| **React JSX**         | ☐                 | ✅                             | ☐                                 | ✅                           |
-| **Svelte**            | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Cross-Viz Imports** | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Hot Reloading**     | ☐                 | ☐                              | ✅                                | ☐                            |
-| **State Management**  | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Import from CSV**   | ☐                 | ☐                              | ✅                                | ☐                            |
-| **ESM Libraries**     | ☐                 | ☐                              | ☐                                 | ✅                           |
-| **`fetch` proxy**     | ✅                | ✅                             | ☐                                 | ✅                           |
+| Feature                  | **V1**            | **V2**                         | **V3**                            | **V4**                       |
+| ------------------------ | ----------------- | ------------------------------ | --------------------------------- | ---------------------------- |
+| **Custom `index.html`**  | ✅                | ✅                             | ☐                                 | ✅                           |
+| **Local ES Modules**     | ☐                 | ✅                             | ✅                                | ✅                           |
+| **UMD Libraries**        | ✅                | ✅                             | ✅                                | ☐                            |
+| **ESM Libraries**        | ☐                 | ☐                              | ☐                                 | ✅                           |
+| **React JSX**            | ☐                 | ✅                             | ☐                                 | ✅                           |
+| **TypeScript**           | ☐                 | ☐                              | ☐                                 | ✅                           |
+| **Svelte**               | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Cross-Viz Imports**    | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Hot Reloading**        | ☐                 | ☐                              | ✅                                | ☐                            |
+| **State Management**     | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Import from CSV**      | ☐                 | ☐                              | ✅                                | ☐                            |
+| **`fetch` proxy**        | ✅                | ✅                             | ☐                                 | ✅                           |
 
 ## V1 Runtime
 
