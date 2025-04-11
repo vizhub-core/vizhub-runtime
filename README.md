@@ -20,18 +20,18 @@ The library automatically detects which runtime version to use based on the file
 
 | Feature                  | **V1**            | **V2**                         | **V3**                            | **V4**                       |
 | ------------------------ | ----------------- | ------------------------------ | --------------------------------- | ---------------------------- |
-| **Custom `index.html`**  | ✅                | ✅                             | ☐                                 | ✅                           |
-| **Local ES Modules**     | ☐                 | ✅                             | ✅                                | ✅                           |
-| **UMD Libraries**        | ✅                | ✅                             | ✅                                | ☐                            |
-| **ESM Libraries**        | ☐                 | ☐                              | ☐                                 | ✅                           |
-| **React JSX**            | ☐                 | ✅                             | ☐                                 | ✅                           |
-| **TypeScript**           | ☐                 | ☐                              | ☐                                 | ✅                           |
-| **Svelte**               | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Cross-Viz Imports**    | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Hot Reloading**        | ☐                 | ☐                              | ✅                                | ☐                            |
-| **State Management**     | ☐                 | ☐                              | ✅                                | ☐                            |
-| **Import from CSV**      | ☐                 | ☐                              | ✅                                | ☐                            |
-| **`fetch` proxy**        | ✅                | ✅                             | ☐                                 | ✅                           |
+| **Custom `index.html`**  | ✅                | ✅                             | ⬜️                                | ✅                           |
+| **Local ES Modules**     | ⬜️                | ✅                             | ✅                                | ✅                           |
+| **UMD Libraries**        | ✅                | ✅                             | ✅                                | ⬜️                           |
+| **ESM Libraries**        | ⬜️                | ⬜️                             | ⬜️                                | ✅                           |
+| **React JSX**            | ⬜️                | ✅                             | ⬜️                                | ✅                           |
+| **TypeScript**           | ⬜️                | ⬜️                             | ⬜️                                | ✅                           |
+| **Svelte**               | ⬜️                | ⬜️                             | ✅                                | ⬜️                           |
+| **Cross-Viz Imports**    | ⬜️                | ⬜️                             | ✅                                | ⬜️                           |
+| **Hot Reloading**        | ⬜️                | ⬜️                             | ✅                                | ⬜️                           |
+| **State Management**     | ⬜️                | ⬜️                             | ✅                                | ⬜️                           |
+| **Import from CSV**      | ⬜️                | ⬜️                             | ✅                                | ⬜️                           |
+| **`fetch` proxy**        | ✅                | ✅                             | ⬜️                                | ✅                           |
 
 ## V1 Runtime
 
