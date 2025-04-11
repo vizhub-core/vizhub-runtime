@@ -20,18 +20,17 @@ The library automatically detects which runtime version to use based on the file
 
 | Feature               | **V1**            | **V2**                         | **V3**                            | **V4**                       |
 | --------------------- | ----------------- | ------------------------------ | --------------------------------- | ---------------------------- |
-| **When Used**         | Only `index.html` | `index.html` + `index.js/.jsx` | Only `index.js` (no `index.html`) | `index.html` with ES modules |
-| **`index.html`**      | User-provided     | User-provided                  | Auto-generated                    | User-provided                |
+| **`index.html`**      | ✅                | ✅                             | ☐                                 | ✅                           |
 | **ES Modules**        | ☐                 | ✅                             | ✅                                | ✅                           |
 | **UMD Libraries**     | ✅                | ✅                             | ✅                                | ☐                            |
-| **ESM Libraries**     | ☐                 | ☐                              | ☐                                 | ✅                           |
-| **JSX Support**       | ☐                 | ✅                             | ☐                                 | ✅                           |
-| **Svelte Support**    | ☐                 | ☐                              | ✅                                | ☐                            |
+| **React JSX**         | ☐                 | ✅                             | ☐                                 | ✅                           |
+| **Svelte**            | ☐                 | ☐                              | ✅                                | ☐                            |
 | **Cross-Viz Imports** | ☐                 | ☐                              | ✅                                | ☐                            |
+| **Hot Reloading**     | ☐                 | ☐                              | ✅                                | ☐                            |
 | **State Management**  | ☐                 | ☐                              | ✅                                | ☐                            |
 | **Import from CSV**   | ☐                 | ☐                              | ✅                                | ☐                            |
+| **ESM Libraries**     | ☐                 | ☐                              | ☐                                 | ✅                           |
 | **`fetch` proxy**     | ✅                | ✅                             | ☐                                 | ✅                           |
-| **Best For**          | Simple HTML demos | React with CDN deps            | Svelte / reusable D3              | Modern module-based apps     |
 
 ## V1 Runtime
 
