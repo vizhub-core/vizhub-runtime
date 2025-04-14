@@ -11,7 +11,7 @@ import { SlugCache } from "./v3/slugCache.js";
 import { SvelteCompiler } from "./v3/transformSvelte.js";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export const buildHTML = async ({
   files,
@@ -43,7 +43,11 @@ export const buildHTML = async ({
   // Only required for v3 runtime
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<string> => {
-  DEBUG && console.log("[buildHTML] files:", files);
+  DEBUG &&
+    console.log(
+      "[buildHTML] files:",
+      JSON.stringify(files).substring(0, 100),
+    );
   DEBUG && console.log("[buildHTML] vizCache:", vizCache);
   DEBUG && console.log("[buildHTML] vizId:", vizId);
 

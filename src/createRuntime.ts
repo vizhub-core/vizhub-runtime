@@ -6,7 +6,7 @@ import {
 import { BuildWorkerMessage, VizHubRuntime } from "./types";
 
 // Flag for debugging.
-const DEBUG = true;
+const DEBUG = false;
 
 // State constants
 const IDLE = "IDLE";
