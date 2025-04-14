@@ -30,6 +30,7 @@ export const d3DemoV3 = {
         .attr('r', d => d.r)
         .style('fill', 'steelblue')
         .style('opacity', 0.7);
+      console.log("d3DemoV3 loaded");
     }
   `,
     "package.json": `{

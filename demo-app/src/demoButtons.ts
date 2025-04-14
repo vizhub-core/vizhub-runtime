@@ -30,7 +30,7 @@ export const demoButtons = (
       // Add event listener
       button.addEventListener("click", () => {
         console.log(`Loading ${label}...`);
-        runtime.handleCodeChange(
+        runtime.reload(
           vizFilesToFileCollection(vizContent.files),
         );
       });

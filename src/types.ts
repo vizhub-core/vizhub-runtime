@@ -7,20 +7,21 @@ export type runtimeVersion = "v1" | "v2" | "v3" | "v4";
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
   reload: (
+    // The fresh files to be built.
     fileCollection: FileCollection,
     options?: {
       // Toggle for hot reloading,
       // only respected for v3 runtime.
       hot?: boolean;
-      // Toggle for sourcemaps,
+      // Toggle for sourcemaps.
       sourcemap?: boolean;
     },
   ) => void;
-  // Cleans up the event listener from the Worker.
+  // Cleans up the event listeners from the Worker and the iframe.
   cleanup: () => void;
   invalidateVizCache: (
     changedVizIds: Array<string>,
-  ) => void;
+  ) => Promise<void>;
 };
 
 export type BuildWorkerMessage =

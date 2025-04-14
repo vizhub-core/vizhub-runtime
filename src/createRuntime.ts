@@ -191,7 +191,13 @@ export const createRuntime = ({
 
   // Handle code changes
   let lastFileCollection: FileCollection | null = null;
-  const reload = (fileCollection?: FileCollection) => {
+  const reload = (
+    fileCollection?: FileCollection,
+    options: {
+      hot?: boolean;
+      sourcemap?: boolean;
+    } = { hot: true, sourcemap: true },
+  ) => {
     DEBUG && console.log("[runtime] reload");
     if (fileCollection) {
       lastFileCollection = fileCollection;
@@ -211,14 +217,28 @@ export const createRuntime = ({
   };
 
   // Invalidate the viz cache for changed vizzes
-  // TODO make this async/await similar to the other functions
-  // and return a promise.
-  const invalidateVizCache = (
+  const invalidateVizCache = async (
     changedVizIds: Array<VizId>,
-  ): void => {
-    worker.postMessage({
-      type: "invalidateVizCacheRequest",
-      changedVizIds,
+  ): Promise<void> => {
+    return new Promise<void>((resolve) => {
+      const invalidateListener = (e: MessageEvent) => {
+        if (e.data.type === "invalidateVizCacheResponse") {
+          worker.removeEventListener(
+            "message",
+            invalidateListener,
+          );
+          resolve();
+        }
+      };
+      worker.addEventListener(
+        "message",
+        invalidateListener,
+      );
+
+      worker.postMessage({
+        type: "invalidateVizCacheRequest",
+        changedVizIds,
+      });
     });
   };
 

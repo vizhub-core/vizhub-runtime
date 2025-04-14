@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 describe("VizHub Runtime v3 Hot Reloading", () => {
-  it.skip("should have runtime available", async () => {
+  it("should have runtime available", async () => {
     if (!browser) {
       throw new Error("Browser is not initialized");
     }
@@ -32,7 +32,9 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
     const page = await browser.newPage();
 
     try {
-      await page.goto("http://localhost:5173");
+      // Requires the demo-app to be running
+      // You need to run: `cd demo-app; npm run dev`
+      await page.goto("http://localhost:3001");
 
       // Wait for runtime to be defined (up to 5 seconds)
       await page.waitForFunction(
@@ -51,7 +53,7 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
     }
   });
 
-  it.skip("should handle basic code changes", async () => {
+  it("should handle basic code changes", async () => {
     await testRuntimeWithWorker({
       browser,
       initialFiles: {
@@ -62,6 +64,7 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
           main();
         `,
       },
+      expectedLog: "Initial version",
       codeChanges: [
         {
           files: {
@@ -89,58 +92,58 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
     });
   });
 
-  it.skip("should handle multiple file changes", async () => {
-    await testRuntimeWithWorker({
-      browser,
-      initialFiles: {
-        "index.js": `
-          import { message } from './message.js';
-          console.log(message);
-        `,
-        "message.js": `
-          export const message = "Initial message";
-        `,
-      },
-      codeChanges: [
-        {
-          files: {
-            "message.js": `
-              export const message = "Updated message";
-            `,
-          },
-          expectedLog: "Updated message",
-        },
-      ],
-    });
-  });
+  // it.skip("should handle multiple file changes", async () => {
+  //   await testRuntimeWithWorker({
+  //     browser,
+  //     initialFiles: {
+  //       "index.js": `
+  //         import { message } from './message.js';
+  //         console.log(message);
+  //       `,
+  //       "message.js": `
+  //         export const message = "Initial message";
+  //       `,
+  //     },
+  //     codeChanges: [
+  //       {
+  //         files: {
+  //           "message.js": `
+  //             export const message = "Updated message";
+  //           `,
+  //         },
+  //         expectedLog: "Updated message",
+  //       },
+  //     ],
+  //   });
+  // });
 
-  it.skip("should handle syntax errors gracefully", async () => {
-    await testRuntimeWithWorker({
-      browser,
-      initialFiles: {
-        "index.js": `
-          console.log("Starting");
-        `,
-      },
-      codeChanges: [
-        {
-          files: {
-            "index.js": `
-              console.log("Before error");
-              const x = {;
-            `,
-          },
-          expectedLog: "Build Error: Unexpected token",
-        },
-        {
-          files: {
-            "index.js": `
-              console.log("Recovery");
-            `,
-          },
-          expectedLog: "Recovery",
-        },
-      ],
-    });
-  });
+  // it.skip("should handle syntax errors gracefully", async () => {
+  //   await testRuntimeWithWorker({
+  //     browser,
+  //     initialFiles: {
+  //       "index.js": `
+  //         console.log("Starting");
+  //       `,
+  //     },
+  //     codeChanges: [
+  //       {
+  //         files: {
+  //           "index.js": `
+  //             console.log("Before error");
+  //             const x = {;
+  //           `,
+  //         },
+  //         expectedLog: "Build Error: Unexpected token",
+  //       },
+  //       {
+  //         files: {
+  //           "index.js": `
+  //             console.log("Recovery");
+  //           `,
+  //         },
+  //         expectedLog: "Recovery",
+  //       },
+  //     ],
+  //   });
+  // });
 });

@@ -69,6 +69,7 @@ export const d3DemoV2 = {
     // Add y-axis
     g.append('g')
       .call(d3.axisLeft(yScale));
+    console.log("d3DemoV2 loaded");
   `,
     "package.json": `{
     "dependencies": {

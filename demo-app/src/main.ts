@@ -48,8 +48,7 @@ const runtime: VizHubRuntime = createRuntime({
     return content;
   },
   setBuildErrorMessage: (message) => {
-    // TODO get this error to show up correctly
-    console.error("Build error:", message);
+    message && console.error("Build error:", message);
   },
 });
 
