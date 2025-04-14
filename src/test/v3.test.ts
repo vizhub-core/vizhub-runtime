@@ -15,15 +15,16 @@ import {
   sampleContentWithCSS,
   sampleContentVizImportWithCSS,
   sourcemap,
+  d3Dependency,
 } from "./fixtures/v3";
-import { setJSDOM } from "../v2/getComputedIndexHtml";
-import { JSDOM } from "jsdom";
 import { createVizCache } from "../v3/vizCache";
 import { createSlugCache } from "../v3/slugCache";
 import { SvelteCompiler } from "../v3/transformSvelte";
 import { testStackTrace } from "./testStackTrace";
+// import { JSDOM } from "jsdom";
+// import { setJSDOM } from "../common/domParser";
 
-setJSDOM(JSDOM);
+// setJSDOM(JSDOM);
 
 let browser: Browser;
 
@@ -139,6 +140,14 @@ describe("VizHub Runtime v3", () => {
       browser,
       files: sourcemap,
       expectedLineNumber: 6,
+    });
+  });
+
+  it("should handle d3 dependency", async () => {
+    await testInBrowser({
+      browser,
+      files: d3Dependency,
+      expectedLog: "function",
     });
   });
 });

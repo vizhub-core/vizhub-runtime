@@ -1,7 +1,7 @@
 import type { RollupBuild, RollupOptions } from "rollup";
 import { FileCollection } from "@vizhub/viz-types";
-import { getComputedIndexHtml } from "./getComputedIndexHtml.js";
-import { computeBundleJSV2 } from "./computeBundleJSV2.js";
+import { getComputedIndexHtml } from "./getComputedIndexHtml";
+import { computeBundleJSV2 } from "./computeBundleJSV2";
 
 export const v2Build = async ({
   files,

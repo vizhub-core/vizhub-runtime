@@ -8,7 +8,7 @@ import { VizId } from "@vizhub/viz-types";
 import { isVizId } from "@vizhub/viz-utils";
 import { extractVizImport } from "./extractVizImport.js";
 import type { ResolvedVizFileId } from "./types.js";
-import { parseId } from "./parseId.js";
+import { parseId } from "./parseId";
 import { SlugCache } from "./slugCache.js";
 
 const debug = false;

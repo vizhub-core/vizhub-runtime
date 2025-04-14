@@ -1,13 +1,18 @@
 import { RollupBuild, RollupOptions } from "rollup";
 import { getFileText } from "@vizhub/viz-utils";
-import { computeBundleJSV3 } from "./computeBundleJSV3.js";
-import { htmlTemplate } from "./htmlTemplate.js";
+import { computeBundleJSV3 } from "./computeBundleJSV3";
+import { htmlTemplate } from "./htmlTemplate";
 import { VizCache } from "./vizCache.js";
 import { FileCollection, VizId } from "@vizhub/viz-types";
 import { parseId } from "./parseId.js";
 import { ResolvedVizFileId } from "./types.js";
 import { SlugCache } from "./slugCache.js";
 import { SvelteCompiler } from "./transformSvelte.js";
+import {
+  dependencies,
+  getConfiguredLibraries,
+  dependencySource,
+} from "../common/packageJson";
 
 export const v3Build = async ({
   files,
@@ -52,5 +57,24 @@ export const v3Build = async ({
     }
   }
 
-  return htmlTemplate({ cdn: "", src, styles });
+  // Generate CDN script tags for dependencies
+  let cdn = "";
+  const deps: [string, string][] = Object.entries(
+    dependencies(files),
+  );
+  if (deps.length > 0) {
+    const libraries = getConfiguredLibraries(files);
+    cdn = deps
+      .map(([name, version], i) => {
+        const src = dependencySource(
+          { name, version },
+          libraries,
+        );
+        const indent = i > 0 ? "    " : "\n    ";
+        return `${indent}<script src="${src}"></script>`;
+      })
+      .join("");
+  }
+
+  return htmlTemplate({ cdn, src, styles });
 };

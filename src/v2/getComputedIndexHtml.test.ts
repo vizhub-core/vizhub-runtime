@@ -1,13 +1,11 @@
 import { describe, it, expect } from "vitest";
-import {
-  getComputedIndexHtml,
-  setJSDOM,
-} from "./getComputedIndexHtml";
+import { getComputedIndexHtml } from "./getComputedIndexHtml";
 import { JSDOM } from "jsdom";
 import { d3ImportPkg } from "../test/fixtures/v2/d3ImportPkg";
 import { FileCollection } from "@vizhub/viz-types";
+// import { setJSDOM } from "../common/domParser";
 
-setJSDOM(JSDOM);
+// setJSDOM(JSDOM);
 
 describe("v2 getComputedIndexHtml", () => {
   it("should return empty string if missing index.html", async () => {

@@ -7,9 +7,9 @@ import { v3Build } from "./v3/index.js";
 import { v4Build } from "./v4/index.js";
 import { createVizCache, VizCache } from "./v3/vizCache.js";
 import { createVizContent } from "./v3/createVizContent.js";
-import { vizContentToFileCollection } from "./utils/vizContentToFileCollection.js";
 import { SlugCache } from "./v3/slugCache.js";
 import { SvelteCompiler } from "./v3/transformSvelte.js";
+import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 const DEBUG = false;
 
@@ -33,10 +33,24 @@ export const buildHTML = async ({
   // Only required for v3 runtime
   // For v3, EITHER files OR vizCache is required
   vizCache?: VizCache;
+
+  // Only required for v3 runtime
   vizId?: string;
+
+  // Only required for v3 runtime
   slugCache?: SlugCache;
+
+  // Only required for v3 runtime
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<string> => {
+  DEBUG &&
+    console.log(
+      "[buildHTML] files:",
+      JSON.stringify(files).substring(0, 100),
+    );
+  DEBUG && console.log("[buildHTML] vizCache:", vizCache);
+  DEBUG && console.log("[buildHTML] vizId:", vizId);
+
   if (!files && !vizCache) {
     throw new Error("Either files or vizCache is required");
   }
@@ -48,8 +62,8 @@ export const buildHTML = async ({
   }
 
   if (!files && vizCache && vizId) {
-    files = vizContentToFileCollection(
-      await vizCache.get(vizId),
+    files = vizFilesToFileCollection(
+      (await vizCache.get(vizId))?.files,
     );
   }
 
@@ -88,10 +102,14 @@ export const buildHTML = async ({
       });
     }
 
-    if (!vizCache || !vizId) {
+    if (!vizCache) {
       throw new Error(
-        "vizCache and vizId are required for v3 runtime",
+        "vizCache is required for v3 runtime",
       );
+    }
+
+    if (!vizId) {
+      throw new Error("vizId is required for v3 runtime");
     }
 
     return await v3Build({
@@ -108,6 +126,12 @@ export const buildHTML = async ({
     if (!rollup) {
       throw new Error("Rollup is required for v4 runtime");
     }
+    DEBUG &&
+      console.log("[buildHTML] v4Build", {
+        files,
+        rollup,
+        enableSourcemap,
+      });
     return magicSandbox(
       await v4Build({ files, rollup, enableSourcemap }),
     );

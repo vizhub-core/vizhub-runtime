@@ -2,10 +2,13 @@ import { Browser, Page } from "puppeteer";
 import { rollup } from "rollup";
 import { expect } from "vitest";
 import { buildHTML } from "../index";
-import { VizCache } from "../v3/vizCache";
-import { FileCollection, VizId } from "@vizhub/viz-types";
-import { SlugCache } from "../v3/slugCache";
-import { SvelteCompiler } from "../v3/transformSvelte";
+import type { VizCache } from "../v3/vizCache";
+import type {
+  FileCollection,
+  VizId,
+} from "@vizhub/viz-types";
+import type { SlugCache } from "../v3/slugCache";
+import type { SvelteCompiler } from "../v3/transformSvelte";
 
 const DEBUG = false;
 

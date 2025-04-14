@@ -12,6 +12,10 @@ import {
   reactHooks,
   typeScriptSupport,
 } from "./fixtures/v4";
+// import { JSDOM } from "jsdom";
+// import { setJSDOM } from "../common/domParser";
+
+// setJSDOM(JSDOM);
 
 let browser: Browser;
 

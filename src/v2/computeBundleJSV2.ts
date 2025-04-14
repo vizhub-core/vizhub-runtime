@@ -35,16 +35,22 @@ export const computeBundleJSV2 = async ({
     },
   };
 
-  const bundle = await rollup(inputOptions);
-
-  const pkg = packageJSON(files);
-  const globals = getGlobals(pkg);
-
   const outputOptions: OutputOptions = {
     format: "iife",
-    globals,
     sourcemap: enableSourcemap,
   };
+
+  const pkg = packageJSON(files);
+
+  if (pkg) {
+    const globals = getGlobals(pkg);
+    if (globals) {
+      inputOptions.external = Object.keys(globals);
+      outputOptions.globals = globals;
+    }
+  }
+
+  const bundle = await rollup(inputOptions);
 
   const { output } = await bundle.generate(outputOptions);
   return output[0].code;

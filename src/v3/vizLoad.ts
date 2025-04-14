@@ -2,7 +2,7 @@ import { InputPluginOption } from "rollup";
 import { VizContent } from "@vizhub/viz-types";
 import { getFileText } from "@vizhub/viz-utils";
 import type { ResolvedVizFileId } from "./types";
-import { parseId } from "./parseId.js";
+import { parseId } from "./parseId";
 import { VizCache } from "./vizCache.js";
 
 const debug = false;

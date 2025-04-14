@@ -13,3 +13,4 @@ export {
 } from "./vizImport";
 export { svelte } from "./svelte";
 export { sourcemap } from "./sourcemap";
+export { d3Dependency } from "./d3Dependency";
