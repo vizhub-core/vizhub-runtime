@@ -61,7 +61,6 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
           export const main = () => {
             console.log("Initial version");
           }
-          main();
         `,
       },
       expectedLog: "Initial version",
@@ -72,7 +71,6 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
               export const main = () => {
                 console.log("First update");
               }
-              main();
             `,
           },
           expectedLog: "First update",
@@ -83,7 +81,6 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
               export const main = () => {
                 console.log("Second update");
               }
-              main();
             `,
           },
           expectedLog: "Second update",

@@ -174,7 +174,11 @@ export const createRuntime = ({
 
     DEBUG && console.log("[runtime] update: after build");
 
-    DEBUG && console.log("[runtime] html: ", html);
+    DEBUG &&
+      console.log(
+        "[runtime] html: ",
+        html?.substring(0, 200),
+      );
 
     iframe.srcdoc = html || "";
 
