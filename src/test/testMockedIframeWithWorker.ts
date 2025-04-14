@@ -105,7 +105,7 @@ export async function testMockedIframeWithWorker({
   });
 
   // Trigger a code change
-  runtime.handleCodeChange(
+  runtime.reload(
     vizFilesToFileCollection(vizContent.files),
   );
 

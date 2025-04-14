@@ -26,14 +26,13 @@ export const bundleESModule = async ({
     input: `./${entryPoint}`,
     plugins: [virtualFileSystem(files), sucrasePlugin()],
     external: (source: string) => {
-      console.log("external", source);
-      if (files[source]) return false; // Treat all files in the collection as external{
-      // external ./greeter.js
+      // Handle strings resolved by `virtualFileSystem`.
+      if (files[source]) return false;
+      // Handle external dependencies, e.g. from import maps.
       return !source.startsWith("./");
-      // return files[source] === undefined; // Treat all files not in the collection as external
     },
     onwarn(w, warn) {
-      if (w.code === "UNRESOLVED_IMPORT") return; // quiet noisy warnings
+      // if (w.code === "UNRESOLVED_IMPORT") return; // quiet noisy warnings
       warn(w);
     },
   };

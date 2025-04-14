@@ -64,7 +64,7 @@ export async function testRuntimeWithWorker({
 
     // Initial code load
     await page.evaluate((files) => {
-      window.runtime.handleCodeChange(files);
+      window.runtime.reload(files);
     }, initialFiles);
 
     // Wait for initial render
@@ -77,7 +77,7 @@ export async function testRuntimeWithWorker({
       logs.length = 0;
 
       await page.evaluate((files) => {
-        window.runtime.handleCodeChange(files);
+        window.runtime.reload(files);
       }, change.files);
 
       // Wait for update

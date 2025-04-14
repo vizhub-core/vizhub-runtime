@@ -14,6 +14,13 @@ const ENQUEUED = "ENQUEUED";
 const PENDING_CLEAN = "PENDING_CLEAN";
 const PENDING_DIRTY = "PENDING_DIRTY";
 
+// Creates an instance of the VizHub Runtime Environment.
+// This is the main entry point for the runtime, for use
+// by front end applications.
+// It sets up the iframe and worker, and handles messages
+// between them.
+// For server-side rendering where only a build is required,
+// just use the buildHTML function directly.
 export const createRuntime = ({
   iframe,
   worker,
@@ -65,11 +72,6 @@ export const createRuntime = ({
           setBuildErrorMessage(error.message);
       } else {
         setBuildErrorMessage && setBuildErrorMessage(null);
-
-        // Reset the srcdoc
-        if (html) {
-          iframe.srcdoc = html;
-        }
       }
     } else if (
       data.type === "contentRequest" &&
@@ -105,7 +107,7 @@ export const createRuntime = ({
         );
       }
       // Trigger a code change to rebuild
-      handleCodeChange();
+      reload();
     }
   };
 
@@ -174,7 +176,7 @@ export const createRuntime = ({
 
     DEBUG && console.log("[runtime] html: ", html);
 
-    // iframe.srcdoc = html || "";
+    iframe.srcdoc = html || "";
 
     // TypeScript can't comprehend that `state`
     // may change during the await calls above.
@@ -189,10 +191,8 @@ export const createRuntime = ({
 
   // Handle code changes
   let lastFileCollection: FileCollection | null = null;
-  const handleCodeChange = (
-    fileCollection?: FileCollection,
-  ) => {
-    DEBUG && console.log("[runtime] handleCodeChange");
+  const reload = (fileCollection?: FileCollection) => {
+    DEBUG && console.log("[runtime] reload");
     if (fileCollection) {
       lastFileCollection = fileCollection;
     } else if (!lastFileCollection) {
@@ -200,20 +200,19 @@ export const createRuntime = ({
     }
 
     if (state === IDLE) {
-      DEBUG &&
-        console.log("[runtime] handleCodeChange: IDLE");
+      DEBUG && console.log("[runtime] reload: IDLE");
       state = ENQUEUED;
       update(lastFileCollection);
     } else if (state === PENDING_CLEAN) {
       DEBUG &&
-        console.log(
-          "[runtime] handleCodeChange: PENDING_CLEAN",
-        );
+        console.log("[runtime] reload: PENDING_CLEAN");
       state = PENDING_DIRTY;
     }
   };
 
   // Invalidate the viz cache for changed vizzes
+  // TODO make this async/await similar to the other functions
+  // and return a promise.
   const invalidateVizCache = (
     changedVizIds: Array<VizId>,
   ): void => {
@@ -223,25 +222,9 @@ export const createRuntime = ({
     });
   };
 
-  // Reset the srcdoc and runtime environment
-  const resetSrcdoc = (changedVizIds: Array<VizId>) => {
-    state = IDLE;
-    pendingBuildPromise = null;
-    pendingRunPromise = null;
-
-    if (vizId) {
-      worker.postMessage({
-        type: "resetSrcdocRequest",
-        vizId,
-        changedVizIds,
-      });
-    }
-  };
-
   return {
-    handleCodeChange,
+    reload,
     invalidateVizCache,
-    resetSrcdoc,
     cleanup,
   };
 };

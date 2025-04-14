@@ -124,7 +124,7 @@ describe("Iframe and Worker Management", () => {
         worker,
       });
 
-      runtime.handleCodeChange({
+      runtime.reload({
         "index.js": "console.log('Hello from test');",
       });
 
