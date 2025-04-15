@@ -18,7 +18,7 @@ export async function testRuntimeWithWorker({
   browser: Browser | null;
   initialFiles: FileCollection;
   expectedLog: string;
-  codeChanges: Array<{
+  codeChanges?: Array<{
     files: FileCollection;
     expectedLog: string;
   }>;
@@ -43,7 +43,9 @@ export async function testRuntimeWithWorker({
 
     // Initial code load
     await page.evaluate((files) => {
-      window.runtime.reload(files);
+      window.runtime.reload(files, {
+        hot: true,
+      });
     }, initialFiles);
 
     // Helper function for exponential backoff
@@ -71,15 +73,17 @@ export async function testRuntimeWithWorker({
     await waitForLog(expectedLog);
 
     // Apply each code change and verify
-    for (const change of codeChanges) {
-      logs.length = 0;
+    if (codeChanges) {
+      for (const change of codeChanges) {
+        logs.length = 0;
 
-      await page.evaluate((files) => {
-        window.runtime.reload(files);
-      }, change.files);
+        await page.evaluate((files) => {
+          window.runtime.reload(files);
+        }, change.files);
 
-      // Wait for update using exponential backoff
-      await waitForLog(change.expectedLog);
+        // Wait for update using exponential backoff
+        await waitForLog(change.expectedLog);
+      }
     }
   } finally {
     await page.close();

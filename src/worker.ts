@@ -178,46 +178,6 @@ export const initWorker = () => {
         }
         break;
       }
-
-      // case "resetSrcdocRequest": {
-      //   // Invalidate viz cache for changed vizzes
-      //   const { vizId, changedVizIds } = data;
-      //   for (const changedVizId of changedVizIds) {
-      //     vizCache.invalidate(changedVizId);
-      //   }
-
-      //   try {
-      //     // Build fresh HTML
-      //     const html = await buildHTML({
-      //       vizId,
-      //       enableSourcemap: true,
-      //       rollup: rollup as (
-      //         options: RollupOptions,
-      //       ) => Promise<RollupBuild>,
-      //       getSvelteCompiler,
-      //       // TODO use vizCache for importing across vizzes,
-      //       // but only if needed.
-      //       // vizCache,
-      //       slugCache,
-      //     });
-
-      //     // Send the built HTML back to the main thread
-      //     postMessage({
-      //       type: "resetSrcdocResponse",
-      //       html,
-      //     });
-      //   } catch (error) {
-      //     DEBUG &&
-      //       console.error("[worker] build error:", error);
-
-      //     // Send the error back to the main thread
-      //     postMessage({
-      //       type: "resetSrcdocResponse",
-      //       error,
-      //     });
-      //   }
-      //   break;
-      // }
     }
   });
 };

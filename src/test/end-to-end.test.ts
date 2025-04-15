@@ -23,8 +23,8 @@ afterAll(async () => {
   }
 });
 
-describe("VizHub Runtime v3 Hot Reloading", () => {
-  it("should have runtime available", async () => {
+describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
+  it("should be running `npm run test:demo-app` (start this manually in another terminal if this fails)", async () => {
     if (!browser) {
       throw new Error("Browser is not initialized");
     }
@@ -89,58 +89,38 @@ describe("VizHub Runtime v3 Hot Reloading", () => {
     });
   });
 
-  // it.skip("should handle multiple file changes", async () => {
-  //   await testRuntimeWithWorker({
-  //     browser,
-  //     initialFiles: {
-  //       "index.js": `
-  //         import { message } from './message.js';
-  //         console.log(message);
-  //       `,
-  //       "message.js": `
-  //         export const message = "Initial message";
-  //       `,
-  //     },
-  //     codeChanges: [
-  //       {
-  //         files: {
-  //           "message.js": `
-  //             export const message = "Updated message";
-  //           `,
-  //         },
-  //         expectedLog: "Updated message",
-  //       },
-  //     ],
-  //   });
-  // });
-
-  // it.skip("should handle syntax errors gracefully", async () => {
-  //   await testRuntimeWithWorker({
-  //     browser,
-  //     initialFiles: {
-  //       "index.js": `
-  //         console.log("Starting");
-  //       `,
-  //     },
-  //     codeChanges: [
-  //       {
-  //         files: {
-  //           "index.js": `
-  //             console.log("Before error");
-  //             const x = {;
-  //           `,
-  //         },
-  //         expectedLog: "Build Error: Unexpected token",
-  //       },
-  //       {
-  //         files: {
-  //           "index.js": `
-  //             console.log("Recovery");
-  //           `,
-  //         },
-  //         expectedLog: "Recovery",
-  //       },
-  //     ],
-  //   });
-  // });
+  // TODO get this to work
+  it.skip("should hot reload with v3 runtime", async () => {
+    await testRuntimeWithWorker({
+      browser,
+      initialFiles: {
+        "index.js": `
+          export const main = (container, {state, setState}) => {
+            if(!state.count) {
+              setState(state => ({...state, count: 5}));
+              return;
+            }
+            console.log("state.count = " + state.count);
+          }
+        `,
+      },
+      expectedLog: "state.count = 5",
+      codeChanges: [
+        {
+          files: {
+            "index.js": `
+              export const main = (container, {state, setState}) => {
+                console.log("state.count = " + state.count);
+              }
+            `,
+          },
+          // We expect the log to be "state.count = 5" because
+          // the state is already set in the first run,
+          // and if it does hot reloading properly,
+          // the state should be preserved.
+          expectedLog: "state.count = 5",
+        },
+      ],
+    });
+  });
 });
