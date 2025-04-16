@@ -70,14 +70,14 @@ describe("Iframe and Worker Management", () => {
       constructor(public url: string) {}
 
       postMessage(message: any) {
-        if (message.type === "buildHTMLRequest") {
+        if (message.type === "buildRequest") {
           setTimeout(() => {
             const listeners =
               this.listeners["message"] || [];
             listeners.forEach((callback) =>
               callback({
                 data: {
-                  type: "buildHTMLResponse",
+                  type: "buildResponse",
                   error: new Error("Test build error"),
                 },
               }),

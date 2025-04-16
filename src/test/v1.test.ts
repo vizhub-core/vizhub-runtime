@@ -6,7 +6,7 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import { buildHTML } from "../index";
+import { build } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
   basicHTML,
@@ -33,7 +33,7 @@ afterAll(async () => {
 
 describe("VizHub Runtime v1", () => {
   it("should generate srcdoc HTML", async () => {
-    const srcdoc = await buildHTML({
+    const srcdoc = await build({
       files: basicHTML,
     });
     expect(srcdoc).toContain("<!DOCTYPE html>");
@@ -84,7 +84,7 @@ describe("VizHub Runtime v1", () => {
   });
 
   it("should convert protocol-less URLs to https", async () => {
-    const srcdoc = await buildHTML({ files: protocolTest });
+    const srcdoc = await build({ files: protocolTest });
     expect(srcdoc).toContain(
       'href="https://fonts.googleapis.com',
     );

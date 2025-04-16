@@ -23,24 +23,24 @@ export type VizHubRuntime = {
 };
 
 export type BuildWorkerMessage =
-  // `buildHTMLRequest`
+  // `buildRequest`
   //  * Sent from the main thread to the worker.
   //  * When the main thread wants to build the HTML for the iframe.
   | {
-      type: "buildHTMLRequest";
+      type: "buildRequest";
       files: FileCollection;
       enableSourcemap: boolean;
       requestId: string;
     }
 
-  // `buildHTMLResponse`
+  // `buildResponse`
   //  * Sent from the worker to the main thread.
-  //  * When the worker responds to a `buildHTMLRequest` message.
+  //  * When the worker responds to a `buildRequest` message.
   //  * Provides:
   //  * EITHER a fresh `srcdoc` for the iframe
   //  * OR an `error` if the build failed.
   | {
-      type: "buildHTMLResponse";
+      type: "buildResponse";
       html?: string;
       error?: Error;
       requestId: string;

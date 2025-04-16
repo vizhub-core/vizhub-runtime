@@ -1,4 +1,4 @@
-export { buildHTML } from "./buildHTML";
+export { build } from "./build";
 export { createRuntime } from "./orchestration/createRuntime";
 export type { VizHubRuntime } from "./types";
 

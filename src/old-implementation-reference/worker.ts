@@ -1,7 +1,7 @@
 // import { rollup } from "@rollup/browser";
 // import {
 //   VizCache,
-//   buildHTML,
+//   build,
 //   createVizCache,
 //   createSlugCache,
 //   svelteCompilerUrl,
@@ -107,7 +107,7 @@
 //       let error: Error | undefined;
 //       let buildResultHTML: string;
 //       try {
-//         buildResultHTML = await buildHTML({
+//         buildResultHTML = await build({
 //           vizId,
 //           enableSourcemap,
 //           rollup,
@@ -202,7 +202,7 @@
 //       let error: Error | undefined;
 //       let buildResult: V3BuildResult | undefined;
 //       try {
-//         buildResult = await buildHTML({
+//         buildResult = await build({
 //           vizId,
 //           enableSourcemap: true,
 //           rollup,

@@ -288,11 +288,11 @@ npm install @vizhub/runtime
 ### Basic Usage
 
 ```javascript
-import { buildHTML } from "@vizhub/runtime";
+import { build } from "@vizhub/runtime";
 import { rollup } from "rollup";
 
 // Simple v1 runtime (HTML only)
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.html":
       "<html><body><h1>Hello World</h1></body></html>",
@@ -300,7 +300,7 @@ const html = await buildHTML({
 });
 
 // v2 runtime with bundling
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.html":
       '<html><body><div id="root"></div><script src="bundle.js"></script></body></html>',
@@ -322,7 +322,7 @@ document.body.appendChild(iframe);
 
 ```javascript
 import {
-  buildHTML,
+  build,
   createVizCache,
   createSlugCache,
 } from "@vizhub/runtime";
@@ -359,7 +359,7 @@ const slugCache = createSlugCache({
 });
 
 // Build HTML with cross-viz imports
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.js":
       'import { value } from "@username/my-viz"; console.log(value);',
@@ -374,7 +374,7 @@ const html = await buildHTML({
 
 ## API Reference
 
-### buildHTML(options)
+### build(options)
 
 Builds HTML that can be used as the `srcdoc` of an iframe.
 

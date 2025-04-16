@@ -41,11 +41,11 @@ class MockWorker {
     this.lastMessage = message;
 
     // If this is a build request, simulate a response
-    if (message.type === "buildHTMLRequest") {
+    if (message.type === "buildRequest") {
       setTimeout(() => {
         this.dispatchEvent({
           data: {
-            type: "buildHTMLResponse",
+            type: "buildResponse",
             html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
           },
         });
@@ -113,9 +113,7 @@ export async function testMockedIframeWithWorker({
   // Verify the worker received the correct message
   const mockWorker = worker as unknown as MockWorker;
   expect(mockWorker.lastMessage).not.toBeNull();
-  expect(mockWorker.lastMessage.type).toBe(
-    "buildHTMLRequest",
-  );
+  expect(mockWorker.lastMessage.type).toBe("buildRequest");
   console.log(
     "mockWorker.lastMessage ",
     mockWorker.lastMessage,

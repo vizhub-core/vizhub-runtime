@@ -21,7 +21,7 @@ export const setupBuild =
     return new Promise<string | undefined>((resolve) => {
       const buildListener = (e: MessageEvent) => {
         const data = e.data as BuildWorkerMessage;
-        if (data.type === "buildHTMLResponse") {
+        if (data.type === "buildResponse") {
           worker.removeEventListener(
             "message",
             buildListener,
@@ -43,12 +43,11 @@ export const setupBuild =
       worker.addEventListener("message", buildListener);
 
       const message: BuildWorkerMessage = {
-        type: "buildHTMLRequest",
+        type: "buildRequest",
         files,
         enableSourcemap,
         requestId,
       };
-      console.log("Sending message to worker:", message);
       worker.postMessage(message);
     });
   };

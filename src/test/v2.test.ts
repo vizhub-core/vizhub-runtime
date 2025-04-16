@@ -7,7 +7,7 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import { buildHTML } from "../index";
+import { build } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
   basicBundle,
@@ -106,7 +106,7 @@ describe("VizHub Runtime v2", () => {
   });
 
   it("should transpile JSX", async () => {
-    const srcdoc = await buildHTML({
+    const srcdoc = await build({
       files: jsxTranspile,
       rollup,
     });

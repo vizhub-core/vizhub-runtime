@@ -1,7 +1,7 @@
 import { rollup } from "@rollup/browser";
 import { VizContent, VizId } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { buildHTML } from "../buildHTML";
+import { build } from "../build";
 import {
   svelteCompilerUrl,
   createVizCache,
@@ -96,12 +96,12 @@ export const initWorker = () => {
       console.log("[worker] received message:", data);
 
     switch (data.type) {
-      case "buildHTMLRequest": {
+      case "buildRequest": {
         const { files, enableSourcemap } = data;
 
         try {
           // Build HTML from the files
-          const html = await buildHTML({
+          const html = await build({
             files,
             enableSourcemap,
             rollup: rollup as (
@@ -114,7 +114,7 @@ export const initWorker = () => {
 
           // Send the built HTML back to the main thread
           postMessage({
-            type: "buildHTMLResponse",
+            type: "buildResponse",
             html,
           });
         } catch (error) {
@@ -123,7 +123,7 @@ export const initWorker = () => {
 
           // Send the error back to the main thread
           postMessage({
-            type: "buildHTMLResponse",
+            type: "buildResponse",
             error,
           });
         }

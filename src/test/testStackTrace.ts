@@ -1,7 +1,7 @@
 import { Browser, Page } from "puppeteer";
 import { rollup } from "rollup";
 import { expect } from "vitest";
-import { buildHTML } from "../index";
+import { build } from "../index";
 import { FileCollection } from "@vizhub/viz-types";
 
 const DEBUG = false;
@@ -25,7 +25,7 @@ export async function testStackTrace({
 
   try {
     // Enable sourcemaps for proper stack traces
-    const html = await buildHTML({
+    const html = await build({
       files,
       rollup,
       enableSourcemap: true,

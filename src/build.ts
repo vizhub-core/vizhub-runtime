@@ -13,10 +13,14 @@ import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 const DEBUG = false;
 
-export const buildHTML = async ({
+// Builds the given files into a string of HTML or JS.
+// If `jsOnly` is true, only the JS part of the viz will be built and returned.
+// This is only relevant in the case of V3 runtime hot reloading.
+export const build = async ({
   files,
   rollup,
   enableSourcemap = true,
+  jsOnly = false,
   vizCache,
   vizId,
   slugCache,
@@ -29,6 +33,10 @@ export const buildHTML = async ({
   // Only required for v2 and v3 runtime
   rollup?: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
+
+  // If true, only the JS part of the viz will be built and returned.
+  // Only relevant in the case of V3 runtime hot reloading.
+  jsOnly?: boolean;
 
   // Only required for v3 runtime
   // For v3, EITHER files OR vizCache is required
@@ -45,13 +53,13 @@ export const buildHTML = async ({
 }): Promise<string> => {
   DEBUG &&
     console.log(
-      "[buildHTML] files:",
+      "[build] files:",
       files
         ? JSON.stringify(files).substring(0, 100)
         : undefined,
     );
-  DEBUG && console.log("[buildHTML] vizCache:", vizCache);
-  DEBUG && console.log("[buildHTML] vizId:", vizId);
+  DEBUG && console.log("[build] vizCache:", vizCache);
+  DEBUG && console.log("[build] vizId:", vizId);
 
   if (!files && !vizCache) {
     throw new Error("Either files or vizCache is required");
@@ -74,7 +82,7 @@ export const buildHTML = async ({
   }
 
   const version = determineRuntimeVersion(files);
-  DEBUG && console.log("[buildHTML] version:", version);
+  DEBUG && console.log("[build] version:", version);
   if (version === "v1") {
     return magicSandbox(files);
   }
@@ -129,7 +137,7 @@ export const buildHTML = async ({
       throw new Error("Rollup is required for v4 runtime");
     }
     DEBUG &&
-      console.log("[buildHTML] v4Build", {
+      console.log("[build] v4Build", {
         files,
         rollup,
         enableSourcemap,

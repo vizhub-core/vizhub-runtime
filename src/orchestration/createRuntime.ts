@@ -60,7 +60,7 @@ const PENDING_DIRTY = "PENDING_DIRTY";
 // It sets up the iframe and worker, and handles messages
 // between them.
 // For server-side rendering where only a build is required,
-// just use the buildHTML function directly.
+// just use the build function directly.
 export const createRuntime = ({
   iframe,
   worker,
