@@ -7,11 +7,12 @@ import {
   BuildWorkerMessage,
   VizHubRuntime,
 } from "../types";
+import { generateRequestId } from "./generateRequestId";
 
 // Flag for debugging.
 const DEBUG = false;
 
-// State constants
+// State constants:
 
 // Nothing happening.
 const IDLE = "IDLE";
@@ -28,6 +29,29 @@ const PENDING_CLEAN = "PENDING_CLEAN";
 // and the files have changed
 // while this run is taking place.
 const PENDING_DIRTY = "PENDING_DIRTY";
+
+// Valid State Transitions:
+//
+//  * IDLE --> ENQUEUED
+//    When the system is idle and files are changed.
+//
+//  * ENQUEUED --> PENDING_CLEAN
+//    When the pending changes run.
+//
+//  * PENDING_CLEAN --> IDLE
+//    When the pending update finishes running
+//    and files were not changed in the mean time.
+//
+//  * PENDING_CLEAN --> PENDING_DIRTY
+//    When files are changed while an update is pending.
+//
+//  * PENDING_DIRTY --> ENQUEUED
+//    When the pending update finishes running
+//    and files were changed in the mean time.
+//
+// When a build error happens, the state is set to IDLE.
+// This is to prevent a build error from causing
+// the whole system to stop working.
 
 // Creates an instance of the VizHub Runtime Environment.
 // This is the main entry point for the runtime, for use
@@ -232,9 +256,7 @@ export const createRuntime = ({
   const invalidateVizCache = async (
     changedVizIds: Array<VizId>,
   ): Promise<void> => {
-    const requestId = Math.random()
-      .toString(36)
-      .substring(2);
+    const requestId = generateRequestId();
     return new Promise<void>((resolve) => {
       const invalidateListener = (e: MessageEvent) => {
         if (
