@@ -30,7 +30,8 @@
     "test:demo-app": "cd demo-app; npm run dev",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier {*.*,**/*.*} --write",
-    "upgrade": "ncu -x svelte -u"
+    "upgrade": "ncu -x svelte -u",
+    "preflight": "npm run build && npm run prettier && npm test && npm run typecheck"
   },
   "keywords": [],
   "author": "",

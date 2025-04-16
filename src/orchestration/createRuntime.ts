@@ -3,15 +3,30 @@ import {
   VizContent,
   VizId,
 } from "@vizhub/viz-types";
-import { BuildWorkerMessage, VizHubRuntime } from "./types";
+import {
+  BuildWorkerMessage,
+  VizHubRuntime,
+} from "../types";
 
 // Flag for debugging.
 const DEBUG = false;
 
 // State constants
+
+// Nothing happening.
 const IDLE = "IDLE";
+
+// An update has been enqueued
+// via requestAnimationFrame.
 const ENQUEUED = "ENQUEUED";
+
+// An update (build and run) is pending,
+// and the files have not changed.
 const PENDING_CLEAN = "PENDING_CLEAN";
+
+// An update (build and run) is pending,
+// and the files have changed
+// while this run is taking place.
 const PENDING_DIRTY = "PENDING_DIRTY";
 
 // Creates an instance of the VizHub Runtime Environment.
@@ -100,14 +115,6 @@ export const createRuntime = ({
           requestId,
         });
       });
-    } else if (data.type === "invalidateVizCacheResponse") {
-      if (DEBUG) {
-        console.log(
-          "[runtime] received invalidateVizCacheResponse",
-        );
-      }
-      // Trigger a code change to rebuild
-      reload();
     }
   };
 
@@ -195,27 +202,28 @@ export const createRuntime = ({
 
   // Handle code changes
   let lastFileCollection: FileCollection | null = null;
-  const reload = (
-    fileCollection?: FileCollection,
-    options: {
-      hot?: boolean;
-      sourcemap?: boolean;
-    } = { hot: true, sourcemap: true },
-  ) => {
-    DEBUG && console.log("[runtime] reload");
-    if (fileCollection) {
-      lastFileCollection = fileCollection;
+  const run = ({
+    files,
+    hotReload = false,
+    sourcemap = false,
+  }: {
+    files: FileCollection;
+    hotReload?: boolean;
+    sourcemap?: boolean;
+  }) => {
+    DEBUG && console.log("[runtime] run");
+    if (files) {
+      lastFileCollection = files;
     } else if (!lastFileCollection) {
       return; // No files to process
     }
 
     if (state === IDLE) {
-      DEBUG && console.log("[runtime] reload: IDLE");
+      DEBUG && console.log("[runtime] run: IDLE");
       state = ENQUEUED;
       update(lastFileCollection);
     } else if (state === PENDING_CLEAN) {
-      DEBUG &&
-        console.log("[runtime] reload: PENDING_CLEAN");
+      DEBUG && console.log("[runtime] run: PENDING_CLEAN");
       state = PENDING_DIRTY;
     }
   };
@@ -224,9 +232,15 @@ export const createRuntime = ({
   const invalidateVizCache = async (
     changedVizIds: Array<VizId>,
   ): Promise<void> => {
+    const requestId = Math.random()
+      .toString(36)
+      .substring(2);
     return new Promise<void>((resolve) => {
       const invalidateListener = (e: MessageEvent) => {
-        if (e.data.type === "invalidateVizCacheResponse") {
+        if (
+          e.data.type === "invalidateVizCacheResponse" &&
+          e.data.requestId === requestId
+        ) {
           worker.removeEventListener(
             "message",
             invalidateListener,
@@ -242,12 +256,13 @@ export const createRuntime = ({
       worker.postMessage({
         type: "invalidateVizCacheRequest",
         changedVizIds,
+        requestId,
       });
     });
   };
 
   return {
-    reload,
+    run,
     invalidateVizCache,
     cleanup,
   };

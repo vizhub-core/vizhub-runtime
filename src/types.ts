@@ -1,22 +1,20 @@
+// type FileCollection = Record<string, string>;
 import { FileCollection } from "@vizhub/viz-types";
 
-// type FileCollection = Record<string, string>;
 // where keys are file names and values are file contents.
 export type runtimeVersion = "v1" | "v2" | "v3" | "v4";
 
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
-  reload: (
+  run: (options: {
     // The fresh files to be built.
-    fileCollection: FileCollection,
-    options?: {
-      // Toggle for hot reloading,
-      // only respected for v3 runtime.
-      hot?: boolean;
-      // Toggle for sourcemaps.
-      sourcemap?: boolean;
-    },
-  ) => void;
+    files: FileCollection;
+    // Toggle for hot reloading,
+    // only respected for v3 runtime.
+    hotReload?: boolean;
+    // Toggle for sourcemaps.
+    sourcemap?: boolean;
+  }) => void;
   // Cleans up the event listeners from the Worker and the iframe.
   cleanup: () => void;
   invalidateVizCache: (

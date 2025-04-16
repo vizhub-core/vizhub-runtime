@@ -3,7 +3,7 @@
 // from `src/worker.ts`.
 import { expect } from "vitest";
 import { VizContent } from "@vizhub/viz-types";
-import { createRuntime } from "../createRuntime";
+import { createRuntime } from "../orchestration/createRuntime";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
 // Mock implementation of Worker for testing
@@ -105,9 +105,9 @@ export async function testMockedIframeWithWorker({
   });
 
   // Trigger a code change
-  runtime.reload(
-    vizFilesToFileCollection(vizContent.files),
-  );
+  runtime.run({
+    files: vizFilesToFileCollection(vizContent.files),
+  });
 
   // Wait for async operations
   await new Promise((resolve) => setTimeout(resolve, 50));

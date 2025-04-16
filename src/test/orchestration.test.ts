@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { testMockedIframeWithWorker } from "./testMockedIframeWithWorker";
-import { createRuntime } from "../createRuntime";
+import { createRuntime } from "../orchestration/createRuntime";
 
 // Mock Worker since it's not available in Node.js environment
 class MockWorker {
@@ -124,8 +124,10 @@ describe("Iframe and Worker Management", () => {
         worker,
       });
 
-      runtime.reload({
-        "index.js": "console.log('Hello from test');",
+      runtime.run({
+        files: {
+          "index.js": "console.log('Hello from test');",
+        },
       });
 
       // Wait for async operations

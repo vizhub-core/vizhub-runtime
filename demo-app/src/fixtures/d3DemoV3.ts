@@ -5,11 +5,11 @@ export const d3DemoV3 = {
     "index.js": `
     import { select, range } from 'd3';
     export const main = (container) => {
-      console.log(typeof select);
-
       // Create SVG container
       const svg = select(container)
-        .append('svg')
+        .selectAll('svg')
+        .data([null])
+        .join('svg')
         .attr('width', 600)
         .attr('height', 400);
       
@@ -25,6 +25,7 @@ export const d3DemoV3 = {
       svg.selectAll('circle')
         .data(data)
         .join('circle')
+        .transition()
         .attr('cx', d => d.x)
         .attr('cy', d => d.y)
         .attr('r', d => d.r)

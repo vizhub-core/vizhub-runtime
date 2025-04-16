@@ -30,9 +30,10 @@ export const demoButtons = (
       // Add event listener
       button.addEventListener("click", () => {
         console.log(`Loading ${label}...`);
-        runtime.reload(
-          vizFilesToFileCollection(vizContent.files),
-        );
+        runtime.run({
+          files: vizFilesToFileCollection(vizContent.files),
+          hotReload: true,
+        });
       });
 
       buttonContainer.appendChild(button);

@@ -1,10 +1,13 @@
 import { rollup } from "@rollup/browser";
 import { VizContent, VizId } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { buildHTML } from "./buildHTML";
-import { svelteCompilerUrl } from "./v3/transformSvelte";
-import { createVizCache } from "./v3/vizCache";
-import { createSlugCache } from "./v3/slugCache";
+import { buildHTML } from "../buildHTML";
+import {
+  svelteCompilerUrl,
+  createVizCache,
+  createSlugCache,
+} from "../v3";
+import { generateRequestId } from "./generateRequestId";
 
 // Flag for debugging
 const DEBUG = false;
@@ -24,10 +27,6 @@ export const initWorker = () => {
     // @ts-ignore
     return self.svelte.compile;
   };
-
-  // Generate a unique request ID
-  const generateRequestId = (): string =>
-    (Math.random() + "").slice(2);
 
   // Tracks pending promises for 'contentResponse' messages
   const pendingContentResponsePromises = new Map();

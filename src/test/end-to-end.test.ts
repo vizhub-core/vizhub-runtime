@@ -89,7 +89,6 @@ describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
     });
   });
 
-  // TODO get this to work
   it.skip("should hot reload with v3 runtime", async () => {
     await testRuntimeWithWorker({
       browser,

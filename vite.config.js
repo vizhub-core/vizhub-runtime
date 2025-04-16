@@ -5,7 +5,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: "./src/index.ts",
-        worker: "./src/worker.ts",
+        worker: "./src/orchestration/worker.ts",
       },
       formats: ["es", "cjs"],
       fileName: (format, entryName) =>

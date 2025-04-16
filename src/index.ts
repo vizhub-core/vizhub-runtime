@@ -1,5 +1,6 @@
 export { buildHTML } from "./buildHTML";
-export { createRuntime } from "./createRuntime";
+export { createRuntime } from "./orchestration/createRuntime";
+export type { VizHubRuntime } from "./types";
 
 export {
   v3Build,
