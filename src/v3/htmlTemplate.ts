@@ -80,11 +80,11 @@ export const htmlTemplate = ({
       onmessage = (message) => {
         switch (message.data.type) {
           case 'runJS':
-            runJS(message.data.src);
+            runJS(message.data.js);
             parent.postMessage({ type: 'runDone' }, "*");
             break;
           case 'runCSS':
-            runCSS(message.data.src, message.data.id);
+            runCSS(message.data.css, message.data.id);
             break;
           case 'ping':
             parent.postMessage({ type: 'pong' }, "*");

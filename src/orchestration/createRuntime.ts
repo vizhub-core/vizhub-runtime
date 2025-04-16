@@ -6,10 +6,14 @@ import {
 
 import { setupInvalidateVizCache } from "./setupInvalidateVizCache";
 import { setupBuild } from "./setupBuild";
-import { BuildWorkerMessage, VizHubRuntime } from "./types";
+import {
+  BuildWorkerMessage,
+  VizHubRuntime,
+  WindowMessage,
+} from "./types";
 
 // Flag for debugging.
-const DEBUG = true;
+const DEBUG = false;
 
 // State constants:
 
@@ -196,7 +200,13 @@ export const createRuntime = ({
 
     DEBUG && console.log("[runtime] update: after build");
 
-    const { html } = buildResult;
+    const { html, js, css } = buildResult;
+
+    DEBUG &&
+      console.log(
+        "[runtime] enableHotReloading",
+        enableHotReloading,
+      );
 
     DEBUG &&
       console.log(
@@ -204,7 +214,41 @@ export const createRuntime = ({
         html?.substring(0, 200),
       );
 
-    iframe.srcdoc = html || "";
+    DEBUG &&
+      console.log("[runtime] js: ", js?.substring(0, 200));
+
+    DEBUG &&
+      console.log(
+        "[runtime] css: ",
+        css?.substring(0, 200),
+      );
+
+    // Clear the console before each run.
+    console.clear();
+
+    // If `enableHotReloading` is true, we also need to
+    // check that `js` is defined, since the desired behavior
+    // is that only if we are using the v3 runtime, then
+    // the hot reloading actually happens, and _only_ the v3 build
+    // outputs `js`, so the guard for `js` is really just
+    // checking that we are on v3.
+    if (enableHotReloading && js) {
+      const runJSMessage: WindowMessage = {
+        type: "runJS",
+        js,
+      };
+      if (!iframe.contentWindow) {
+        throw new Error(
+          "iframe.contentWindow is null - this should never happen",
+        );
+      }
+      iframe.contentWindow.postMessage(
+        runJSMessage,
+        window.location.origin,
+      );
+    } else {
+      iframe.srcdoc = html || "";
+    }
 
     // TypeScript can't comprehend that `state`
     // may change during the await calls above.

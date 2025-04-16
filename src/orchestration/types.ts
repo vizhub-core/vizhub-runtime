@@ -1,6 +1,7 @@
 // type FileCollection = Record<string, string>;
 import { FileCollection } from "@vizhub/viz-types";
 import { BuildResult } from "../build/types";
+import { ResolvedVizFileId } from "../v3/types";
 
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
@@ -110,7 +111,23 @@ export type BuildWorkerMessage =
 
 // The message types for the iframe.
 export type WindowMessage =
-  // `runDone`
+  // `runJS` (request to iframe)
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading within the V3 runtime.
+  | {
+      type: "runJS";
+      js: string;
+    }
+
+  // `runCSS` (request to iframe)
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading of CSS within the V3 runtime.
+  | {
+      type: "runCSS";
+      css: string;
+    }
+
+  // `runDone` (response to "runJS" from iframe)
   //  * Sent from the iframe to the main thread.
   //  * Indicates successful code execution.
   | {
@@ -118,7 +135,7 @@ export type WindowMessage =
       requestId: string;
     }
 
-  // `runError`
+  // `runError` (response to "runJS" from iframe)
   //  * Sent from the iframe to the main thread.
   //  * Indicates an error during code execution.
   | {
@@ -127,7 +144,7 @@ export type WindowMessage =
       requestId: string;
     }
 
-  // `writeFile`
+  // `writeFile` (request from user generated code running inside iframe)
   //  * Sent from the iframe to the main thread.
   //  * Request to write file content.
   | {

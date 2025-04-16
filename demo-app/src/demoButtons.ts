@@ -2,6 +2,8 @@ import { VizHubRuntime } from "@vizhub/runtime";
 import { VizContent } from "@vizhub/viz-types";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 
+let currentExample: string;
+
 export const demoButtons = (
   runtime: VizHubRuntime,
   vizContentsArray: Array<{
@@ -32,8 +34,11 @@ export const demoButtons = (
         console.log(`Loading ${label}...`);
         runtime.run({
           files: vizFilesToFileCollection(vizContent.files),
-          enableHotReloading: true,
+
+          // Enable hot reloading when running the same example twice
+          enableHotReloading: label === currentExample,
         });
+        currentExample = label;
       });
 
       buttonContainer.appendChild(button);

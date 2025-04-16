@@ -11,7 +11,7 @@ import { BuildWorkerMessage } from "./types";
 import { build } from "../build";
 
 // Flag for debugging
-const DEBUG = true;
+const DEBUG = false;
 
 export const initWorker = () => {
   DEBUG && console.log("[worker] initializing...");
@@ -93,7 +93,10 @@ export const initWorker = () => {
     const data: BuildWorkerMessage = event.data;
 
     DEBUG &&
-      console.log("[worker] received message:", data);
+      console.log(
+        "[worker] received message:",
+        JSON.stringify(data, null, 2).substring(0, 1000),
+      );
 
     switch (data.type) {
       case "buildRequest": {

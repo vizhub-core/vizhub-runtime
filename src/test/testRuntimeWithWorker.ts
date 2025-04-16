@@ -9,6 +9,8 @@ declare global {
   }
 }
 
+const DEBUG = false;
+
 export async function testRuntimeWithWorker({
   browser,
   initialFiles,
@@ -38,6 +40,11 @@ export async function testRuntimeWithWorker({
     // Capture console output
     const logs: string[] = [];
     page.on("console", (message) => {
+      DEBUG &&
+        console.log(
+          "Console message from Puppeteer:",
+          message.text(),
+        );
       logs.push(message.text());
     });
 
@@ -45,7 +52,9 @@ export async function testRuntimeWithWorker({
     await page.evaluate((files) => {
       window.runtime.run({
         files,
-        enableHotReloading: true,
+        // Set this to false for first run,
+        // to populate the srcdoc.
+        enableHotReloading: false,
       });
     }, initialFiles);
 
@@ -79,7 +88,10 @@ export async function testRuntimeWithWorker({
         logs.length = 0;
 
         await page.evaluate((files) => {
-          window.runtime.run({ files });
+          window.runtime.run({
+            files,
+            enableHotReloading: true,
+          });
         }, change.files);
 
         // Wait for update using exponential backoff
