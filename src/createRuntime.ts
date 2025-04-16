@@ -1,18 +1,19 @@
+import { getFileText } from "@vizhub/viz-utils";
 import {
   FileCollection,
   VizContent,
   VizId,
 } from "@vizhub/viz-types";
-import { BuildWorkerMessage, VizHubRuntime } from "./types";
+import {
+  BuildWorkerMessage,
+  VizHubRuntime,
+  BuildResult, // Add BuildResult
+  WindowMessage, // Add WindowMessage
+} from "./types";
+import { generateSrcdoc } from "./generateSrcdoc"; // Import srcdoc generator
 
 // Flag for debugging.
-const DEBUG = false;
-
-// State constants
-const IDLE = "IDLE";
-const ENQUEUED = "ENQUEUED";
-const PENDING_CLEAN = "PENDING_CLEAN";
-const PENDING_DIRTY = "PENDING_DIRTY";
+const DEBUG = true; // Enable debug logging for testing
 
 // Creates an instance of the VizHub Runtime Environment.
 // This is the main entry point for the runtime, for use
@@ -38,40 +39,193 @@ export const createRuntime = ({
   resolveSlugKey?: (slugKey: string) => Promise<VizId>;
   writeFile?: (fileName: string, content: string) => void;
 }): VizHubRuntime => {
-  // Track the current state of the runtime
-  let state:
-    | typeof IDLE
-    | typeof ENQUEUED
-    | typeof PENDING_CLEAN
-    | typeof PENDING_DIRTY = IDLE;
+  let isInitialLoad = true;
+  let currentFileCollection: FileCollection | null = null;
+  let currentOptions: {
+    hot?: boolean;
+    sourcemap?: boolean;
+  } = { hot: true, sourcemap: true };
+  let previousCSSFiles: Array<string> = [];
 
-  // Pending promise resolvers
-  let pendingBuildPromise:
-    | ((html?: string) => void)
-    | null = null;
+  // Pending promise resolver for hot reloads
   let pendingRunPromise: (() => void) | null = null;
 
   // This runs when the build worker sends a message.
-  const workerListener: (e: MessageEvent) => void = ({
-    data,
-  }: {
-    data: BuildWorkerMessage;
-  }) => {
-    if (data.type === "buildHTMLResponse") {
-      const html: string | undefined = data.html;
+  const workerListener = (event: MessageEvent) => {
+    const data = event.data as BuildWorkerMessage;
+
+    DEBUG &&
+      console.log(
+        "[runtime] received worker message:",
+        data,
+      );
+
+    if (data.type === "buildResponse") {
+      // Renamed from buildHTMLResponse
+      const buildResult: BuildResult | undefined =
+        data.buildResult;
       const error: Error | undefined = data.error;
 
-      // Resolve the pending build promise
-      if (pendingBuildPromise) {
-        pendingBuildPromise(html);
-        pendingBuildPromise = null;
-      }
-
       if (error) {
+        DEBUG &&
+          console.error("[runtime] Build Error:", error);
         setBuildErrorMessage &&
           setBuildErrorMessage(error.message);
-      } else {
+        // TODO: Consider how to handle state/promises on error
+        return;
+      }
+
+      if (buildResult) {
         setBuildErrorMessage && setBuildErrorMessage(null);
+
+        const { src, cssFiles } = buildResult;
+
+        if (
+          currentOptions.hot &&
+          !isInitialLoad &&
+          iframe.contentWindow
+        ) {
+          DEBUG &&
+            console.log("[runtime] Hot reloading JS/CSS");
+
+          // --- Handle CSS ---
+          const currentCSSFiles = new Set(cssFiles);
+          const previousCSSFilesSet = new Set(
+            previousCSSFiles,
+          );
+
+          // Inject new/changed CSS
+          for (const cssFile of cssFiles) {
+            // TODO: Only inject if changed? Need content hash?
+            // For now, always re-inject.
+            const { vizId: fileVizId, fileName } =
+              parseId(cssFile); // Assuming parseId exists/is imported
+
+            // Fetch CSS content (needs access to getLatestContent)
+            if (getLatestContent) {
+              getLatestContent(
+                fileVizId || (vizId as VizId),
+              ) // Fallback to current vizId if needed
+                .then((content) => {
+                  const cssSrc = getFileText(
+                    content,
+                    fileName,
+                  );
+                  if (
+                    cssSrc !== null &&
+                    iframe.contentWindow
+                  ) {
+                    const runCSSMessage: WindowMessage = {
+                      type: "runCSS",
+                      id: cssFile,
+                      src: cssSrc,
+                    };
+                    DEBUG &&
+                      console.log(
+                        "[runtime] Sending runCSS:",
+                        runCSSMessage,
+                      );
+                    iframe.contentWindow.postMessage(
+                      runCSSMessage,
+                      window.location.origin,
+                    );
+                  } else {
+                    console.warn(
+                      `[runtime] CSS file not found or empty: ${cssFile}`,
+                    );
+                  }
+                })
+                .catch((err) =>
+                  console.error(
+                    `[runtime] Error fetching CSS content for ${cssFile}:`,
+                    err,
+                  ),
+                );
+            } else {
+              console.warn(
+                "[runtime] getLatestContent not provided, cannot hot reload CSS imports.",
+              );
+            }
+          }
+
+          // Remove old CSS
+          for (const cssFile of previousCSSFiles) {
+            if (
+              !currentCSSFiles.has(cssFile) &&
+              iframe.contentWindow
+            ) {
+              const removeCSSMessage: WindowMessage = {
+                type: "runCSS",
+                id: cssFile,
+                src: "",
+              };
+              DEBUG &&
+                console.log(
+                  "[runtime] Sending remove CSS:",
+                  removeCSSMessage,
+                );
+              iframe.contentWindow.postMessage(
+                removeCSSMessage,
+                window.location.origin,
+              );
+            }
+          }
+          previousCSSFiles = cssFiles; // Update tracked CSS files
+
+          // --- Handle JS ---
+          // Set pendingRunPromise before sending runJS
+          pendingRunPromise = () => {
+            DEBUG &&
+              console.log(
+                "[runtime] Hot reload run completed.",
+              );
+            // Resolve any promises waiting for the run here if needed
+          };
+
+          const runJSMessage: WindowMessage = {
+            type: "runJS",
+            src,
+          };
+          DEBUG && console.log("[runtime] Sending runJS");
+          iframe.contentWindow.postMessage(
+            runJSMessage,
+            window.location.origin,
+          );
+        } else {
+          DEBUG &&
+            console.log(
+              "[runtime] Setting srcdoc (initial load or hot=false)",
+            );
+          // Initial load or hot reload disabled: set srcdoc
+          const srcdoc = generateSrcdoc({
+            js: src,
+            cssFiles,
+            getFileContent: async (fileId) => {
+              // Basic implementation to get file content for srcdoc generation
+              // Assumes fileId format like "vizId/fileName" or just "fileName"
+              const { vizId: fileVizId, fileName } =
+                parseId(fileId);
+              if (getLatestContent) {
+                try {
+                  const content = await getLatestContent(
+                    fileVizId || (vizId as VizId),
+                  );
+                  return getFileText(content, fileName);
+                } catch (err) {
+                  console.error(
+                    `[runtime] Error getting content for srcdoc: ${fileId}`,
+                    err,
+                  );
+                  return null;
+                }
+              }
+              return null;
+            },
+          });
+          iframe.srcdoc = srcdoc;
+          isInitialLoad = false;
+          previousCSSFiles = cssFiles; // Update tracked CSS files
+        }
       }
     } else if (
       data.type === "contentRequest" &&
@@ -145,79 +299,66 @@ export const createRuntime = ({
   const cleanup = () => {
     worker.removeEventListener("message", workerListener);
     window.removeEventListener("message", windowListener);
+    // Reset state if needed
+    isInitialLoad = true;
+    currentFileCollection = null;
+    previousCSSFiles = [];
   };
 
-  // Build the code
-  const build = (
-    fileCollection: FileCollection,
-  ): Promise<string | undefined> => {
-    return new Promise<string | undefined>((resolve) => {
-      pendingBuildPromise = resolve;
-      const message: BuildWorkerMessage = {
-        type: "buildHTMLRequest",
-        fileCollection,
-        vizId,
-        enableSourcemap: true,
+  // We need parseId, let's define a simple version here or import it
+  // Assuming it splits 'vizId/fileName' or handles just 'fileName'
+  const parseId = (
+    fileId: string,
+  ): { vizId?: VizId; fileName: string } => {
+    const parts = fileId.split("/");
+    if (parts.length > 1) {
+      return {
+        vizId: parts[0],
+        fileName: parts.slice(1).join("/"),
       };
-      worker.postMessage(message);
-    });
-  };
-
-  // Update the runtime with new code
-  const update = async (fileCollection: FileCollection) => {
-    state = PENDING_CLEAN;
-
-    DEBUG && console.log("[runtime] update: before build");
-
-    // Build the code
-    const html = await build(fileCollection);
-
-    DEBUG && console.log("[runtime] update: after build");
-
-    DEBUG &&
-      console.log(
-        "[runtime] html: ",
-        html?.substring(0, 200),
-      );
-
-    iframe.srcdoc = html || "";
-
-    // TypeScript can't comprehend that `state`
-    // may change during the await calls above.
-    // @ts-ignore
-    if (state === PENDING_DIRTY) {
-      requestAnimationFrame(() => update(fileCollection));
-      state = ENQUEUED;
-    } else {
-      state = IDLE;
     }
+    return { fileName: fileId };
   };
 
   // Handle code changes
-  let lastFileCollection: FileCollection | null = null;
   const reload = (
     fileCollection?: FileCollection,
+    newFileCollection?: FileCollection,
     options: {
       hot?: boolean;
       sourcemap?: boolean;
     } = { hot: true, sourcemap: true },
   ) => {
-    DEBUG && console.log("[runtime] reload");
-    if (fileCollection) {
-      lastFileCollection = fileCollection;
-    } else if (!lastFileCollection) {
+    DEBUG && console.log("[runtime] reload called");
+
+    if (newFileCollection) {
+      currentFileCollection = newFileCollection;
+    } else if (!currentFileCollection) {
+      console.warn(
+        "[runtime] reload called without files and no previous files available.",
+      );
       return; // No files to process
     }
 
-    if (state === IDLE) {
-      DEBUG && console.log("[runtime] reload: IDLE");
-      state = ENQUEUED;
-      update(lastFileCollection);
-    } else if (state === PENDING_CLEAN) {
-      DEBUG &&
-        console.log("[runtime] reload: PENDING_CLEAN");
-      state = PENDING_DIRTY;
-    }
+    // Store options for use in the response handler
+    currentOptions = options;
+
+    // Always send a build request to the worker
+    DEBUG &&
+      console.log(
+        "[runtime] Sending buildRequest to worker",
+      );
+    const message: BuildWorkerMessage = {
+      type: "buildRequest", // Renamed from buildHTMLRequest
+      fileCollection: currentFileCollection,
+      vizId,
+      enableSourcemap: options.sourcemap ?? true,
+    };
+    worker.postMessage(message);
+
+    // Note: Removed the state machine (IDLE, PENDING etc.) for simplicity.
+    // The logic now directly triggers a build on reload.
+    // Re-introducing debouncing/throttling might be needed for rapid changes.
   };
 
   // Invalidate the viz cache for changed vizzes

@@ -89,8 +89,9 @@ describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
     });
   });
 
-  // TODO get this to work
-  it.skip("should hot reload with v3 runtime", async () => {
+  // TODO support the hot reloading case
+  // This test is currently failing - we need to make it pass.
+  it("should hot reload with v3 runtime", async () => {
     await testRuntimeWithWorker({
       browser,
       initialFiles: {

@@ -30,6 +30,8 @@ export async function testRuntimeWithWorker({
 
   try {
     // Load the pre-built demo app instead of injecting HTML
+    // Requires the demo-app to be running
+    // Entry point for this app is `demo-app/src/main.ts`.
     await page.goto("http://localhost:3001");
 
     // Wait for runtime to be ready

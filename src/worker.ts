@@ -1,10 +1,12 @@
 import { rollup } from "@rollup/browser";
 import { VizContent, VizId } from "@vizhub/viz-types";
+import { VizContent, VizId } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { buildHTML } from "./buildHTML";
+// import { buildHTML } from "./buildHTML"; // No longer needed here
 import { svelteCompilerUrl } from "./v3/transformSvelte";
 import { createVizCache } from "./v3/vizCache";
 import { createSlugCache } from "./v3/slugCache";
+import { computeBundleJSV3 } from "./v3/computeBundleJSV3";
 
 // Flag for debugging
 const DEBUG = false;
@@ -96,28 +98,29 @@ export const initWorker = () => {
       console.log("[worker] received message:", data);
 
     switch (data.type) {
-      case "buildHTMLRequest": {
+      case "buildRequest": {
+        // Renamed from buildHTMLRequest
         const { fileCollection, vizId, enableSourcemap } =
           data;
 
         try {
-          // Build HTML from the files
-          const html = await buildHTML({
+          // Compute the JS bundle and CSS files
+          const buildResult = await computeBundleJSV3({
             files: fileCollection,
-            vizId,
-            enableSourcemap,
             rollup: rollup as (
               options: RollupOptions,
             ) => Promise<RollupBuild>,
+            enableSourcemap,
+            vizCache, // Use the worker's vizCache
+            vizId,
+            slugCache, // Use the worker's slugCache
             getSvelteCompiler,
-            // vizCache,
-            slugCache,
           });
 
-          // Send the built HTML back to the main thread
+          // Send the build result back to the main thread
           postMessage({
-            type: "buildHTMLResponse",
-            html,
+            type: "buildResponse", // Renamed from buildHTMLResponse
+            buildResult,
           });
         } catch (error) {
           DEBUG &&
@@ -125,7 +128,7 @@ export const initWorker = () => {
 
           // Send the error back to the main thread
           postMessage({
-            type: "buildHTMLResponse",
+            type: "buildResponse", // Renamed from buildHTMLResponse
             error,
           });
         }

@@ -24,26 +24,35 @@ export type VizHubRuntime = {
   ) => Promise<void>;
 };
 
+// The result of a build from the worker.
+export type BuildResult = {
+  // The bundled JavaScript code.
+  src: string;
+  // A list of CSS files generated or imported.
+  cssFiles: Array<string>;
+  // TODO: Add warnings, pkg, time like in V3BuildResult?
+};
+
 export type BuildWorkerMessage =
-  // `buildHTMLRequest`
+  // `buildRequest` (Renamed from buildHTMLRequest)
   //  * Sent from the main thread to the worker.
-  //  * When the main thread wants to build the HTML for the iframe.
+  //  * When the main thread requests a build.
   | {
-      type: "buildHTMLRequest";
+      type: "buildRequest";
       fileCollection: FileCollection;
       vizId?: string;
       enableSourcemap: boolean;
     }
 
-  // `buildHTMLResponse`
+  // `buildResponse` (Renamed from buildHTMLResponse)
   //  * Sent from the worker to the main thread.
-  //  * When the worker responds to a `buildHTMLRequest` message.
+  //  * When the worker responds to a `buildRequest` message.
   //  * Provides:
-  //  * EITHER a fresh `srcdoc` for the iframe
+  //  * EITHER the `buildResult`
   //  * OR an `error` if the build failed.
   | {
-      type: "buildHTMLResponse";
-      html?: string;
+      type: "buildResponse";
+      buildResult?: BuildResult;
       error?: Error;
     }
 
@@ -106,9 +115,30 @@ export type BuildWorkerMessage =
       vizId: string;
       changedVizIds: Array<string>;
     };
+
+// Messages sent to and from the IFrame window.
 export type WindowMessage =
+  // `runJS`
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading of JS within the runtime.
+  | {
+      type: "runJS";
+      src: string;
+    }
+
+  // `runCSS`
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading of CSS within the runtime.
+  | {
+      type: "runCSS";
+      // The resolved ID, e.g., "vizID/styles.css" or just "styles.css"
+      id: string;
+      // Empty string means remove the CSS
+      src: string;
+    }
+
   // `runDone`
-  //  * Sent from the iframe to the main thread.
+  //  * Sent from the IFrame to the main thread.
   //  * Indicates successful code execution.
   | {
       type: "runDone";
