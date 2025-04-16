@@ -11,9 +11,9 @@ export type VizHubRuntime = {
     files: FileCollection;
     // Toggle for hot reloading,
     // only respected for v3 runtime.
-    hotReload?: boolean;
+    enableHotReloading?: boolean;
     // Toggle for sourcemaps.
-    sourcemap?: boolean;
+    enableSourcemap?: boolean;
   }) => void;
   // Cleans up the event listeners from the Worker and the iframe.
   cleanup: () => void;
@@ -28,9 +28,9 @@ export type BuildWorkerMessage =
   //  * When the main thread wants to build the HTML for the iframe.
   | {
       type: "buildHTMLRequest";
-      fileCollection: FileCollection;
-      vizId?: string;
+      files: FileCollection;
       enableSourcemap: boolean;
+      requestId: string;
     }
 
   // `buildHTMLResponse`
@@ -43,6 +43,7 @@ export type BuildWorkerMessage =
       type: "buildHTMLResponse";
       html?: string;
       error?: Error;
+      requestId: string;
     }
 
   // `contentRequest`
@@ -51,6 +52,7 @@ export type BuildWorkerMessage =
   | {
       type: "contentRequest";
       vizId: string;
+      requestId: string;
     }
 
   // `contentResponse`
@@ -60,6 +62,7 @@ export type BuildWorkerMessage =
       type: "contentResponse";
       vizId: string;
       content: any;
+      requestId: string;
     }
 
   // `resolveSlugRequest`
@@ -87,6 +90,7 @@ export type BuildWorkerMessage =
   | {
       type: "invalidateVizCacheRequest";
       changedVizIds: Array<string>;
+      requestId: string;
     }
 
   // `invalidateVizCacheResponse`
@@ -94,22 +98,16 @@ export type BuildWorkerMessage =
   //  * Confirms cache invalidation.
   | {
       type: "invalidateVizCacheResponse";
-    }
-
-  // `resetSrcdocRequest`
-  //  * Sent from the main thread to the worker.
-  //  * When the runtime environment needs to be reset.
-  | {
-      type: "resetSrcdocRequest";
-      vizId: string;
-      changedVizIds: Array<string>;
+      requestId: string;
     };
+
 export type WindowMessage =
   // `runDone`
   //  * Sent from the iframe to the main thread.
   //  * Indicates successful code execution.
   | {
       type: "runDone";
+      requestId: string;
     }
 
   // `runError`
@@ -118,6 +116,7 @@ export type WindowMessage =
   | {
       type: "runError";
       error: Error;
+      requestId: string;
     }
 
   // `writeFile`

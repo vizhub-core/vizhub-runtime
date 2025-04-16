@@ -448,7 +448,19 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+5. Open a Draft Pull Request
+6. Perform the Preflight Check
+7. Double check if the README needs to be updated with any new changes
+8. Ensure `DEBUG = true` is set back to `DEBUG = false` in the code
+9. Once everything is ready, mark the PR as ready for review
+10. Once approved, we will merge your PR!
+
+### Preflight Check
+
+Before finalizing a PR and marking it ready for review, please ensure that:
+
+- Running `npm run preflight` passes without errors
+- The demo app is still working - run `npm run demo` and click through the green buttons to see if everything still works
 
 ## License
 

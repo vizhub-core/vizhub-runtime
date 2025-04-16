@@ -46,7 +46,9 @@ export const buildHTML = async ({
   DEBUG &&
     console.log(
       "[buildHTML] files:",
-      JSON.stringify(files).substring(0, 100),
+      files
+        ? JSON.stringify(files).substring(0, 100)
+        : undefined,
     );
   DEBUG && console.log("[buildHTML] vizCache:", vizCache);
   DEBUG && console.log("[buildHTML] vizId:", vizId);

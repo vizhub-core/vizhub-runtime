@@ -43,7 +43,10 @@ export async function testRuntimeWithWorker({
 
     // Initial code load
     await page.evaluate((files) => {
-      window.runtime.run({ files, hotReload: true });
+      window.runtime.run({
+        files,
+        enableHotReloading: true,
+      });
     }, initialFiles);
 
     // Helper function for exponential backoff

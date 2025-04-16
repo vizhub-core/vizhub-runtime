@@ -8,6 +8,7 @@ import {
   createSlugCache,
 } from "../v3";
 import { generateRequestId } from "./generateRequestId";
+import { BuildWorkerMessage } from "../types";
 
 // Flag for debugging
 const DEBUG = false;
@@ -89,21 +90,19 @@ export const initWorker = () => {
 
   // Handle messages from the main thread
   addEventListener("message", async (event) => {
-    const { data } = event;
+    const data: BuildWorkerMessage = event.data;
 
     DEBUG &&
       console.log("[worker] received message:", data);
 
     switch (data.type) {
       case "buildHTMLRequest": {
-        const { fileCollection, vizId, enableSourcemap } =
-          data;
+        const { files, enableSourcemap } = data;
 
         try {
           // Build HTML from the files
           const html = await buildHTML({
-            files: fileCollection,
-            vizId,
+            files,
             enableSourcemap,
             rollup: rollup as (
               options: RollupOptions,

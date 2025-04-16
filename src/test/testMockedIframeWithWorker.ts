@@ -5,6 +5,7 @@ import { expect } from "vitest";
 import { VizContent } from "@vizhub/viz-types";
 import { createRuntime } from "../orchestration/createRuntime";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import { BuildWorkerMessage } from "../types";
 
 // Mock implementation of Worker for testing
 class MockWorker {
@@ -35,12 +36,9 @@ class MockWorker {
     }
   }
 
-  postMessage(message: any) {
+  postMessage(message: BuildWorkerMessage) {
     // Store the last message for inspection
-    this.lastMessage = {
-      type: message.type,
-      files: message.fileCollection,
-    };
+    this.lastMessage = message;
 
     // If this is a build request, simulate a response
     if (message.type === "buildHTMLRequest") {
@@ -117,6 +115,10 @@ export async function testMockedIframeWithWorker({
   expect(mockWorker.lastMessage).not.toBeNull();
   expect(mockWorker.lastMessage.type).toBe(
     "buildHTMLRequest",
+  );
+  console.log(
+    "mockWorker.lastMessage ",
+    mockWorker.lastMessage,
   );
   expect(mockWorker.lastMessage.files).toEqual(
     vizFilesToFileCollection(vizContent.files),

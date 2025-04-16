@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
-  it("should be running `npm run test:demo-app` (start this manually in another terminal if this fails)", async () => {
+  it("should be running `npm run demo` (start this manually in another terminal if this fails)", async () => {
     if (!browser) {
       throw new Error("Browser is not initialized");
     }
@@ -33,7 +33,7 @@ describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
 
     try {
       // Requires the demo-app to be running
-      // You need to run: `cd demo-app; npm run dev`
+      // You need to run: `npm run demo`
       await page.goto("http://localhost:3001");
 
       // Wait for runtime to be defined (up to 5 seconds)

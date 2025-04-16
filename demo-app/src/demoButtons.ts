@@ -32,7 +32,7 @@ export const demoButtons = (
         console.log(`Loading ${label}...`);
         runtime.run({
           files: vizFilesToFileCollection(vizContent.files),
-          hotReload: true,
+          enableHotReloading: true,
         });
       });
 

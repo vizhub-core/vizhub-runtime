@@ -7,7 +7,8 @@ import {
   BuildWorkerMessage,
   VizHubRuntime,
 } from "../types";
-import { generateRequestId } from "./generateRequestId";
+import { setupInvalidateVizCache } from "./setupInvalidateVizCache";
+import { setupBuild } from "./setupBuild";
 
 // Flag for debugging.
 const DEBUG = false;
@@ -64,7 +65,6 @@ export const createRuntime = ({
   iframe,
   worker,
   setBuildErrorMessage,
-  vizId,
   getLatestContent,
   resolveSlugKey,
   writeFile,
@@ -72,7 +72,6 @@ export const createRuntime = ({
   iframe: HTMLIFrameElement;
   worker: Worker;
   setBuildErrorMessage?: (error: string | null) => void;
-  vizId?: VizId;
   getLatestContent?: (vizId: VizId) => Promise<VizContent>;
   resolveSlugKey?: (slugKey: string) => Promise<VizId>;
   writeFile?: (fileName: string, content: string) => void;
@@ -84,10 +83,17 @@ export const createRuntime = ({
     | typeof PENDING_CLEAN
     | typeof PENDING_DIRTY = IDLE;
 
+  // When a run is requested while the state is PENDING_CLEAN
+  // or PENDING_DIRTY, we need to wait for the pending build to finish,
+  // so until the build finishes, we use `latestFiles` to stash the latest files.
+  let latestFiles: FileCollection | null = null;
+
+  const build = setupBuild({
+    worker,
+    setBuildErrorMessage,
+  });
+
   // Pending promise resolvers
-  let pendingBuildPromise:
-    | ((html?: string) => void)
-    | null = null;
   let pendingRunPromise: (() => void) | null = null;
 
   // This runs when the build worker sends a message.
@@ -96,23 +102,7 @@ export const createRuntime = ({
   }: {
     data: BuildWorkerMessage;
   }) => {
-    if (data.type === "buildHTMLResponse") {
-      const html: string | undefined = data.html;
-      const error: Error | undefined = data.error;
-
-      // Resolve the pending build promise
-      if (pendingBuildPromise) {
-        pendingBuildPromise(html);
-        pendingBuildPromise = null;
-      }
-
-      if (error) {
-        setBuildErrorMessage &&
-          setBuildErrorMessage(error.message);
-      } else {
-        setBuildErrorMessage && setBuildErrorMessage(null);
-      }
-    } else if (
+    if (
       data.type === "contentRequest" &&
       getLatestContent
     ) {
@@ -178,30 +168,21 @@ export const createRuntime = ({
     window.removeEventListener("message", windowListener);
   };
 
-  // Build the code
-  const build = (
-    fileCollection: FileCollection,
-  ): Promise<string | undefined> => {
-    return new Promise<string | undefined>((resolve) => {
-      pendingBuildPromise = resolve;
-      const message: BuildWorkerMessage = {
-        type: "buildHTMLRequest",
-        fileCollection,
-        vizId,
-        enableSourcemap: true,
-      };
-      worker.postMessage(message);
-    });
-  };
-
-  // Update the runtime with new code
-  const update = async (fileCollection: FileCollection) => {
+  const update = async ({
+    files,
+    enableHotReloading = false,
+    enableSourcemap = false,
+  }: {
+    files: FileCollection;
+    enableHotReloading?: boolean;
+    enableSourcemap?: boolean;
+  }) => {
     state = PENDING_CLEAN;
 
     DEBUG && console.log("[runtime] update: before build");
 
     // Build the code
-    const html = await build(fileCollection);
+    const html = await build({ files, enableSourcemap });
 
     DEBUG && console.log("[runtime] update: after build");
 
@@ -217,7 +198,18 @@ export const createRuntime = ({
     // may change during the await calls above.
     // @ts-ignore
     if (state === PENDING_DIRTY) {
-      requestAnimationFrame(() => update(fileCollection));
+      requestAnimationFrame(() => {
+        if (!latestFiles) {
+          throw new Error(
+            "latestFiles is not defined and state is PENDING_DIRTY - this should never happen",
+          );
+        }
+        update({
+          files: latestFiles,
+          enableHotReloading,
+          enableSourcemap,
+        });
+      });
       state = ENQUEUED;
     } else {
       state = IDLE;
@@ -225,67 +217,44 @@ export const createRuntime = ({
   };
 
   // Handle code changes
-  let lastFileCollection: FileCollection | null = null;
+
   const run = ({
     files,
-    hotReload = false,
-    sourcemap = false,
+    enableHotReloading = false,
+    enableSourcemap = false,
   }: {
     files: FileCollection;
-    hotReload?: boolean;
-    sourcemap?: boolean;
+    enableHotReloading?: boolean;
+    enableSourcemap?: boolean;
   }) => {
     DEBUG && console.log("[runtime] run");
-    if (files) {
-      lastFileCollection = files;
-    } else if (!lastFileCollection) {
-      return; // No files to process
-    }
-
+    latestFiles = null;
     if (state === IDLE) {
       DEBUG && console.log("[runtime] run: IDLE");
       state = ENQUEUED;
-      update(lastFileCollection);
+      update({
+        files,
+        enableHotReloading,
+        enableSourcemap,
+      });
     } else if (state === PENDING_CLEAN) {
       DEBUG && console.log("[runtime] run: PENDING_CLEAN");
+      latestFiles = files;
       state = PENDING_DIRTY;
+    } else if (state === PENDING_DIRTY) {
+      DEBUG && console.log("[runtime] run: PENDING_DIRTY");
+      latestFiles = files;
+    } else if (state === ENQUEUED) {
+      DEBUG && console.log("[runtime] run: ENQUEUED");
+      latestFiles = files;
+    } else {
+      throw new Error(`Unexpected state: ${state}`);
     }
   };
 
-  // Invalidate the viz cache for changed vizzes
-  const invalidateVizCache = async (
-    changedVizIds: Array<VizId>,
-  ): Promise<void> => {
-    const requestId = generateRequestId();
-    return new Promise<void>((resolve) => {
-      const invalidateListener = (e: MessageEvent) => {
-        if (
-          e.data.type === "invalidateVizCacheResponse" &&
-          e.data.requestId === requestId
-        ) {
-          worker.removeEventListener(
-            "message",
-            invalidateListener,
-          );
-          resolve();
-        }
-      };
-      worker.addEventListener(
-        "message",
-        invalidateListener,
-      );
-
-      worker.postMessage({
-        type: "invalidateVizCacheRequest",
-        changedVizIds,
-        requestId,
-      });
-    });
-  };
-
   return {
+    invalidateVizCache: setupInvalidateVizCache(worker),
     run,
-    invalidateVizCache,
     cleanup,
   };
 };
