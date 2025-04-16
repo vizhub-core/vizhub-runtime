@@ -1,5 +1,5 @@
 import { FileCollection } from "@vizhub/viz-types";
-import type { runtimeVersion } from "./types";
+import { runtimeVersion } from "./types";
 
 export const determineRuntimeVersion = (
   files: FileCollection,

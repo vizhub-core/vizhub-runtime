@@ -1,7 +1,7 @@
 import { Browser, Page } from "puppeteer";
 import { expect } from "vitest";
 import { FileCollection } from "@vizhub/viz-types";
-import { VizHubRuntime } from "../types";
+import { VizHubRuntime } from "../orchestration/types";
 
 declare global {
   interface Window {

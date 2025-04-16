@@ -31,8 +31,8 @@ export const computeBundleJSV3 = async ({
   files: FileCollection;
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
-  vizCache: VizCache;
-  vizId: VizId;
+  vizCache?: VizCache;
+  vizId?: VizId;
   slugCache?: SlugCache;
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }): Promise<{ src: string; cssFiles: string[] }> => {

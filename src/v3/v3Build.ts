@@ -13,6 +13,7 @@ import {
   getConfiguredLibraries,
   dependencySource,
 } from "../common/packageJson";
+import { BuildResult } from "../build/types";
 
 export const v3Build = async ({
   files,
@@ -30,7 +31,7 @@ export const v3Build = async ({
   vizId: VizId;
   slugCache?: SlugCache;
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
-}): Promise<string> => {
+}): Promise<BuildResult> => {
   const { src, cssFiles } = await computeBundleJSV3({
     files,
     rollup,
@@ -76,5 +77,9 @@ export const v3Build = async ({
       .join("");
   }
 
-  return htmlTemplate({ cdn, src, styles });
+  return {
+    html: htmlTemplate({ cdn, src, styles }),
+    css: styles,
+    js: src,
+  };
 };

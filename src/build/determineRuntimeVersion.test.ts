@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import {
   jsScriptTagTypeModule,
   jsScriptTagTypeModules,
   fetchInterception,
   esmBuild,
-} from "./test/fixtures/v4";
+} from "../test/fixtures/v4";
 import { FileCollection } from "@vizhub/viz-types";
+import { determineRuntimeVersion } from "./determineRuntimeVersion";
 
 describe("determineRuntimeVersion", () => {
   it("should return null when there are no files", () => {

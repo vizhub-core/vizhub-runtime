@@ -1,7 +1,6 @@
 import { Browser, Page } from "puppeteer";
 import { rollup } from "rollup";
 import { expect } from "vitest";
-import { build } from "../index";
 import type { VizCache } from "../v3/vizCache";
 import type {
   FileCollection,
@@ -9,6 +8,7 @@ import type {
 } from "@vizhub/viz-types";
 import type { SlugCache } from "../v3/slugCache";
 import type { SvelteCompiler } from "../v3/transformSvelte";
+import { build } from "../build";
 
 const DEBUG = false;
 
@@ -45,7 +45,7 @@ export async function testInBrowser({
     });
 
     // Load the HTML
-    const html = await build({
+    const { html } = await build({
       files,
       vizCache,
       slugCache,

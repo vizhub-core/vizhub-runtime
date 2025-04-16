@@ -1,26 +1,27 @@
 import { magicSandbox } from "magic-sandbox";
 import { FileCollection } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { determineRuntimeVersion } from "./determineRuntimeVersion.js";
-import { v2Build } from "./v2/index.js";
-import { v3Build } from "./v3/index.js";
-import { v4Build } from "./v4/index.js";
-import { createVizCache, VizCache } from "./v3/vizCache.js";
-import { createVizContent } from "./v3/createVizContent.js";
-import { SlugCache } from "./v3/slugCache.js";
-import { SvelteCompiler } from "./v3/transformSvelte.js";
+import {
+  createVizCache,
+  createVizContent,
+  SlugCache,
+  SvelteCompiler,
+  v3Build,
+  VizCache,
+} from "../v3";
+import { BuildResult } from "./types";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import { determineRuntimeVersion } from "./determineRuntimeVersion";
+import { v2Build } from "../v2";
+import { v4Build } from "../v4";
 
 const DEBUG = false;
 
-// Builds the given files into a string of HTML or JS.
-// If `jsOnly` is true, only the JS part of the viz will be built and returned.
-// This is only relevant in the case of V3 runtime hot reloading.
+// Builds the given files.
 export const build = async ({
   files,
   rollup,
   enableSourcemap = true,
-  jsOnly = false,
   vizCache,
   vizId,
   slugCache,
@@ -32,11 +33,14 @@ export const build = async ({
 
   // Only required for v2 and v3 runtime
   rollup?: (options: RollupOptions) => Promise<RollupBuild>;
-  enableSourcemap?: boolean;
 
-  // If true, only the JS part of the viz will be built and returned.
-  // Only relevant in the case of V3 runtime hot reloading.
-  jsOnly?: boolean;
+  // True to enable sourcemaps, which help with
+  // tracing runtime errors back to source code,
+  // including specific source files and line numbers.
+  // When true, there is additional overhead
+  // for generating the sourcemaps, and the generated bundle
+  // is larger.
+  enableSourcemap?: boolean;
 
   // Only required for v3 runtime
   // For v3, EITHER files OR vizCache is required
@@ -50,7 +54,7 @@ export const build = async ({
 
   // Only required for v3 runtime
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
-}): Promise<string> => {
+}): Promise<BuildResult> => {
   DEBUG &&
     console.log(
       "[build] files:",
@@ -84,21 +88,27 @@ export const build = async ({
   const version = determineRuntimeVersion(files);
   DEBUG && console.log("[build] version:", version);
   if (version === "v1") {
-    return magicSandbox(files);
+    return {
+      html: magicSandbox(files),
+    };
   }
   if (version === "v2") {
     if (!rollup) {
       throw new Error("Rollup is required for v2 runtime");
     }
-    return magicSandbox(
-      await v2Build({ files, rollup, enableSourcemap }),
-    );
+    return {
+      html: magicSandbox(
+        await v2Build({ files, rollup, enableSourcemap }),
+      ),
+    };
   }
   if (version === "v3") {
     if (!rollup) {
       throw new Error("Rollup is required for v3 runtime");
     }
 
+    // We set up a "fake" viz cache.
+    // It's needed because of the way the CSS import resolution works.
     if (!vizCache && !vizId) {
       const vizContent = createVizContent(files);
       vizId = vizContent.id;
@@ -142,9 +152,11 @@ export const build = async ({
         rollup,
         enableSourcemap,
       });
-    return magicSandbox(
-      await v4Build({ files, rollup, enableSourcemap }),
-    );
+    return {
+      html: magicSandbox(
+        await v4Build({ files, rollup, enableSourcemap }),
+      ),
+    };
   }
 
   throw new Error(

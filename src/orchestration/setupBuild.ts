@@ -1,6 +1,7 @@
 import { FileCollection } from "@vizhub/viz-types";
-import { BuildWorkerMessage } from "../types";
 import { generateRequestId } from "./generateRequestId";
+import { BuildWorkerMessage } from "./types";
+import { BuildResult } from "../build/types";
 
 export const setupBuild =
   ({
@@ -16,38 +17,41 @@ export const setupBuild =
   }: {
     files: FileCollection;
     enableSourcemap: boolean;
-  }): Promise<string | undefined> => {
+  }): Promise<BuildResult | undefined> => {
     const requestId = generateRequestId();
-    return new Promise<string | undefined>((resolve) => {
-      const buildListener = (e: MessageEvent) => {
-        const data = e.data as BuildWorkerMessage;
-        if (data.type === "buildResponse") {
-          worker.removeEventListener(
-            "message",
-            buildListener,
-          );
+    return new Promise<BuildResult | undefined>(
+      (resolve) => {
+        const buildListener = (e: MessageEvent) => {
+          const data: BuildWorkerMessage = e.data;
+          if (data.type === "buildResponse") {
+            worker.removeEventListener(
+              "message",
+              buildListener,
+            );
 
-          const html: string | undefined = data.html;
-          const error: Error | undefined = data.error;
+            const buildResult: BuildResult | undefined =
+              data.buildResult;
+            const error: string | undefined = data.error;
 
-          if (error) {
-            setBuildErrorMessage?.(error.message);
-          } else {
-            setBuildErrorMessage?.(null);
+            if (error) {
+              setBuildErrorMessage?.(error);
+            } else {
+              setBuildErrorMessage?.(null);
+            }
+
+            resolve(buildResult);
           }
+        };
 
-          resolve(html);
-        }
-      };
+        worker.addEventListener("message", buildListener);
 
-      worker.addEventListener("message", buildListener);
-
-      const message: BuildWorkerMessage = {
-        type: "buildRequest",
-        files,
-        enableSourcemap,
-        requestId,
-      };
-      worker.postMessage(message);
-    });
+        const message: BuildWorkerMessage = {
+          type: "buildRequest",
+          files,
+          enableSourcemap,
+          requestId,
+        };
+        worker.postMessage(message);
+      },
+    );
   };

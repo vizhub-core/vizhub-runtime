@@ -1,17 +1,17 @@
 import { rollup } from "@rollup/browser";
 import { VizContent, VizId } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { build } from "../build";
 import {
   svelteCompilerUrl,
   createVizCache,
   createSlugCache,
 } from "../v3";
 import { generateRequestId } from "./generateRequestId";
-import { BuildWorkerMessage } from "../types";
+import { BuildWorkerMessage } from "./types";
+import { build } from "../build";
 
 // Flag for debugging
-const DEBUG = false;
+const DEBUG = true;
 
 export const initWorker = () => {
   DEBUG && console.log("[worker] initializing...");
@@ -97,11 +97,11 @@ export const initWorker = () => {
 
     switch (data.type) {
       case "buildRequest": {
-        const { files, enableSourcemap } = data;
+        const { files, enableSourcemap, requestId } = data;
 
         try {
           // Build HTML from the files
-          const html = await build({
+          const buildResult = await build({
             files,
             enableSourcemap,
             rollup: rollup as (
@@ -111,21 +111,25 @@ export const initWorker = () => {
             // vizCache,
             slugCache,
           });
-
-          // Send the built HTML back to the main thread
-          postMessage({
+          const message: BuildWorkerMessage = {
             type: "buildResponse",
-            html,
-          });
+            buildResult,
+            requestId,
+          };
+          // Send the built HTML back to the main thread
+          postMessage(message);
         } catch (error) {
           DEBUG &&
             console.log("[worker] build error:", error);
 
-          // Send the error back to the main thread
-          postMessage({
+          const message: BuildWorkerMessage = {
             type: "buildResponse",
-            error,
-          });
+            error: "" + error,
+            requestId,
+          };
+
+          // Send the error back to the main thread
+          postMessage(message);
         }
         break;
       }

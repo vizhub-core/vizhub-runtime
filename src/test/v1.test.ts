@@ -6,7 +6,6 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import { build } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
   basicHTML,
@@ -16,6 +15,7 @@ import {
   xmlTest,
   protocolTest,
 } from "./fixtures/v1";
+import { build } from "../build";
 // import { JSDOM } from "jsdom";
 // import { setJSDOM } from "../common/domParser";
 
@@ -33,14 +33,14 @@ afterAll(async () => {
 
 describe("VizHub Runtime v1", () => {
   it("should generate srcdoc HTML", async () => {
-    const srcdoc = await build({
+    const { html } = await build({
       files: basicHTML,
     });
-    expect(srcdoc).toContain("<!DOCTYPE html>");
-    expect(srcdoc).toContain(
+    expect(html).toContain("<!DOCTYPE html>");
+    expect(html).toContain(
       "<title>My HTML Document</title>",
     );
-    expect(srcdoc).toContain("Hello, World!");
+    expect(html).toContain("Hello, World!");
   });
 
   it("basicHTML", async () => {
@@ -84,12 +84,10 @@ describe("VizHub Runtime v1", () => {
   });
 
   it("should convert protocol-less URLs to https", async () => {
-    const srcdoc = await build({ files: protocolTest });
-    expect(srcdoc).toContain(
+    const { html } = await build({ files: protocolTest });
+    expect(html).toContain(
       'href="https://fonts.googleapis.com',
     );
-    expect(srcdoc).toContain(
-      'src="https://code.jquery.com',
-    );
+    expect(html).toContain('src="https://code.jquery.com');
   });
 });

@@ -5,7 +5,7 @@ import { expect } from "vitest";
 import { VizContent } from "@vizhub/viz-types";
 import { createRuntime } from "../orchestration/createRuntime";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
-import { BuildWorkerMessage } from "../types";
+import { BuildWorkerMessage } from "../orchestration/types";
 
 // Mock implementation of Worker for testing
 class MockWorker {
@@ -42,13 +42,15 @@ class MockWorker {
 
     // If this is a build request, simulate a response
     if (message.type === "buildRequest") {
+      const data: BuildWorkerMessage = {
+        type: "buildResponse",
+        buildResult: {
+          html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
+        },
+        requestId: message.requestId,
+      };
       setTimeout(() => {
-        this.dispatchEvent({
-          data: {
-            type: "buildResponse",
-            html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
-          },
-        });
+        this.dispatchEvent({ data });
       }, 10);
     }
   }
@@ -102,7 +104,7 @@ export async function testMockedIframeWithWorker({
     worker,
   });
 
-  // Trigger a code change
+  // Run the code
   runtime.run({
     files: vizFilesToFileCollection(vizContent.files),
   });
@@ -114,10 +116,7 @@ export async function testMockedIframeWithWorker({
   const mockWorker = worker as unknown as MockWorker;
   expect(mockWorker.lastMessage).not.toBeNull();
   expect(mockWorker.lastMessage.type).toBe("buildRequest");
-  console.log(
-    "mockWorker.lastMessage ",
-    mockWorker.lastMessage,
-  );
+
   expect(mockWorker.lastMessage.files).toEqual(
     vizFilesToFileCollection(vizContent.files),
   );

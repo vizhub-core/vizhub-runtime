@@ -3,15 +3,13 @@ import {
   VizContent,
   VizId,
 } from "@vizhub/viz-types";
-import {
-  BuildWorkerMessage,
-  VizHubRuntime,
-} from "../types";
+
 import { setupInvalidateVizCache } from "./setupInvalidateVizCache";
 import { setupBuild } from "./setupBuild";
+import { BuildWorkerMessage, VizHubRuntime } from "./types";
 
 // Flag for debugging.
-const DEBUG = false;
+const DEBUG = true;
 
 // State constants:
 
@@ -182,9 +180,23 @@ export const createRuntime = ({
     DEBUG && console.log("[runtime] update: before build");
 
     // Build the code
-    const html = await build({ files, enableSourcemap });
+    const buildResult = await build({
+      files,
+      enableSourcemap,
+    });
+
+    // In this case, the build failed
+    // and in the meantime the callback `setBuildErrorMessage`
+    // was called.
+    if (!buildResult) {
+      DEBUG &&
+        console.log("[runtime] update: build failed");
+      return;
+    }
 
     DEBUG && console.log("[runtime] update: after build");
+
+    const { html } = buildResult;
 
     DEBUG &&
       console.log(

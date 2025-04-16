@@ -1,27 +1,34 @@
 // type FileCollection = Record<string, string>;
 import { FileCollection } from "@vizhub/viz-types";
-
-// where keys are file names and values are file contents.
-export type runtimeVersion = "v1" | "v2" | "v3" | "v4";
+import { BuildResult } from "../build/types";
 
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
   run: (options: {
     // The fresh files to be built.
     files: FileCollection;
+
     // Toggle for hot reloading,
     // only respected for v3 runtime.
+
     enableHotReloading?: boolean;
+
     // Toggle for sourcemaps.
     enableSourcemap?: boolean;
   }) => void;
+
   // Cleans up the event listeners from the Worker and the iframe.
   cleanup: () => void;
+
+  // Called when viz ids change, to invalidate the viz cache.
+  // This happens when imported vizzes change, and trigger
+  // hot reloading across vizzes.
   invalidateVizCache: (
     changedVizIds: Array<string>,
   ) => Promise<void>;
 };
 
+// The message types for the worker.
 export type BuildWorkerMessage =
   // `buildRequest`
   //  * Sent from the main thread to the worker.
@@ -37,13 +44,13 @@ export type BuildWorkerMessage =
   //  * Sent from the worker to the main thread.
   //  * When the worker responds to a `buildRequest` message.
   //  * Provides:
-  //  * EITHER a fresh `srcdoc` for the iframe
+  //  * EITHER a fresh `buildResult`
   //  * OR an `error` if the build failed.
   | {
       type: "buildResponse";
-      html?: string;
-      error?: Error;
       requestId: string;
+      buildResult?: BuildResult;
+      error?: string;
     }
 
   // `contentRequest`
@@ -101,6 +108,7 @@ export type BuildWorkerMessage =
       requestId: string;
     };
 
+// The message types for the iframe.
 export type WindowMessage =
   // `runDone`
   //  * Sent from the iframe to the main thread.
