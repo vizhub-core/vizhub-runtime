@@ -89,7 +89,7 @@ describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
     });
   });
 
-  it("should hot reload with v3 runtime", async () => {
+  it("should hot reload JS with v3 runtime", async () => {
     await testRuntimeWithWorker({
       browser,
       initialFiles: {
@@ -118,6 +118,52 @@ describe("VizHub Runtime End to End (Web Worker, iframe)", () => {
           // and if it does hot reloading properly,
           // the state should be preserved.
           expectedLog: "state.count = 5",
+        },
+      ],
+    });
+  });
+
+  it("should hot reload CSS with v3 runtime", async () => {
+    await testRuntimeWithWorker({
+      browser,
+      initialFiles: {
+        "index.js": `
+          import "./style.css";
+          export const main = (container, { state, setState }) => {
+            if(!state.color) {
+              const color = getComputedStyle(document.body).backgroundColor;
+              console.log("body background color: " + color);
+              setState(state => ({...state, color}));
+              return;
+            }
+          }
+        `,
+        "style.css": `
+          body {
+            background-color: red;
+          }
+        `,
+      },
+      expectedLog: "body background color: rgb(255, 0, 0)",
+      codeChanges: [
+        {
+          files: {
+            "index.js": `
+              import "./style.css";
+              export const main = (container, { state, setState }) => {
+                const color = getComputedStyle(document.body).backgroundColor;
+                console.log("old: " + state.color + ", new: " + color);
+              }
+            `,
+            "style.css": `
+              body {
+                background-color: blue;
+              }
+            `,
+          },
+          expectedLog:
+            // "old: rgb(255, 0, 0), new: rgb(255, 0, 0)",
+            "old: rgb(255, 0, 0), new: rgb(0, 0, 255)",
         },
       ],
     });

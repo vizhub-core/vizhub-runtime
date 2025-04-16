@@ -232,20 +232,37 @@ export const createRuntime = ({
     // the hot reloading actually happens, and _only_ the v3 build
     // outputs `js`, so the guard for `js` is really just
     // checking that we are on v3.
-    if (enableHotReloading && js) {
-      const runJSMessage: WindowMessage = {
-        type: "runJS",
-        js,
-      };
-      if (!iframe.contentWindow) {
-        throw new Error(
-          "iframe.contentWindow is null - this should never happen",
+    if (enableHotReloading) {
+      if (css) {
+        const runCSSMessage: WindowMessage = {
+          type: "runCSS",
+          css,
+        };
+        if (!iframe.contentWindow) {
+          throw new Error(
+            "iframe.contentWindow is null - this should never happen",
+          );
+        }
+        iframe.contentWindow.postMessage(
+          runCSSMessage,
+          window.location.origin,
         );
       }
-      iframe.contentWindow.postMessage(
-        runJSMessage,
-        window.location.origin,
-      );
+      if (js) {
+        const runJSMessage: WindowMessage = {
+          type: "runJS",
+          js,
+        };
+        if (!iframe.contentWindow) {
+          throw new Error(
+            "iframe.contentWindow is null - this should never happen",
+          );
+        }
+        iframe.contentWindow.postMessage(
+          runJSMessage,
+          window.location.origin,
+        );
+      }
     } else {
       iframe.srcdoc = html || "";
     }
