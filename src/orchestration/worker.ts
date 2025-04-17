@@ -1,10 +1,14 @@
 import { rollup } from "@rollup/browser";
 import { VizContent, VizId } from "@vizhub/viz-types";
 import type { RollupBuild, RollupOptions } from "rollup";
-import { buildHTML } from "./buildHTML";
-import { svelteCompilerUrl } from "./v3/transformSvelte";
-import { createVizCache } from "./v3/vizCache";
-import { createSlugCache } from "./v3/slugCache";
+import {
+  svelteCompilerUrl,
+  createVizCache,
+  createSlugCache,
+} from "../v3";
+import { generateRequestId } from "./generateRequestId";
+import { BuildWorkerMessage } from "./types";
+import { build } from "../build";
 
 // Flag for debugging
 const DEBUG = false;
@@ -24,10 +28,6 @@ export const initWorker = () => {
     // @ts-ignore
     return self.svelte.compile;
   };
-
-  // Generate a unique request ID
-  const generateRequestId = (): string =>
-    (Math.random() + "").slice(2);
 
   // Tracks pending promises for 'contentResponse' messages
   const pendingContentResponsePromises = new Map();
@@ -90,21 +90,22 @@ export const initWorker = () => {
 
   // Handle messages from the main thread
   addEventListener("message", async (event) => {
-    const { data } = event;
+    const data: BuildWorkerMessage = event.data;
 
     DEBUG &&
-      console.log("[worker] received message:", data);
+      console.log(
+        "[worker] received message:",
+        JSON.stringify(data, null, 2).substring(0, 1000),
+      );
 
     switch (data.type) {
-      case "buildHTMLRequest": {
-        const { fileCollection, vizId, enableSourcemap } =
-          data;
+      case "buildRequest": {
+        const { files, enableSourcemap, requestId } = data;
 
         try {
           // Build HTML from the files
-          const html = await buildHTML({
-            files: fileCollection,
-            vizId,
+          const buildResult = await build({
+            files,
             enableSourcemap,
             rollup: rollup as (
               options: RollupOptions,
@@ -113,21 +114,25 @@ export const initWorker = () => {
             // vizCache,
             slugCache,
           });
-
+          const message: BuildWorkerMessage = {
+            type: "buildResponse",
+            buildResult,
+            requestId,
+          };
           // Send the built HTML back to the main thread
-          postMessage({
-            type: "buildHTMLResponse",
-            html,
-          });
+          postMessage(message);
         } catch (error) {
           DEBUG &&
             console.log("[worker] build error:", error);
 
+          const message: BuildWorkerMessage = {
+            type: "buildResponse",
+            error: "" + error,
+            requestId,
+          };
+
           // Send the error back to the main thread
-          postMessage({
-            type: "buildHTMLResponse",
-            error,
-          });
+          postMessage(message);
         }
         break;
       }
@@ -178,46 +183,6 @@ export const initWorker = () => {
         }
         break;
       }
-
-      // case "resetSrcdocRequest": {
-      //   // Invalidate viz cache for changed vizzes
-      //   const { vizId, changedVizIds } = data;
-      //   for (const changedVizId of changedVizIds) {
-      //     vizCache.invalidate(changedVizId);
-      //   }
-
-      //   try {
-      //     // Build fresh HTML
-      //     const html = await buildHTML({
-      //       vizId,
-      //       enableSourcemap: true,
-      //       rollup: rollup as (
-      //         options: RollupOptions,
-      //       ) => Promise<RollupBuild>,
-      //       getSvelteCompiler,
-      //       // TODO use vizCache for importing across vizzes,
-      //       // but only if needed.
-      //       // vizCache,
-      //       slugCache,
-      //     });
-
-      //     // Send the built HTML back to the main thread
-      //     postMessage({
-      //       type: "resetSrcdocResponse",
-      //       html,
-      //     });
-      //   } catch (error) {
-      //     DEBUG &&
-      //       console.error("[worker] build error:", error);
-
-      //     // Send the error back to the main thread
-      //     postMessage({
-      //       type: "resetSrcdocResponse",
-      //       error,
-      //     });
-      //   }
-      //   break;
-      // }
     }
   });
 };

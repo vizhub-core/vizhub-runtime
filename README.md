@@ -288,11 +288,11 @@ npm install @vizhub/runtime
 ### Basic Usage
 
 ```javascript
-import { buildHTML } from "@vizhub/runtime";
+import { build } from "@vizhub/runtime";
 import { rollup } from "rollup";
 
 // Simple v1 runtime (HTML only)
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.html":
       "<html><body><h1>Hello World</h1></body></html>",
@@ -300,7 +300,7 @@ const html = await buildHTML({
 });
 
 // v2 runtime with bundling
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.html":
       '<html><body><div id="root"></div><script src="bundle.js"></script></body></html>',
@@ -322,7 +322,7 @@ document.body.appendChild(iframe);
 
 ```javascript
 import {
-  buildHTML,
+  build,
   createVizCache,
   createSlugCache,
 } from "@vizhub/runtime";
@@ -359,7 +359,7 @@ const slugCache = createSlugCache({
 });
 
 // Build HTML with cross-viz imports
-const html = await buildHTML({
+const html = await build({
   files: {
     "index.js":
       'import { value } from "@username/my-viz"; console.log(value);',
@@ -374,7 +374,7 @@ const html = await buildHTML({
 
 ## API Reference
 
-### buildHTML(options)
+### build(options)
 
 Builds HTML that can be used as the `srcdoc` of an iframe.
 
@@ -448,7 +448,19 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+5. Open a Draft Pull Request
+6. Perform the Preflight Check
+7. Double check if the README needs to be updated with any new changes
+8. Ensure `DEBUG = true` is set back to `DEBUG = false` in the code
+9. Once everything is ready, mark the PR as ready for review
+10. Once approved, we will merge your PR!
+
+### Preflight Check
+
+Before finalizing a PR and marking it ready for review, please ensure that:
+
+- Running `npm run preflight` passes without errors
+- The demo app is still working - run `npm run demo` and click through the green buttons to see if everything still works
 
 ## License
 

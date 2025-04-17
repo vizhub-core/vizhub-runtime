@@ -7,7 +7,6 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import { buildHTML } from "../index";
 import { testInBrowser } from "./testInBrowser";
 import {
   basicBundle,
@@ -25,6 +24,7 @@ import {
   basicBundleNoExtension,
   syntaxError,
 } from "./fixtures/v2";
+import { build } from "../build";
 // import { JSDOM } from "jsdom";
 // import { setJSDOM } from "../common/domParser";
 
@@ -106,11 +106,11 @@ describe("VizHub Runtime v2", () => {
   });
 
   it("should transpile JSX", async () => {
-    const srcdoc = await buildHTML({
+    const { html } = await build({
       files: jsxTranspile,
       rollup,
     });
-    expect(srcdoc).toContain("React.createElement");
+    expect(html).toContain("React.createElement");
   });
 
   it("should preserve ES6 syntax", async () => {

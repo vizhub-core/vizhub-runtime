@@ -3,8 +3,9 @@
 // from `src/worker.ts`.
 import { expect } from "vitest";
 import { VizContent } from "@vizhub/viz-types";
-import { createRuntime } from "../createRuntime";
+import { createRuntime } from "../orchestration/createRuntime";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import { BuildWorkerMessage } from "../orchestration/types";
 
 // Mock implementation of Worker for testing
 class MockWorker {
@@ -35,22 +36,21 @@ class MockWorker {
     }
   }
 
-  postMessage(message: any) {
+  postMessage(message: BuildWorkerMessage) {
     // Store the last message for inspection
-    this.lastMessage = {
-      type: message.type,
-      files: message.fileCollection,
-    };
+    this.lastMessage = message;
 
     // If this is a build request, simulate a response
-    if (message.type === "buildHTMLRequest") {
+    if (message.type === "buildRequest") {
+      const data: BuildWorkerMessage = {
+        type: "buildResponse",
+        buildResult: {
+          html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
+        },
+        requestId: message.requestId,
+      };
       setTimeout(() => {
-        this.dispatchEvent({
-          data: {
-            type: "buildHTMLResponse",
-            html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
-          },
-        });
+        this.dispatchEvent({ data });
       }, 10);
     }
   }
@@ -104,10 +104,10 @@ export async function testMockedIframeWithWorker({
     worker,
   });
 
-  // Trigger a code change
-  runtime.reload(
-    vizFilesToFileCollection(vizContent.files),
-  );
+  // Run the code
+  runtime.run({
+    files: vizFilesToFileCollection(vizContent.files),
+  });
 
   // Wait for async operations
   await new Promise((resolve) => setTimeout(resolve, 50));
@@ -115,9 +115,8 @@ export async function testMockedIframeWithWorker({
   // Verify the worker received the correct message
   const mockWorker = worker as unknown as MockWorker;
   expect(mockWorker.lastMessage).not.toBeNull();
-  expect(mockWorker.lastMessage.type).toBe(
-    "buildHTMLRequest",
-  );
+  expect(mockWorker.lastMessage.type).toBe("buildRequest");
+
   expect(mockWorker.lastMessage.files).toEqual(
     vizFilesToFileCollection(vizContent.files),
   );

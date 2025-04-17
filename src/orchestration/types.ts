@@ -1,50 +1,57 @@
-import { FileCollection } from "@vizhub/viz-types";
-
 // type FileCollection = Record<string, string>;
-// where keys are file names and values are file contents.
-export type runtimeVersion = "v1" | "v2" | "v3" | "v4";
+import { FileCollection } from "@vizhub/viz-types";
+import { BuildResult } from "../build/types";
+import { ResolvedVizFileId } from "../v3/types";
 
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
-  reload: (
+  run: (options: {
     // The fresh files to be built.
-    fileCollection: FileCollection,
-    options?: {
-      // Toggle for hot reloading,
-      // only respected for v3 runtime.
-      hot?: boolean;
-      // Toggle for sourcemaps.
-      sourcemap?: boolean;
-    },
-  ) => void;
+    files: FileCollection;
+
+    // Toggle for hot reloading,
+    // only respected for v3 runtime.
+
+    enableHotReloading?: boolean;
+
+    // Toggle for sourcemaps.
+    enableSourcemap?: boolean;
+  }) => void;
+
   // Cleans up the event listeners from the Worker and the iframe.
   cleanup: () => void;
+
+  // Called when viz ids change, to invalidate the viz cache.
+  // This happens when imported vizzes change, and trigger
+  // hot reloading across vizzes.
   invalidateVizCache: (
     changedVizIds: Array<string>,
   ) => Promise<void>;
 };
 
+// The message types for the worker.
 export type BuildWorkerMessage =
-  // `buildHTMLRequest`
+  // `buildRequest`
   //  * Sent from the main thread to the worker.
   //  * When the main thread wants to build the HTML for the iframe.
   | {
-      type: "buildHTMLRequest";
-      fileCollection: FileCollection;
-      vizId?: string;
+      type: "buildRequest";
+      files: FileCollection;
       enableSourcemap: boolean;
+      requestId: string;
     }
 
-  // `buildHTMLResponse`
+  // `buildResponse`
   //  * Sent from the worker to the main thread.
-  //  * When the worker responds to a `buildHTMLRequest` message.
+  //  * When the worker responds to a `buildRequest` message.
   //  * Provides:
-  //  * EITHER a fresh `srcdoc` for the iframe
+  //  * EITHER a fresh `buildResult`
   //  * OR an `error` if the build failed.
   | {
-      type: "buildHTMLResponse";
-      html?: string;
-      error?: Error;
+      type: "buildResponse";
+      requestId: string;
+      buildResult?: BuildResult;
+      error?: string;
     }
 
   // `contentRequest`
@@ -53,6 +60,7 @@ export type BuildWorkerMessage =
   | {
       type: "contentRequest";
       vizId: string;
+      requestId: string;
     }
 
   // `contentResponse`
@@ -62,6 +70,7 @@ export type BuildWorkerMessage =
       type: "contentResponse";
       vizId: string;
       content: any;
+      requestId: string;
     }
 
   // `resolveSlugRequest`
@@ -89,6 +98,7 @@ export type BuildWorkerMessage =
   | {
       type: "invalidateVizCacheRequest";
       changedVizIds: Array<string>;
+      requestId: string;
     }
 
   // `invalidateVizCacheResponse`
@@ -96,33 +106,45 @@ export type BuildWorkerMessage =
   //  * Confirms cache invalidation.
   | {
       type: "invalidateVizCacheResponse";
+      requestId: string;
+    };
+
+// The message types for the iframe.
+export type WindowMessage =
+  // `runJS` (request to iframe)
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading within the V3 runtime.
+  | {
+      type: "runJS";
+      js: string;
     }
 
-  // `resetSrcdocRequest`
-  //  * Sent from the main thread to the worker.
-  //  * When the runtime environment needs to be reset.
+  // `runCSS` (request to iframe)
+  //  * Sent from the main thread to the IFrame.
+  //  * Triggers hot reloading of CSS within the V3 runtime.
   | {
-      type: "resetSrcdocRequest";
-      vizId: string;
-      changedVizIds: Array<string>;
-    };
-export type WindowMessage =
-  // `runDone`
+      type: "runCSS";
+      css: string;
+    }
+
+  // `runDone` (response to "runJS" from iframe)
   //  * Sent from the iframe to the main thread.
   //  * Indicates successful code execution.
   | {
       type: "runDone";
+      requestId: string;
     }
 
-  // `runError`
+  // `runError` (response to "runJS" from iframe)
   //  * Sent from the iframe to the main thread.
   //  * Indicates an error during code execution.
   | {
       type: "runError";
       error: Error;
+      requestId: string;
     }
 
-  // `writeFile`
+  // `writeFile` (request from user generated code running inside iframe)
   //  * Sent from the iframe to the main thread.
   //  * Request to write file content.
   | {

@@ -66,25 +66,24 @@ export const htmlTemplate = ({
         document.body.appendChild(script);
         run();
       };
-      const runCSS = (src, id) => {
-        const styleElementId = 'injected-style' + id;
-        let style = document.getElementById(styleElementId);
+      const runCSS = (css) => {
+        let style = document.getElementById('injected-style');
         if (!style) {
           style = document.createElement('style');
           style.type = 'text/css';
-          style.id = styleElementId;
+          style.id = 'injected-style';
           document.head.appendChild(style);
         }
-        style.textContent = src;
+        style.textContent = css;
       };
       onmessage = (message) => {
         switch (message.data.type) {
           case 'runJS':
-            runJS(message.data.src);
+            runJS(message.data.js);
             parent.postMessage({ type: 'runDone' }, "*");
             break;
           case 'runCSS':
-            runCSS(message.data.src, message.data.id);
+            runCSS(message.data.css);
             break;
           case 'ping':
             parent.postMessage({ type: 'pong' }, "*");

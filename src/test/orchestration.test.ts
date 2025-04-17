@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { testMockedIframeWithWorker } from "./testMockedIframeWithWorker";
-import { createRuntime } from "../createRuntime";
+import { createRuntime } from "../orchestration/createRuntime";
+import { BuildWorkerMessage } from "../orchestration/types";
 
 // Mock Worker since it's not available in Node.js environment
 class MockWorker {
@@ -70,16 +71,18 @@ describe("Iframe and Worker Management", () => {
       constructor(public url: string) {}
 
       postMessage(message: any) {
-        if (message.type === "buildHTMLRequest") {
+        if (message.type === "buildRequest") {
           setTimeout(() => {
             const listeners =
               this.listeners["message"] || [];
+            const data: BuildWorkerMessage = {
+              type: "buildResponse",
+              error: "Test build error",
+              requestId: message.requestId,
+            };
             listeners.forEach((callback) =>
               callback({
-                data: {
-                  type: "buildHTMLResponse",
-                  error: new Error("Test build error"),
-                },
+                data,
               }),
             );
           }, 10);
@@ -124,8 +127,10 @@ describe("Iframe and Worker Management", () => {
         worker,
       });
 
-      runtime.reload({
-        "index.js": "console.log('Hello from test');",
+      runtime.run({
+        files: {
+          "index.js": "console.log('Hello from test');",
+        },
       });
 
       // Wait for async operations

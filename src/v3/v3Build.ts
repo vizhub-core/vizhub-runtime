@@ -13,6 +13,7 @@ import {
   getConfiguredLibraries,
   dependencySource,
 } from "../common/packageJson";
+import { BuildResult } from "../build/types";
 
 export const v3Build = async ({
   files,
@@ -30,7 +31,7 @@ export const v3Build = async ({
   vizId: VizId;
   slugCache?: SlugCache;
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
-}): Promise<string> => {
+}): Promise<BuildResult> => {
   const { src, cssFiles } = await computeBundleJSV3({
     files,
     rollup,
@@ -42,21 +43,25 @@ export const v3Build = async ({
   });
 
   // Generate CSS styles from imported CSS files
-  let styles = "";
+  let cssFileTextArray: string[] = [];
 
   // Inject CSS files.
   if (cssFiles.length > 0) {
     for (let i = 0; i < cssFiles.length; i++) {
       const id: ResolvedVizFileId = cssFiles[i];
-      const indent = i > 0 ? "    " : "\n    ";
-      const styleElementId = "injected-style" + id;
       const { vizId, fileName } = parseId(id);
       const content = await vizCache.get(vizId);
-      const src = getFileText(content, fileName);
-      styles += `${indent}<style id="${styleElementId}">${src}</style>`;
+      const cssFileText = getFileText(content, fileName);
+      if (cssFileText) {
+        cssFileTextArray.push(cssFileText);
+      }
     }
   }
 
+  // The concatenated CSS text.
+  const css = cssFileTextArray.join("\n");
+
+  const styles = `\n    <style id="injected-style">${css}</style>`;
   // Generate CDN script tags for dependencies
   let cdn = "";
   const deps: [string, string][] = Object.entries(
@@ -66,15 +71,19 @@ export const v3Build = async ({
     const libraries = getConfiguredLibraries(files);
     cdn = deps
       .map(([name, version], i) => {
-        const src = dependencySource(
+        const dependencySrc = dependencySource(
           { name, version },
           libraries,
         );
         const indent = i > 0 ? "    " : "\n    ";
-        return `${indent}<script src="${src}"></script>`;
+        return `${indent}<script src="${dependencySrc}"></script>`;
       })
       .join("");
   }
 
-  return htmlTemplate({ cdn, src, styles });
+  return {
+    html: htmlTemplate({ cdn, src, styles }),
+    css,
+    js: src,
+  };
 };
