@@ -9,6 +9,7 @@ import {
 import { generateRequestId } from "./generateRequestId";
 import { BuildWorkerMessage } from "./types";
 import { build } from "../build";
+import { generateVizId } from "@vizhub/viz-utils";
 
 // Flag for debugging
 const DEBUG = false;
@@ -100,7 +101,8 @@ export const initWorker = () => {
 
     switch (data.type) {
       case "buildRequest": {
-        const { files, enableSourcemap, requestId } = data;
+        const { files, enableSourcemap, requestId, vizId } =
+          data;
 
         try {
           // Build HTML from the files
@@ -111,7 +113,8 @@ export const initWorker = () => {
               options: RollupOptions,
             ) => Promise<RollupBuild>,
             getSvelteCompiler,
-            // vizCache,
+            vizCache,
+            vizId,
             slugCache,
           });
           const message: BuildWorkerMessage = {

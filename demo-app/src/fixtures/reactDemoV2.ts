@@ -1,4 +1,6 @@
-export const reactDemoV2 = {
+import { VizHubRuntimeFixture } from "./types";
+
+export const reactDemoV2: VizHubRuntimeFixture = {
   label: "React Demo (v2)",
   status: "working",
   files: {

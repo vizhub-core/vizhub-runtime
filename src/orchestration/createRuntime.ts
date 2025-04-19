@@ -74,8 +74,12 @@ export const createRuntime = ({
   iframe: HTMLIFrameElement;
   worker: Worker;
   setBuildErrorMessage?: (error: string | null) => void;
-  getLatestContent?: (vizId: VizId) => Promise<VizContent>;
-  resolveSlugKey?: (slugKey: string) => Promise<VizId>;
+  getLatestContent?: (
+    vizId: VizId,
+  ) => Promise<VizContent | null>;
+  resolveSlugKey?: (
+    slugKey: string,
+  ) => Promise<VizId | null>;
   writeFile?: (fileName: string, content: string) => void;
 }): VizHubRuntime => {
   // Track the current state of the runtime
@@ -117,20 +121,52 @@ export const createRuntime = ({
           content,
         });
       });
-    } else if (
-      data.type === "resolveSlugRequest" &&
-      resolveSlugKey
-    ) {
+    } else if (data.type === "resolveSlugRequest") {
+      DEBUG &&
+        console.log(
+          "[worker] resolveSlugRequest",
+          JSON.stringify(data, null, 2),
+        );
       const { slugKey, requestId } = data;
 
-      resolveSlugKey(slugKey).then((vizId) => {
-        worker.postMessage({
+      if (resolveSlugKey) {
+        DEBUG &&
+          console.log(
+            "[worker] resolveSlugRequest: resolving slug key",
+            slugKey,
+          );
+        resolveSlugKey(slugKey).then(
+          (vizId: VizId | null) => {
+            DEBUG &&
+              console.log(
+                "[worker] resolveSlugRequest: resolved slug key",
+                slugKey,
+                "to vizId",
+                vizId,
+              );
+            const message: BuildWorkerMessage = {
+              type: "resolveSlugResponse",
+              vizId,
+              requestId,
+            };
+            worker.postMessage(message);
+          },
+        );
+      } else {
+        DEBUG &&
+          console.log(
+            "[worker] resolveSlugRequest: no slug resolver, returning null",
+            JSON.stringify(data, null, 2),
+          );
+        // If we don't have a slug resolver, we just
+        // send back the slug key as the vizId.
+        const message: BuildWorkerMessage = {
           type: "resolveSlugResponse",
-          slugKey,
-          vizId,
+          vizId: null,
           requestId,
-        });
-      });
+        };
+        worker.postMessage(message);
+      }
     }
   };
 
@@ -174,10 +210,12 @@ export const createRuntime = ({
     files,
     enableHotReloading = false,
     enableSourcemap = false,
+    vizId,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
+    vizId?: VizId;
   }) => {
     state = PENDING_CLEAN;
 
@@ -187,6 +225,7 @@ export const createRuntime = ({
     const buildResult = await build({
       files,
       enableSourcemap,
+      vizId,
     });
 
     // In this case, the build failed
@@ -195,76 +234,80 @@ export const createRuntime = ({
     if (!buildResult) {
       DEBUG &&
         console.log("[runtime] update: build failed");
-      return;
     }
 
     DEBUG && console.log("[runtime] update: after build");
 
-    const { html, js, css } = buildResult;
+    if (buildResult) {
+      const { html, js, css } = buildResult;
 
-    DEBUG &&
-      console.log(
-        "[runtime] enableHotReloading",
-        enableHotReloading,
-      );
+      DEBUG &&
+        console.log(
+          "[runtime] enableHotReloading",
+          enableHotReloading,
+        );
 
-    DEBUG &&
-      console.log(
-        "[runtime] html: ",
-        html?.substring(0, 200),
-      );
+      DEBUG &&
+        console.log(
+          "[runtime] html: ",
+          html?.substring(0, 200),
+        );
 
-    DEBUG &&
-      console.log("[runtime] js: ", js?.substring(0, 200));
+      DEBUG &&
+        console.log(
+          "[runtime] js: ",
+          js?.substring(0, 200),
+        );
 
-    DEBUG &&
-      console.log(
-        "[runtime] css: ",
-        css?.substring(0, 200),
-      );
+      DEBUG &&
+        console.log(
+          "[runtime] css: ",
+          css?.substring(0, 200),
+        );
 
-    // Clear the console before each run.
-    console.clear();
+      // Clear the console before each run.
+      !DEBUG && console.clear();
 
-    // If `enableHotReloading` is true, we also need to
-    // check that `js` is defined, since the desired behavior
-    // is that only if we are using the v3 runtime, then
-    // the hot reloading actually happens, and _only_ the v3 build
-    // outputs `js`, so the guard for `js` is really just
-    // checking that we are on v3.
-    if (enableHotReloading) {
-      if (css) {
-        const runCSSMessage: WindowMessage = {
-          type: "runCSS",
-          css,
-        };
-        if (!iframe.contentWindow) {
-          throw new Error(
-            "iframe.contentWindow is null - this should never happen",
+      // If `enableHotReloading` is true, we also need to
+      // check that `js` is defined, since the desired behavior
+      // is that only if we are using the v3 runtime, then
+      // the hot reloading actually happens, and _only_ the v3 build
+      // outputs `js`, so the guard for `js` is really just
+      // checking that we are on v3.
+      if (enableHotReloading) {
+        if (css) {
+          const runCSSMessage: WindowMessage = {
+            type: "runCSS",
+            css,
+          };
+          if (!iframe.contentWindow) {
+            throw new Error(
+              "iframe.contentWindow is null - this should never happen",
+            );
+          }
+          iframe.contentWindow.postMessage(
+            runCSSMessage,
+            window.location.origin,
           );
         }
-        iframe.contentWindow.postMessage(
-          runCSSMessage,
-          window.location.origin,
-        );
-      }
-      if (js) {
-        const runJSMessage: WindowMessage = {
-          type: "runJS",
-          js,
-        };
-        if (!iframe.contentWindow) {
-          throw new Error(
-            "iframe.contentWindow is null - this should never happen",
+        if (js) {
+          const runJSMessage: WindowMessage = {
+            type: "runJS",
+            js,
+          };
+          if (!iframe.contentWindow) {
+            throw new Error(
+              "iframe.contentWindow is null - this should never happen",
+            );
+          }
+          iframe.contentWindow.postMessage(
+            runJSMessage,
+            window.location.origin,
           );
         }
-        iframe.contentWindow.postMessage(
-          runJSMessage,
-          window.location.origin,
-        );
+      } else {
+        iframe.srcdoc = html || "";
       }
-    } else {
-      iframe.srcdoc = html || "";
     }
 
     // TypeScript can't comprehend that `state`
@@ -281,6 +324,7 @@ export const createRuntime = ({
           files: latestFiles,
           enableHotReloading,
           enableSourcemap,
+          vizId,
         });
       });
       state = ENQUEUED;
@@ -295,10 +339,12 @@ export const createRuntime = ({
     files,
     enableHotReloading = false,
     enableSourcemap = false,
+    vizId = undefined,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
+    vizId?: VizId;
   }) => {
     DEBUG && console.log("[runtime] run");
     latestFiles = null;
@@ -309,6 +355,7 @@ export const createRuntime = ({
         files,
         enableHotReloading,
         enableSourcemap,
+        vizId,
       });
     } else if (state === PENDING_CLEAN) {
       DEBUG && console.log("[runtime] run: PENDING_CLEAN");

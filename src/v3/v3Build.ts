@@ -3,7 +3,11 @@ import { getFileText } from "@vizhub/viz-utils";
 import { computeBundleJSV3 } from "./computeBundleJSV3";
 import { htmlTemplate } from "./htmlTemplate";
 import { VizCache } from "./vizCache.js";
-import { FileCollection, VizId } from "@vizhub/viz-types";
+import {
+  FileCollection,
+  VizContent,
+  VizId,
+} from "@vizhub/viz-types";
 import { parseId } from "./parseId.js";
 import { ResolvedVizFileId } from "./types.js";
 import { SlugCache } from "./slugCache.js";
@@ -49,11 +53,25 @@ export const v3Build = async ({
   if (cssFiles.length > 0) {
     for (let i = 0; i < cssFiles.length; i++) {
       const id: ResolvedVizFileId = cssFiles[i];
-      const { vizId, fileName } = parseId(id);
-      const content = await vizCache.get(vizId);
-      const cssFileText = getFileText(content, fileName);
-      if (cssFileText) {
-        cssFileTextArray.push(cssFileText);
+
+      const parsedId = parseId(id);
+      const parsedVizId = parsedId.vizId;
+      const parsedFileName = parsedId.fileName;
+
+      // If we are resolving to the root vizId, we can
+      // use the files object directly.
+      // Otherwise, we need to get the content from the vizCache.
+      // This makes it so the vizCache is _only_ used for
+      // resolving cross-viz imports.
+      let fileText: string | null = null;
+      if (parsedVizId === vizId && files) {
+        fileText = files[parsedFileName] || null;
+      } else {
+        const content = await vizCache.get(parsedVizId);
+        fileText = getFileText(content, parsedFileName);
+      }
+      if (fileText) {
+        cssFileTextArray.push(fileText);
       }
     }
   }

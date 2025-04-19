@@ -10,7 +10,10 @@ import {
   VizCache,
 } from "../v3";
 import { BuildResult } from "./types";
-import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import {
+  generateVizId,
+  vizFilesToFileCollection,
+} from "@vizhub/viz-utils";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "../v2";
 import { v4Build } from "../v4";
@@ -129,7 +132,9 @@ export const build = async ({
     }
 
     if (!vizId) {
-      throw new Error("vizId is required for v3 runtime");
+      throw new Error(
+        "vizId is required for v3 runtime if vizCache is provided",
+      );
     }
 
     return await v3Build({

@@ -7,24 +7,23 @@ import {
 import BuildWorker from "./buildWorker?worker";
 import { demoButtons } from "./demoButtons";
 import { fixtures } from "./fixtures";
-import { VizContent, VizId } from "@vizhub/viz-types";
 
-const vizContentsArray = fixtures.map(
-  ({ label, files, status }) => {
-    return {
-      label,
-      status,
-      vizContent: createVizContent(files),
-    };
-  },
-);
+// const vizContentsArray = fixtures.map(
+//   ({ label, files, status, id }) => {
+//     return {
+//       label,
+//       status,
+//       vizContent: createVizContent(files),
+//     };
+//   },
+// );
 
-const vizContentsMap = new Map<VizId, VizContent>(
-  vizContentsArray.map(({ vizContent }) => [
-    vizContent.id,
-    vizContent,
-  ]),
-);
+// const vizContentsMap = new Map<VizId, VizContent>(
+//   vizContentsArray.map(({ vizContent }) => [
+//     vizContent.id,
+//     vizContent,
+//   ]),
+// );
 
 // Get the iframe from the DOM
 const iframe = document.getElementById(
@@ -38,14 +37,27 @@ const worker = new BuildWorker();
 const runtime: VizHubRuntime = createRuntime({
   iframe,
   worker,
-  getLatestContent: async (vizId) => {
-    const content = vizContentsMap.get(vizId);
-    if (!content) {
-      throw new Error(
-        `No content found for vizId: ${vizId}`,
-      );
+  resolveSlugKey: async (slugKey: string) => {
+    const fixture = fixtures.find(
+      (fixture) => fixture.slugKey === slugKey,
+    );
+    if (!fixture || !fixture.vizId) {
+      return null;
     }
-    return content;
+    return fixture.vizId;
+  },
+  getLatestContent: async (vizId) => {
+    const fixture = fixtures.find(
+      (fixture) => fixture.vizId === vizId,
+    );
+    if (!fixture) {
+      return null;
+    }
+    return createVizContent(
+      fixture.files,
+      fixture.label,
+      fixture.vizId,
+    );
   },
   setBuildErrorMessage: (message) => {
     message && console.error("Build error:", message);
@@ -55,4 +67,4 @@ const runtime: VizHubRuntime = createRuntime({
 // Expose runtime on the parent window for testing
 window.runtime = runtime;
 
-demoButtons(runtime, vizContentsArray);
+demoButtons(runtime, fixtures);

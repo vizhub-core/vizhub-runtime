@@ -1,4 +1,6 @@
-export const helloWorldDemoV1 = {
+import { VizHubRuntimeFixture } from "./types";
+
+export const helloWorldDemoV1: VizHubRuntimeFixture = {
   label: "Hello World Demo (v1)",
   status: "working",
   files: {
