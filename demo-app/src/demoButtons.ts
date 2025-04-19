@@ -18,7 +18,7 @@ export const demoButtons = (
   }
 
   // Create buttons from configurations
-  fixtures.forEach(({ label, files, status }) => {
+  fixtures.forEach(({ label, files, status, vizId }) => {
     const button = document.createElement("button");
     button.textContent = label;
     button.className = "status-" + status;
@@ -31,6 +31,7 @@ export const demoButtons = (
 
         // Enable hot reloading when running the same example twice
         enableHotReloading: label === currentExample,
+        vizId,
       });
       currentExample = label;
     });

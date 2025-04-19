@@ -3,8 +3,8 @@ import { VizHubRuntimeFixture } from "./types";
 export const d3DemoV3: VizHubRuntimeFixture = {
   label: "D3 Demo (v3)",
   status: "working",
-  slug: "joe/d3-demo-v3",
-  id: "c47442fcde4347da829d0be529974fcf",
+  slugKey: "joe/d3-demo-v3",
+  vizId: "c47442fcde4347da829d0be529974fcf",
   files: {
     "index.js": `
     import { select, range } from 'd3';

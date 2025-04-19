@@ -1,7 +1,6 @@
 // type FileCollection = Record<string, string>;
 import { FileCollection, VizId } from "@vizhub/viz-types";
 import { BuildResult } from "../build/types";
-import { ResolvedVizFileId } from "../v3/types";
 
 export type VizHubRuntime = {
   // Resets the iframe srcdoc when code changes.
@@ -16,6 +15,10 @@ export type VizHubRuntime = {
 
     // Toggle for sourcemaps.
     enableSourcemap?: boolean;
+
+    // The ID of the viz.
+    // Only strictly required for v3 runtime.
+    vizId?: VizId;
   }) => void;
 
   // Cleans up the event listeners from the Worker and the iframe.
@@ -39,6 +42,7 @@ export type BuildWorkerMessage =
       files: FileCollection;
       enableSourcemap: boolean;
       requestId: string;
+      vizId?: VizId;
     }
 
   // `buildResponse`

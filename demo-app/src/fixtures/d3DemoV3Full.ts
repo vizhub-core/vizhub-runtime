@@ -2,7 +2,8 @@ import { VizHubRuntimeFixture } from "./types";
 
 export const d3DemoV3Full: VizHubRuntimeFixture = {
   label: "Full V3 Demo",
-  status: "failing",
+  status: "working",
+  vizId: "88882545479349f2ab35648786b0aa52",
   files: {
     "index.js": `
     import { select, range } from 'd3';

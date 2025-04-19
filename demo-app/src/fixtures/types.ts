@@ -7,8 +7,8 @@ export type VizHubRuntimeFixture = {
   files: FileCollection;
 
   // For testing V3 cross-viz imports only
-  slug?: string;
-  id?: VizId;
+  slugKey?: string;
+  vizId?: VizId;
 };
 
 // label: "D3 Demo (v3)",

@@ -13,7 +13,7 @@ import {
 } from "./types";
 
 // Flag for debugging.
-const DEBUG = true;
+const DEBUG = false;
 
 // State constants:
 
@@ -74,8 +74,12 @@ export const createRuntime = ({
   iframe: HTMLIFrameElement;
   worker: Worker;
   setBuildErrorMessage?: (error: string | null) => void;
-  getLatestContent?: (vizId: VizId) => Promise<VizContent>;
-  resolveSlugKey?: (slugKey: string) => Promise<VizId>;
+  getLatestContent?: (
+    vizId: VizId,
+  ) => Promise<VizContent | null>;
+  resolveSlugKey?: (
+    slugKey: string,
+  ) => Promise<VizId | null>;
   writeFile?: (fileName: string, content: string) => void;
 }): VizHubRuntime => {
   // Track the current state of the runtime
@@ -131,21 +135,23 @@ export const createRuntime = ({
             "[worker] resolveSlugRequest: resolving slug key",
             slugKey,
           );
-        resolveSlugKey(slugKey).then((vizId: VizId) => {
-          DEBUG &&
-            console.log(
-              "[worker] resolveSlugRequest: resolved slug key",
-              slugKey,
-              "to vizId",
+        resolveSlugKey(slugKey).then(
+          (vizId: VizId | null) => {
+            DEBUG &&
+              console.log(
+                "[worker] resolveSlugRequest: resolved slug key",
+                slugKey,
+                "to vizId",
+                vizId,
+              );
+            const message: BuildWorkerMessage = {
+              type: "resolveSlugResponse",
               vizId,
-            );
-          const message: BuildWorkerMessage = {
-            type: "resolveSlugResponse",
-            vizId,
-            requestId,
-          };
-          worker.postMessage(message);
-        });
+              requestId,
+            };
+            worker.postMessage(message);
+          },
+        );
       } else {
         DEBUG &&
           console.log(
@@ -204,10 +210,12 @@ export const createRuntime = ({
     files,
     enableHotReloading = false,
     enableSourcemap = false,
+    vizId,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
+    vizId?: VizId;
   }) => {
     state = PENDING_CLEAN;
 
@@ -217,6 +225,7 @@ export const createRuntime = ({
     const buildResult = await build({
       files,
       enableSourcemap,
+      vizId,
     });
 
     // In this case, the build failed
@@ -256,10 +265,8 @@ export const createRuntime = ({
           css?.substring(0, 200),
         );
 
-      console.log("here");
-
       // Clear the console before each run.
-      // !DEBUG && console.clear();
+      !DEBUG && console.clear();
 
       // If `enableHotReloading` is true, we also need to
       // check that `js` is defined, since the desired behavior
@@ -317,6 +324,7 @@ export const createRuntime = ({
           files: latestFiles,
           enableHotReloading,
           enableSourcemap,
+          vizId,
         });
       });
       state = ENQUEUED;
@@ -331,10 +339,12 @@ export const createRuntime = ({
     files,
     enableHotReloading = false,
     enableSourcemap = false,
+    vizId = undefined,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
+    vizId?: VizId;
   }) => {
     DEBUG && console.log("[runtime] run");
     latestFiles = null;
@@ -345,6 +355,7 @@ export const createRuntime = ({
         files,
         enableHotReloading,
         enableSourcemap,
+        vizId,
       });
     } else if (state === PENDING_CLEAN) {
       DEBUG && console.log("[runtime] run: PENDING_CLEAN");

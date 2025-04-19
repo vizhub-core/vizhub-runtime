@@ -16,9 +16,10 @@ import {
 export const createVizContent = (
   files: FileCollection,
   title = "Sample Content for Exporting",
+  id = generateVizId(),
 ): VizContent => {
   return {
-    id: generateVizId(),
+    id,
     files: fileCollectionToVizFiles(files),
     title,
   };

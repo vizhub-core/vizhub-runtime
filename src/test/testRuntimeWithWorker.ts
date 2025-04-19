@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const DEBUG = false;
+const DEBUG = true;
 
 export async function testRuntimeWithWorker({
   browser,
