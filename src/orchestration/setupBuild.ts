@@ -23,7 +23,10 @@ export const setupBuild =
       (resolve) => {
         const buildListener = (e: MessageEvent) => {
           const data: BuildWorkerMessage = e.data;
-          if (data.type === "buildResponse") {
+          if (
+            data.type === "buildResponse" &&
+            data.requestId === requestId
+          ) {
             worker.removeEventListener(
               "message",
               buildListener,

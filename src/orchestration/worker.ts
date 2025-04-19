@@ -11,7 +11,7 @@ import { BuildWorkerMessage } from "./types";
 import { build } from "../build";
 
 // Flag for debugging
-const DEBUG = false;
+const DEBUG = true;
 
 export const initWorker = () => {
   DEBUG && console.log("[worker] initializing...");
