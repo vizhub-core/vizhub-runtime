@@ -1,16 +1,11 @@
 import { VizHubRuntime } from "@vizhub/runtime";
-import { VizContent } from "@vizhub/viz-types";
-import { vizFilesToFileCollection } from "@vizhub/viz-utils";
+import { VizHubRuntimeFixture } from "./fixtures/types";
 
 let currentExample: string;
 
 export const demoButtons = (
   runtime: VizHubRuntime,
-  vizContentsArray: Array<{
-    label: string;
-    status: string;
-    vizContent: VizContent;
-  }>,
+  fixtures: Array<VizHubRuntimeFixture>,
 ) => {
   // Get the button container from the DOM
   const buttonContainer = document.getElementById(
@@ -23,25 +18,23 @@ export const demoButtons = (
   }
 
   // Create buttons from configurations
-  vizContentsArray.forEach(
-    ({ label, vizContent, status }) => {
-      const button = document.createElement("button");
-      button.textContent = label;
-      button.className = "status-" + status;
+  fixtures.forEach(({ label, files, status }) => {
+    const button = document.createElement("button");
+    button.textContent = label;
+    button.className = "status-" + status;
 
-      // Add event listener
-      button.addEventListener("click", () => {
-        console.log(`Loading ${label}...`);
-        runtime.run({
-          files: vizFilesToFileCollection(vizContent.files),
+    // Add event listener
+    button.addEventListener("click", () => {
+      console.log(`Loading ${label}...`);
+      runtime.run({
+        files,
 
-          // Enable hot reloading when running the same example twice
-          enableHotReloading: label === currentExample,
-        });
-        currentExample = label;
+        // Enable hot reloading when running the same example twice
+        enableHotReloading: label === currentExample,
       });
+      currentExample = label;
+    });
 
-      buttonContainer.appendChild(button);
-    },
-  );
+    buttonContainer.appendChild(button);
+  });
 };

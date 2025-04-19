@@ -1,14 +1,12 @@
 import { VizHubRuntimeFixture } from "./types";
 
-export const d3DemoV3: VizHubRuntimeFixture = {
-  label: "D3 Demo (v3)",
-  status: "working",
-  slug: "joe/d3-demo-v3",
-  id: "c47442fcde4347da829d0be529974fcf",
+export const d3DemoV3Full: VizHubRuntimeFixture = {
+  label: "Full V3 Demo",
+  status: "failing",
   files: {
     "index.js": `
     import { select, range } from 'd3';
-    export const numCircles = 50;
+    import { numCircles } from '@joe/d3-demo-v3';
     export const main = (container) => {
       // Create SVG container
       const svg = select(container)

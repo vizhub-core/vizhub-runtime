@@ -38,22 +38,22 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "@types/uuid": "^10.0.0",
-    "jsdom": "^26.0.0",
-    "npm-check-updates": "^17.1.16",
+    "jsdom": "^26.1.0",
+    "npm-check-updates": "^17.1.18",
     "prettier": "^3.5.3",
-    "puppeteer": "^24.6.0",
-    "rollup": "^4.39.0",
+    "puppeteer": "^24.6.1",
+    "rollup": "^4.40.0",
     "svelte": "4.2.9",
     "typescript": "^5.8.3",
-    "vite": "^6.2.5",
+    "vite": "^6.3.2",
     "vitest": "^3.1.1"
   },
   "dependencies": {
-    "@rollup/browser": "^4.39.0",
+    "@rollup/browser": "^4.40.0",
     "@vizhub/viz-types": "^0.1.0",
-    "@vizhub/viz-utils": "^1.0.1",
+    "@vizhub/viz-utils": "^1.1.0",
     "magic-sandbox": "^2.2.0",
     "sucrase": "^3.35.0"
   }

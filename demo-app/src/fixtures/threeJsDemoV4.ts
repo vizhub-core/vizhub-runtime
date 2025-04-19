@@ -1,4 +1,6 @@
-export const threeJsDemoV4 = {
+import { VizHubRuntimeFixture } from "./types";
+
+export const threeJsDemoV4: VizHubRuntimeFixture = {
   label: "ThreeJS Demo (v4)",
   status: "working",
   files: {

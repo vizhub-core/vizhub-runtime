@@ -1,4 +1,6 @@
-export const d3DemoV2 = {
+import { VizHubRuntimeFixture } from "./types";
+
+export const d3DemoV2: VizHubRuntimeFixture = {
   label: "D3 Demo (v2)",
   status: "working",
   files: {
