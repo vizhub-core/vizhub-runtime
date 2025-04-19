@@ -54,7 +54,14 @@ export const computeBundleJSV3 = async ({
       sucrasePlugin(),
       transformSvelte({ getSvelteCompiler }),
       ...(vizCache
-        ? [vizLoad({ vizCache, trackCSSImport })]
+        ? [
+            vizLoad({
+              vizCache,
+              trackCSSImport,
+              vizId,
+              files,
+            }),
+          ]
         : []),
     ],
     onwarn(warning, warn) {

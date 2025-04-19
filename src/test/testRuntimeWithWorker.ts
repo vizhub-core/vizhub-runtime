@@ -2,6 +2,7 @@ import { Browser, Page } from "puppeteer";
 import { expect } from "vitest";
 import { FileCollection } from "@vizhub/viz-types";
 import { VizHubRuntime } from "../orchestration/types";
+import { generateVizId } from "@vizhub/viz-utils";
 
 declare global {
   interface Window {
@@ -9,7 +10,7 @@ declare global {
   }
 }
 
-const DEBUG = true;
+const DEBUG = false;
 
 export async function testRuntimeWithWorker({
   browser,
@@ -30,6 +31,8 @@ export async function testRuntimeWithWorker({
   }
   const page = await browser.newPage();
 
+  const vizId = generateVizId();
+
   try {
     // Load the pre-built demo app instead of injecting HTML
     await page.goto("http://localhost:3001");
@@ -49,14 +52,18 @@ export async function testRuntimeWithWorker({
     });
 
     // Initial code load
-    await page.evaluate((files) => {
-      window.runtime.run({
-        files,
-        // Set this to false for first run,
-        // to populate the srcdoc.
-        enableHotReloading: false,
-      });
-    }, initialFiles);
+    await page.evaluate(
+      ({ files, vizId }) => {
+        window.runtime.run({
+          files,
+          // Set this to false for first run,
+          // to populate the srcdoc.
+          enableHotReloading: false,
+          vizId,
+        });
+      },
+      { files: initialFiles, vizId },
+    );
 
     // Helper function for exponential backoff
     const waitForLog = async (expectedLog: string) => {
@@ -87,12 +94,16 @@ export async function testRuntimeWithWorker({
       for (const change of codeChanges) {
         logs.length = 0;
 
-        await page.evaluate((files) => {
-          window.runtime.run({
-            files,
-            enableHotReloading: true,
-          });
-        }, change.files);
+        await page.evaluate(
+          ({ files, vizId }) => {
+            window.runtime.run({
+              files,
+              enableHotReloading: true,
+              vizId,
+            });
+          },
+          { files: change.files, vizId },
+        );
 
         // Wait for update using exponential backoff
         await waitForLog(change.expectedLog);

@@ -1,5 +1,9 @@
 import { InputPluginOption } from "rollup";
-import { VizContent } from "@vizhub/viz-types";
+import {
+  FileCollection,
+  VizContent,
+  VizId,
+} from "@vizhub/viz-types";
 import { getFileText } from "@vizhub/viz-utils";
 import type { ResolvedVizFileId } from "./types";
 import { parseId } from "./parseId";
@@ -13,9 +17,13 @@ const debug = false;
 export const vizLoad = ({
   vizCache,
   trackCSSImport,
+  vizId,
+  files,
 }: {
   vizCache: VizCache;
   trackCSSImport: (cssFile: ResolvedVizFileId) => void;
+  vizId?: VizId;
+  files?: FileCollection;
 }): InputPluginOption => ({
   name: "vizLoad",
 
@@ -26,17 +34,21 @@ export const vizLoad = ({
       console.log("[vizLoadCSS]: load() " + id);
     }
 
-    const { vizId, fileName } = parseId(id);
+    const parsedId = parseId(id);
+    const parsedVizId = parsedId.vizId;
+    const parsedFileName = parsedId.fileName;
 
     if (debug) {
-      console.log("  [vizLoadCSS] vizId: " + vizId);
-      console.log("  [vizLoadCSS] fileName: " + fileName);
+      console.log("  [vizLoadCSS] vizId: " + parsedVizId);
+      console.log(
+        "  [vizLoadCSS] fileName: " + parsedFileName,
+      );
     }
 
     // For CSS imports, all we need to do here is
     // keep track of them so they can be injected
     // into the IFrame later.
-    if (fileName.endsWith(".css")) {
+    if (parsedFileName.endsWith(".css")) {
       if (debug) {
         console.log(
           "    [vizResolve] tracking CSS import for " + id,
@@ -50,13 +62,23 @@ export const vizLoad = ({
       return "";
     }
 
-    const content: VizContent = await vizCache.get(vizId);
-    const fileText = getFileText(content, fileName);
+    // If we are resolving to the root vizId, we can
+    // use the files object directly.
+    // Otherwise, we need to get the content from the vizCache.
+    // This makes it so the vizCache is _only_ used for
+    // resolving cross-viz imports.
+    let fileText: string | null = null;
+    if (parsedVizId === vizId && files) {
+      fileText = files[parsedFileName] || null;
+    } else {
+      const content = await vizCache.get(parsedVizId);
+      fileText = getFileText(content, parsedFileName);
+    }
 
     // If a file is imported but not found, throw an error.
     if (fileText === null) {
       throw new Error(
-        `Imported file "${fileName}" not found.`,
+        `Imported file "${parsedFileName}" not found.`,
       );
       // TODO ideally show username/slug instead of vizId
       // `Imported file "${fileName}" not found in viz ${vizId}`,
