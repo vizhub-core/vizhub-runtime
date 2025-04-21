@@ -133,9 +133,33 @@ export function render(element) {
     "d3": "7.8.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
+  },
+  "vizhub": {
+    "libraries": {
+      "d3": {
+        "global": "d3",
+        "path": "/dist/d3.min.js"
+      },
+      "react": {
+        "global": "React",
+        "path": "/umd/react.production.min.js"
+      },
+      "react-dom": {
+        "global": "ReactDOM",
+        "path": "/umd/react-dom.production.min.js"
+      }
+    }
   }
 }
 ```
+
+The `vizhub` configuration in `package.json` specifies how external dependencies should be loaded:
+
+- `libraries`: Maps package names to their UMD configuration
+- `global`: The global variable name that the UMD bundle exposes
+- `path`: The path to the UMD bundle within the package's CDN distribution
+
+This configuration allows the V2 runtime to properly load and expose UMD bundles from CDNs like jsDelivr or unpkg. The runtime will automatically prefix the `path` with the appropriate CDN URL.
 
 V2 is ideal for more complex projects that require modular JavaScript and external dependencies that provide UMD builds. Note that the V2 runtime does not support ESM builds for external dependencies (see V4 if you need this).
 
