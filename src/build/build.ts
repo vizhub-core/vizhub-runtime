@@ -109,49 +109,49 @@ export const build = async ({
         ),
       };
     }
-    // if (version === "v3") {
-    //   if (!rollup) {
-    //     throw new Error(
-    //       "Rollup is required for v3 runtime",
-    //     );
-    //   }
+    if (version === "v3") {
+      if (!rollup) {
+        throw new Error(
+          "Rollup is required for v3 runtime",
+        );
+      }
 
-    //   // We set up a "fake" viz cache.
-    //   // It's needed because of the way the CSS import resolution works.
-    //   if (!vizCache && !vizId) {
-    //     const vizContent = createVizContent(files);
-    //     vizId = vizContent.id;
-    //     vizCache = createVizCache({
-    //       initialContents: [vizContent],
-    //       handleCacheMiss: async () => {
-    //         throw new Error(
-    //           "Cache miss handler not implemented",
-    //         );
-    //       },
-    //     });
-    //   }
+      // We set up a "fake" viz cache.
+      // It's needed because of the way the CSS import resolution works.
+      if (!vizCache && !vizId) {
+        const vizContent = createVizContent(files);
+        vizId = vizContent.id;
+        vizCache = createVizCache({
+          initialContents: [vizContent],
+          handleCacheMiss: async () => {
+            throw new Error(
+              "Cache miss handler not implemented",
+            );
+          },
+        });
+      }
 
-    //   if (!vizCache) {
-    //     throw new Error(
-    //       "vizCache is required for v3 runtime",
-    //     );
-    //   }
+      if (!vizCache) {
+        throw new Error(
+          "vizCache is required for v3 runtime",
+        );
+      }
 
-    //   if (!vizId) {
-    //     throw new Error(
-    //       "vizId is required for v3 runtime if vizCache is provided",
-    //     );
-    //   }
+      if (!vizId) {
+        throw new Error(
+          "vizId is required for v3 runtime if vizCache is provided",
+        );
+      }
 
-    //   return await v3Build({
-    //     files,
-    //     rollup,
-    //     vizCache,
-    //     vizId,
-    //     slugCache,
-    //     getSvelteCompiler,
-    //   });
-    // }
+      return await v3Build({
+        files,
+        rollup,
+        vizCache,
+        vizId,
+        slugCache,
+        getSvelteCompiler,
+      });
+    }
 
     // if (version === "v4") {
     //   if (!rollup) {
