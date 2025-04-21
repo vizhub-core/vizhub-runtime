@@ -153,24 +153,24 @@ export const build = async ({
       });
     }
 
-    // if (version === "v4") {
-    //   if (!rollup) {
-    //     throw new Error(
-    //       "Rollup is required for v4 runtime",
-    //     );
-    //   }
-    //   DEBUG &&
-    //     console.log("[build] v4Build", {
-    //       files,
-    //       rollup,
-    //       enableSourcemap,
-    //     });
-    //   return {
-    //     html: magicSandbox(
-    //       await v4Build({ files, rollup, enableSourcemap }),
-    //     ),
-    //   };
-    // }
+    if (version === "v4") {
+      if (!rollup) {
+        throw new Error(
+          "Rollup is required for v4 runtime",
+        );
+      }
+      DEBUG &&
+        console.log("[build] v4Build", {
+          files,
+          rollup,
+          enableSourcemap,
+        });
+      return {
+        html: magicSandbox(
+          await v4Build({ files, rollup, enableSourcemap }),
+        ),
+      };
+    }
     throw new Error(
       `Unsupported runtime version: ${version}`,
     );
