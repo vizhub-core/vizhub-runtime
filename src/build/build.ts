@@ -97,18 +97,18 @@ export const build = async ({
       };
     }
 
-    // if (version === "v2") {
-    //   if (!rollup) {
-    //     throw new Error(
-    //       "Rollup is required for v2 runtime",
-    //     );
-    //   }
-    //   return {
-    //     html: magicSandbox(
-    //       await v2Build({ files, rollup, enableSourcemap }),
-    //     ),
-    //   };
-    // }
+    if (version === "v2") {
+      if (!rollup) {
+        throw new Error(
+          "Rollup is required for v2 runtime",
+        );
+      }
+      return {
+        html: magicSandbox(
+          await v2Build({ files, rollup, enableSourcemap }),
+        ),
+      };
+    }
     // if (version === "v3") {
     //   if (!rollup) {
     //     throw new Error(
