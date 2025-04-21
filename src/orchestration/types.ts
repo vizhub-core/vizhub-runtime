@@ -10,7 +10,6 @@ export type VizHubRuntime = {
 
     // Toggle for hot reloading,
     // only respected for v3 runtime.
-
     enableHotReloading?: boolean;
 
     // Toggle for sourcemaps.

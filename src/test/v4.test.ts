@@ -11,6 +11,8 @@ import {
   threeJsUsage,
   reactHooks,
   typeScriptSupport,
+  jsScriptTagTypeModulesRelative,
+  reactJsxWithoutImport,
 } from "./fixtures/v4";
 // import { JSDOM } from "jsdom";
 // import { setJSDOM } from "../common/domParser";
@@ -44,6 +46,14 @@ describe("VizHub Runtime v4", () => {
     });
   });
 
+  it("should handle script type=module with relative file imports", async () => {
+    await testInBrowser({
+      browser,
+      files: jsScriptTagTypeModulesRelative,
+      expectedLog: "Hello, Relative ES Module File!",
+    });
+  });
+
   it("should handle fetch interception", async () => {
     await testInBrowser({
       browser,
@@ -60,15 +70,32 @@ describe("VizHub Runtime v4", () => {
     });
   });
 
-  it.skip("should handle React JSX", async () => {
+  it("should handle React JSX", async () => {
     await testInBrowser({
       browser,
       files: reactJsx,
-      expectedLog: "Hello React JSX!",
       evaluateInBrowser: async (page) => {
         return await page.evaluate(() => {
-          return document.querySelector("#root div")
-            ?.textContent;
+          return (
+            document.querySelector("#root div")
+              ?.textContent === "Hello React JSX!"
+          );
+        });
+      },
+    });
+  });
+
+  it("should handle React JSX without React import", async () => {
+    await testInBrowser({
+      browser,
+      files: reactJsxWithoutImport,
+      evaluateInBrowser: async (page) => {
+        return await page.evaluate(() => {
+          return (
+            document.querySelector("#root div")
+              ?.textContent ===
+            "Hello React JSX without React import!"
+          );
         });
       },
     });

@@ -1,8 +1,10 @@
 export { jsScriptTagTypeModule } from "./jsScriptTagTypeModule";
 export { jsScriptTagTypeModules } from "./jsScriptTagTypeModules";
+export { jsScriptTagTypeModulesRelative } from "./jsScriptTagTypeModulesRelative";
 export { fetchInterception } from "./fetchInterception";
 export { esmBuild } from "./esmBuild";
 export { reactJsx } from "./reactJsx";
+export { reactJsxWithoutImport } from "./reactJsxWithoutImport";
 export { d3Usage } from "./d3Usage";
 export { threeJsUsage } from "./threeJsUsage";
 export { reactHooks } from "./reactHooks";

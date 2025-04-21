@@ -9,7 +9,6 @@ export const determineRuntimeVersion = (
   }
 
   const hasIndexHTML = "index.html" in files;
-
   const hasIndexJS = "index.js" in files;
   const hasIndexJSX = "index.jsx" in files;
 

@@ -1,5 +1,7 @@
 import { FileCollection } from "@vizhub/viz-types";
-import { Plugin } from "rollup";
+import type { Plugin } from "rollup";
+
+export const VIRTUAL_PREFIX = "\0virtual:";
 
 const normalizePath = (filepath: string): string => {
   // Remove leading ./
@@ -44,18 +46,25 @@ export const virtualFileSystem = (
     name: "virtual-file-system",
 
     resolveId(source: string, importer?: string) {
+      // Strip prefix from importer if present
+      const cleanImporter = importer?.startsWith(
+        VIRTUAL_PREFIX,
+      )
+        ? importer.slice(VIRTUAL_PREFIX.length)
+        : importer;
+
       // Handle relative paths
       if (
         source.startsWith("./") ||
         source.startsWith("../")
       ) {
-        const resolvedPath = importer
-          ? normalizePath(joinPaths(importer, source))
+        const resolvedPath = cleanImporter
+          ? normalizePath(joinPaths(cleanImporter, source))
           : normalizePath(source);
 
         // Try exact match first
         if (files[resolvedPath]) {
-          return resolvedPath;
+          return VIRTUAL_PREFIX + resolvedPath;
         }
 
         // Try with extensions if no exact match is found
@@ -63,14 +72,14 @@ export const virtualFileSystem = (
         for (const ext of extensions) {
           const pathWithExt = resolvedPath + ext;
           if (files[pathWithExt]) {
-            return pathWithExt;
+            return VIRTUAL_PREFIX + pathWithExt;
           }
         }
       }
 
       // Handle bare module imports
       if (files[source]) {
-        return source;
+        return VIRTUAL_PREFIX + source;
       }
 
       // Try bare imports with extensions
@@ -78,7 +87,7 @@ export const virtualFileSystem = (
       for (const ext of extensions) {
         const pathWithExt = source + ext;
         if (files[pathWithExt]) {
-          return pathWithExt;
+          return VIRTUAL_PREFIX + pathWithExt;
         }
       }
 
@@ -86,11 +95,13 @@ export const virtualFileSystem = (
     },
 
     load(id: string) {
-      // Return the contents if the file exists in our virtual system
-      if (files[id]) {
-        return files[id];
+      // Only handle our virtual-prefixed IDs
+      if (id.startsWith(VIRTUAL_PREFIX)) {
+        const actualId = id.slice(VIRTUAL_PREFIX.length);
+        if (files[actualId]) {
+          return files[actualId];
+        }
       }
-
       return null;
     },
   };

@@ -1,5 +1,5 @@
 export { createRuntime } from "./orchestration/createRuntime";
-export { build } from "./build";
+export { build, determineRuntimeVersion } from "./build";
 export type { BuildResult, runtimeVersion } from "./build";
 export type { VizHubRuntime } from "./orchestration/types";
 
