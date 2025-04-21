@@ -32,12 +32,9 @@ export const threeJsDemoV4: VizHubRuntimeFixture = {
       <script type="module" src="index.js"></script>
     </body>
   </html>`,
-    "index.js": `
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+    "config.js": `
     // Configuration object for tweakable parameters
-    const config = {
+    export const config = {
       sphere: {
         radius: 0.4,
         segments: 32,
@@ -52,7 +49,11 @@ export const threeJsDemoV4: VizHubRuntimeFixture = {
         maxDistance: 30,
         initialZ: 7,
       },
-    };
+    };`,
+    "index.js": `
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { config } from './config';
     
     // Set up the scene, camera, and renderer
     const container = document.getElementById('container');

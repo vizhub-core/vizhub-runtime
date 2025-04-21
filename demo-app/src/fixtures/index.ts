@@ -5,7 +5,9 @@ import { jsScriptTagTypeModules } from "./jsScriptTagTypeModules";
 import { reactDemoV2 } from "./reactDemoV2";
 import { threeJsDemoV4 } from "./threeJsDemoV4";
 import { d3DemoV3Full } from "./d3DemoV3Full";
+import { reactDemoV4 } from "./reactDemoV4";
 import { VizHubRuntimeFixture } from "./types";
+import { reactDemoV4TypeScript } from "./reactDemoV4TypeScript";
 
 export const fixtures: Array<VizHubRuntimeFixture> = [
   helloWorldDemoV1,
@@ -15,4 +17,6 @@ export const fixtures: Array<VizHubRuntimeFixture> = [
   d3DemoV3Full,
   threeJsDemoV4,
   jsScriptTagTypeModules,
+  reactDemoV4,
+  reactDemoV4TypeScript,
 ];

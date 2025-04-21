@@ -10,6 +10,8 @@ export type SlugCache = {
 
 // A cache of viz IDs for slug resolution.
 // Maps slug strings (username/slug) to viz IDs.
+// Side effect: `initialMappings` is mutated to add new mappings.
+// This is used to resolve slugs to viz IDs.
 export const createSlugCache = ({
   initialMappings = {},
   handleCacheMiss,
@@ -19,14 +21,6 @@ export const createSlugCache = ({
     slug: SlugIdentifier,
   ) => Promise<VizId>;
 }): SlugCache => {
-  // Track the mapping of slugs to viz IDs
-  const slugMap = new Map<SlugIdentifier, VizId>(
-    Object.entries(initialMappings) as [
-      SlugIdentifier,
-      VizId,
-    ][],
-  );
-
   // Gets the viz ID for a slug.
   // Returns the cached ID if it exists.
   // Otherwise, calls handleCacheMiss to resolve the slug.
@@ -34,7 +28,7 @@ export const createSlugCache = ({
     slug: SlugIdentifier,
   ): Promise<VizId> => {
     const cachedVizId: VizId | undefined =
-      slugMap.get(slug);
+      initialMappings[slug];
 
     // Cache hit
     if (cachedVizId !== undefined) {
@@ -51,7 +45,7 @@ export const createSlugCache = ({
     const resolvedVizId = await handleCacheMiss(slug);
 
     if (resolvedVizId) {
-      slugMap.set(slug, resolvedVizId);
+      initialMappings[slug] = resolvedVizId;
       return resolvedVizId;
     }
 
@@ -60,12 +54,12 @@ export const createSlugCache = ({
 
   // Updates the mapping of a slug to a viz ID in the cache.
   const set = (slug: SlugIdentifier, vizId: VizId) => {
-    slugMap.set(slug, vizId);
+    initialMappings[slug] = vizId;
   };
 
   // Removes a slug mapping from the cache.
   const invalidate = (slug: SlugIdentifier) => {
-    slugMap.delete(slug);
+    delete initialMappings[slug];
   };
 
   return { get, set, invalidate };

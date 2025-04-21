@@ -23,14 +23,15 @@ The library automatically detects which runtime version to use based on the file
 | **Custom `index.html`** | ✅     | ✅     | ⬜️     | ✅     |
 | **Local ES Modules**    | ⬜️     | ✅     | ✅     | ✅     |
 | **UMD Libraries**       | ✅     | ✅     | ✅     | ⬜️     |
+| **`package.json`**      | ⬜️     | ✅     | ✅     | ⬜️     |
 | **ESM Libraries**       | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **React JSX**           | ⬜️     | ✅     | ⬜️     | ✅     |
-| **TypeScript**          | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **Svelte**              | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Cross-Viz Imports**   | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Hot Reloading**       | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **State Management**    | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Import from CSV**     | ⬜️     | ⬜️     | ✅     | ⬜️     |
+| **TypeScript**          | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **`fetch` proxy**       | ✅     | ✅     | ⬜️     | ✅     |
 
 ## V1 Runtime
@@ -152,14 +153,22 @@ In V3 runtime:
 - Cross-viz imports allow you to import code from other viz instances
 - The runtime provides a built-in state management system
 
-### State Management in V3
+### State Management and Hot Reloading in V3
 
-V3 runtime includes a built-in state management system via the [unidirectional-data-flow](https://www.npmjs.com/package/unidirectional-data-flow) package ([GitHub](https://github.com/vizhub-core/unidirectional-data-flow)). This provides React-like state management capabilities with:
+V3 runtime includes a built-in state management system based on the [unidirectional-data-flow](https://www.npmjs.com/package/unidirectional-data-flow) package ([GitHub](https://github.com/vizhub-core/unidirectional-data-flow)). This provides React-like state management capabilities with:
 
-- A `main` entry point
+- A `main` entry point that receives container and state management options
 - A minimal state management system based on `state` and `setState`
 - Similar semantics to React's `useState` hook: `const [state, setState] = useState({})`
 - Automatic re-rendering when state changes
+- Hot module reloading that preserves state between updates
+
+The hot reloading system will:
+
+- Preserve state between code updates
+- Re-execute the main function with the current state
+- Only reload changed modules
+- Maintain the visualization's current state (e.g. D3 selections, transitions)
 
 ### The Problem: Re-using D3 Rendering Logic Across Frameworks
 
@@ -218,42 +227,59 @@ As a VizHub user, you'll create an `index.html` file with import maps and ES mod
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <title>React App</title>
     <script type="importmap">
       {
         "imports": {
-          "utils": "./utils.js",
-          "d3": "https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm"
+          "react": "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
+          "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm"
         }
       }
     </script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="index.js"></script>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
 ```
 
-**index.js**
+**index.tsx**
 
-```javascript
-import { createApp } from "utils";
-import * as d3 from "d3";
+```typescript
+import React, { useState, FC } from "react";
+import { createRoot } from "react-dom/client";
 
-createApp(document.getElementById("app"));
+interface CounterProps {}
+
+const Counter: FC<CounterProps> = () => {
+  const [count, setCount] = useState<number>(0);
+
+  return (
+    <div>
+      <h1>Counter: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+};
+
+const root = createRoot(document.getElementById("root")!);
+root.render(<Counter />);
 ```
 
-**utils.js**
+V4 is ideal for modern browsers with native ES module support, TypeScript development, and when you want direct control over module resolution. It supports:
 
-```javascript
-export function createApp(element) {
-  element.innerHTML = "<h1>Hello from V4 runtime!</h1>";
-}
-```
-
-V4 is ideal for modern browsers with native ES module support and when you want direct control over module resolution.
+- TypeScript with full type checking
+- React with modern ESM builds
+- Import maps for direct CDN dependencies
+- Native ES modules without bundling
+- Local module imports with relative paths
 
 ## Key Features
 

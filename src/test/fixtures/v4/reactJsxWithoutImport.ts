@@ -1,4 +1,4 @@
-export const reactJsx = {
+export const reactJsxWithoutImport = {
   "index.html": `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,9 +7,9 @@ export const reactJsx = {
     <script type="importmap">
       {
         "imports": {
-          "react": "https://cdn.jsdelivr.net/npm/react@19.0.0/+esm",
-          "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.0.0/jsx-runtime/+esm",
-          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.0.0/client/+esm"
+          "react": "https://cdn.jsdelivr.net/npm/react@19.1.0/+esm",
+          "react/jsx-runtime": "https://cdn.jsdelivr.net/npm/react@19.1.0/jsx-runtime/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@19.1.0/client/+esm"
         }
       }
     </script>
@@ -20,7 +20,6 @@ export const reactJsx = {
   </body>
 </html>`,
   "index.jsx": `
-    import React from 'react';
     import ReactDOM from 'react-dom/client';
     import App from './App.jsx';
 
@@ -29,10 +28,8 @@ export const reactJsx = {
     );
   `,
   "App.jsx": `
-    import React from 'react';
-
     function App() {
-      return <div>Hello React JSX!</div>;
+      return <div>Hello React JSX without React import!</div>;
     }
 
     export default App;

@@ -27,7 +27,7 @@ export async function testInBrowser({
   vizCache?: VizCache;
   slugCache?: SlugCache;
   vizId?: VizId;
-  expectedLog: string | RegExp;
+  expectedLog?: string | RegExp;
   evaluateInBrowser?: (page: Page) => Promise<any>;
   getSvelteCompiler?: () => Promise<SvelteCompiler>;
 }) {
@@ -66,7 +66,7 @@ export async function testInBrowser({
     // Check console output
     if (typeof expectedLog === "string") {
       expect(logs).toContain(expectedLog);
-    } else {
+    } else if (expectedLog instanceof RegExp) {
       // If it's a RegExp, find a log that matches
       const matchingLog = logs.find((log) =>
         expectedLog.test(log),

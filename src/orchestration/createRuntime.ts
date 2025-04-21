@@ -112,6 +112,11 @@ export const createRuntime = ({
       data.type === "contentRequest" &&
       getLatestContent
     ) {
+      DEBUG &&
+        console.log(
+          "[worker] contentRequest",
+          JSON.stringify(data, null, 2),
+        );
       const { vizId } = data;
 
       getLatestContent(vizId).then((content) => {

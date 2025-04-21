@@ -1,7 +1,9 @@
 import { transform } from "sucrase";
 import type { Plugin } from "rollup";
 
-export function sucrasePlugin(): Plugin {
+export function sucrasePlugin(
+  additionalOptions = {},
+): Plugin {
   return {
     name: "sucrase",
     transform(code, id) {
@@ -12,11 +14,14 @@ export function sucrasePlugin(): Plugin {
 
       const result = transform(code, {
         transforms: ["jsx", "typescript"],
-        filePath: id, // For source maps
+
+        // For source maps
+        filePath: id,
         sourceMapOptions: {
           compiledFilename: "bundle.js",
         },
         production: true,
+        ...additionalOptions,
       });
 
       return {
