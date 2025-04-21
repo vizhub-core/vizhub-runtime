@@ -1,7 +1,7 @@
 import { VizHubRuntimeFixture } from "./types";
 
-export const reactDemoV4: VizHubRuntimeFixture = {
-  label: "React Demo (v4)",
+export const reactDemoV4TypeScript: VizHubRuntimeFixture = {
+  label: "React Demo (v4, TypeScript)",
   status: "working",
   files: {
     "index.html": `
@@ -22,20 +22,22 @@ export const reactDemoV4: VizHubRuntimeFixture = {
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./index.jsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
   `,
-    "index.jsx": `
-    import React, { useState } from "react";
+    "index.tsx": `
+    import React, { useState, FC } from "react";
     import { createRoot } from "react-dom/client";
 
-    const Counter = () => {
-      const [count, setCount] = useState(0);
+    interface CounterProps {}
+
+    const Counter: FC<CounterProps> = () => {
+      const [count, setCount] = useState<number>(0);
 
       return (
         <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', marginTop: '50px' }}>
-          <h1>React Counter Demo</h1>
+          <h1>React Counter Demo (TypeScript)</h1>
           <p>Current count: <strong>{count}</strong></p>
           <button
             onClick={() => setCount(count - 1)}
@@ -59,7 +61,7 @@ export const reactDemoV4: VizHubRuntimeFixture = {
       );
     };
 
-    const root = createRoot(document.getElementById("root"));
+    const root = createRoot(document.getElementById("root")!);
     root.render(<Counter />);
   `,
   },

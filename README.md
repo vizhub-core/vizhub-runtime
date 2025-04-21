@@ -23,14 +23,15 @@ The library automatically detects which runtime version to use based on the file
 | **Custom `index.html`** | ✅     | ✅     | ⬜️     | ✅     |
 | **Local ES Modules**    | ⬜️     | ✅     | ✅     | ✅     |
 | **UMD Libraries**       | ✅     | ✅     | ✅     | ⬜️     |
+| **`package.json`**      | ⬜️     | ✅     | ✅     | ⬜️     |
 | **ESM Libraries**       | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **React JSX**           | ⬜️     | ✅     | ⬜️     | ✅     |
-| **TypeScript**          | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **Svelte**              | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Cross-Viz Imports**   | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Hot Reloading**       | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **State Management**    | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Import from CSV**     | ⬜️     | ⬜️     | ✅     | ⬜️     |
+| **TypeScript**          | ⬜️     | ⬜️     | ⬜️     | ✅     |
 | **`fetch` proxy**       | ✅     | ✅     | ⬜️     | ✅     |
 
 ## V1 Runtime
@@ -223,7 +224,6 @@ As a VizHub user, you'll create an `index.html` file with import maps and ES mod
     <script type="importmap">
       {
         "imports": {
-          "utils": "./utils.js",
           "d3": "https://cdn.jsdelivr.net/npm/d3@7.8.5/+esm"
         }
       }
@@ -239,7 +239,7 @@ As a VizHub user, you'll create an `index.html` file with import maps and ES mod
 **index.js**
 
 ```javascript
-import { createApp } from "utils";
+import { createApp } from "./utils";
 import * as d3 from "d3";
 
 createApp(document.getElementById("app"));
