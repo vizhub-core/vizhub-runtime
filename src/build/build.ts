@@ -96,80 +96,81 @@ export const build = async ({
         html: magicSandbox(files),
       };
     }
-    if (version === "v2") {
-      if (!rollup) {
-        throw new Error(
-          "Rollup is required for v2 runtime",
-        );
-      }
-      return {
-        html: magicSandbox(
-          await v2Build({ files, rollup, enableSourcemap }),
-        ),
-      };
-    }
-    if (version === "v3") {
-      if (!rollup) {
-        throw new Error(
-          "Rollup is required for v3 runtime",
-        );
-      }
 
-      // We set up a "fake" viz cache.
-      // It's needed because of the way the CSS import resolution works.
-      if (!vizCache && !vizId) {
-        const vizContent = createVizContent(files);
-        vizId = vizContent.id;
-        vizCache = createVizCache({
-          initialContents: [vizContent],
-          handleCacheMiss: async () => {
-            throw new Error(
-              "Cache miss handler not implemented",
-            );
-          },
-        });
-      }
+    // if (version === "v2") {
+    //   if (!rollup) {
+    //     throw new Error(
+    //       "Rollup is required for v2 runtime",
+    //     );
+    //   }
+    //   return {
+    //     html: magicSandbox(
+    //       await v2Build({ files, rollup, enableSourcemap }),
+    //     ),
+    //   };
+    // }
+    // if (version === "v3") {
+    //   if (!rollup) {
+    //     throw new Error(
+    //       "Rollup is required for v3 runtime",
+    //     );
+    //   }
 
-      if (!vizCache) {
-        throw new Error(
-          "vizCache is required for v3 runtime",
-        );
-      }
+    //   // We set up a "fake" viz cache.
+    //   // It's needed because of the way the CSS import resolution works.
+    //   if (!vizCache && !vizId) {
+    //     const vizContent = createVizContent(files);
+    //     vizId = vizContent.id;
+    //     vizCache = createVizCache({
+    //       initialContents: [vizContent],
+    //       handleCacheMiss: async () => {
+    //         throw new Error(
+    //           "Cache miss handler not implemented",
+    //         );
+    //       },
+    //     });
+    //   }
 
-      if (!vizId) {
-        throw new Error(
-          "vizId is required for v3 runtime if vizCache is provided",
-        );
-      }
+    //   if (!vizCache) {
+    //     throw new Error(
+    //       "vizCache is required for v3 runtime",
+    //     );
+    //   }
 
-      return await v3Build({
-        files,
-        rollup,
-        vizCache,
-        vizId,
-        slugCache,
-        getSvelteCompiler,
-      });
-    }
+    //   if (!vizId) {
+    //     throw new Error(
+    //       "vizId is required for v3 runtime if vizCache is provided",
+    //     );
+    //   }
 
-    if (version === "v4") {
-      if (!rollup) {
-        throw new Error(
-          "Rollup is required for v4 runtime",
-        );
-      }
-      DEBUG &&
-        console.log("[build] v4Build", {
-          files,
-          rollup,
-          enableSourcemap,
-        });
-      return {
-        html: magicSandbox(
-          await v4Build({ files, rollup, enableSourcemap }),
-        ),
-      };
-    }
+    //   return await v3Build({
+    //     files,
+    //     rollup,
+    //     vizCache,
+    //     vizId,
+    //     slugCache,
+    //     getSvelteCompiler,
+    //   });
+    // }
+
+    // if (version === "v4") {
+    //   if (!rollup) {
+    //     throw new Error(
+    //       "Rollup is required for v4 runtime",
+    //     );
+    //   }
+    //   DEBUG &&
+    //     console.log("[build] v4Build", {
+    //       files,
+    //       rollup,
+    //       enableSourcemap,
+    //     });
+    //   return {
+    //     html: magicSandbox(
+    //       await v4Build({ files, rollup, enableSourcemap }),
+    //     ),
+    //   };
+    // }
     throw new Error(
       `Unsupported runtime version: ${version}`,
     );
