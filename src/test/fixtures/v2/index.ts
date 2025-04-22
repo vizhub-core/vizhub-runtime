@@ -7,6 +7,7 @@ export { reactImportPkg } from "./reactImportPkg";
 export { reactDomImport } from "./reactDomImport";
 export { reactDomImportPkg } from "./reactDomImportPkg";
 export { jsxTranspile } from "./jsxTranspile";
+export { jsxTranspileJSXExt } from "./jsxTranspileJSXExt";
 export { es6Preserve } from "./es6Preserve";
 export { generatorSupport } from "./generatorSupport";
 export { unicodeSupport } from "./unicodeSupport";

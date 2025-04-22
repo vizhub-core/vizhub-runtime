@@ -20,13 +20,23 @@ export const computeBundleJSV2 = async ({
   rollup: (options: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
 }): Promise<string> => {
-  const indexJSContent = files["index.js"];
+  // Check if the files contain index.js
+  let entryPoint = "index.js";
+  let indexJSContent = files[entryPoint];
+
+  // Check for index.jsx as a fallback
   if (!indexJSContent) {
-    throw new Error("Missing index.js");
+    entryPoint = "index.jsx";
+    const indexJSContent = files[entryPoint];
+    if (!indexJSContent) {
+      throw new Error(
+        "Missing entry point, can't find index.js or index.jsx",
+      );
+    }
   }
 
   const inputOptions: RollupOptions = {
-    input: "./index.js",
+    input: "./" + entryPoint,
     plugins: [virtualFileSystem(files), sucrasePlugin()],
     onwarn(warning, warn) {
       // Suppress "treating module as external dependency" warnings

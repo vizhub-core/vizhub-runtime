@@ -8,10 +8,12 @@ import { d3DemoV3Full } from "./d3DemoV3Full";
 import { reactDemoV4 } from "./reactDemoV4";
 import { VizHubRuntimeFixture } from "./types";
 import { reactDemoV4TypeScript } from "./reactDemoV4TypeScript";
+import { reactDemoV2jsxExt } from "./reactDemoV2jsxExt";
 
 export const fixtures: Array<VizHubRuntimeFixture> = [
   helloWorldDemoV1,
   reactDemoV2,
+  reactDemoV2jsxExt,
   d3DemoV2,
   d3DemoV3,
   d3DemoV3Full,
