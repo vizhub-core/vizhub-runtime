@@ -23,6 +23,7 @@ import {
   d3RosettaImportPkg,
   basicBundleNoExtension,
   syntaxError,
+  jsxTranspileJSXExt,
 } from "./fixtures/v2";
 import { build } from "../build";
 // import { JSDOM } from "jsdom";
@@ -105,9 +106,17 @@ describe("VizHub Runtime v2", () => {
     });
   });
 
-  it("should transpile JSX", async () => {
+  it("should transpile JSX from index.js", async () => {
     const { html } = await build({
       files: jsxTranspile,
+      rollup,
+    });
+    expect(html).toContain("React.createElement");
+  });
+
+  it("should transpile JSX from index.jsx", async () => {
+    const { html } = await build({
+      files: jsxTranspileJSXExt,
       rollup,
     });
     expect(html).toContain("React.createElement");
