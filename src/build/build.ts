@@ -89,15 +89,17 @@ export const build = async ({
       throw new Error("Upable to extract viz files");
     }
 
-    const version = determineRuntimeVersion(files);
-    DEBUG && console.log("[build] version:", version);
-    if (version === "v1") {
+    const runtimeVersion = determineRuntimeVersion(files);
+    DEBUG &&
+      console.log("[build] version:", runtimeVersion);
+    if (runtimeVersion === "v1") {
       return {
         html: magicSandbox(files),
+        runtimeVersion,
       };
     }
 
-    if (version === "v2") {
+    if (runtimeVersion === "v2") {
       if (!rollup) {
         throw new Error(
           "Rollup is required for v2 runtime",
@@ -107,9 +109,10 @@ export const build = async ({
         html: magicSandbox(
           await v2Build({ files, rollup, enableSourcemap }),
         ),
+        runtimeVersion,
       };
     }
-    if (version === "v3") {
+    if (runtimeVersion === "v3") {
       if (!rollup) {
         throw new Error(
           "Rollup is required for v3 runtime",
@@ -153,7 +156,7 @@ export const build = async ({
       });
     }
 
-    if (version === "v4") {
+    if (runtimeVersion === "v4") {
       if (!rollup) {
         throw new Error(
           "Rollup is required for v4 runtime",
@@ -169,10 +172,11 @@ export const build = async ({
         html: magicSandbox(
           await v4Build({ files, rollup, enableSourcemap }),
         ),
+        runtimeVersion,
       };
     }
     throw new Error(
-      `Unsupported runtime version: ${version}`,
+      `Unsupported runtime version: ${runtimeVersion}`,
     );
   } catch (error) {
     if (error instanceof Error) {

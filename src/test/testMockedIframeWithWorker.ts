@@ -46,6 +46,7 @@ class MockWorker {
         type: "buildResponse",
         buildResult: {
           html: `<!DOCTYPE html><html><body><script>console.log("Worker processed files")</script></body></html>`,
+          runtimeVersion: "v2",
         },
         requestId: message.requestId,
       };

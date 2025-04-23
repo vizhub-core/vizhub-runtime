@@ -244,7 +244,7 @@ export const createRuntime = ({
     DEBUG && console.log("[runtime] update: after build");
 
     if (buildResult) {
-      const { html, js, css } = buildResult;
+      const { html, runtimeVersion, js, css } = buildResult;
 
       DEBUG &&
         console.log(
@@ -273,13 +273,8 @@ export const createRuntime = ({
       // Clear the console before each run.
       !DEBUG && console.clear();
 
-      // If `enableHotReloading` is true, we also need to
-      // check that `js` is defined, since the desired behavior
-      // is that only if we are using the v3 runtime, then
-      // the hot reloading actually happens, and _only_ the v3 build
-      // outputs `js`, so the guard for `js` is really just
-      // checking that we are on v3.
-      if (enableHotReloading) {
+      // The `enableHotReloading` only works for v3.
+      if (enableHotReloading && runtimeVersion === "v3") {
         if (css) {
           const runCSSMessage: WindowMessage = {
             type: "runCSS",

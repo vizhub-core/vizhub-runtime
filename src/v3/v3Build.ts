@@ -103,5 +103,6 @@ export const v3Build = async ({
     html: htmlTemplate({ cdn, src, styles }),
     css,
     js: src,
+    runtimeVersion: "v3",
   };
 };

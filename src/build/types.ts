@@ -9,6 +9,9 @@ export type BuildResult = {
   // This is the srcdoc for the iframe.
   html: string;
 
+  // The version of the runtime used to build the HTML.
+  runtimeVersion: runtimeVersion;
+
   // Isolated CSS styles,
   // for V3 hot reloading case only.
   css?: string;

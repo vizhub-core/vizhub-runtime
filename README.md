@@ -337,6 +337,88 @@ npm install @vizhub/runtime
 
 ### Basic Usage
 
+#### createRuntime(options)
+
+Creates a runtime environment that manages code execution in an iframe with worker-based build support.
+
+```typescript
+const runtime = createRuntime({
+  iframe: HTMLIFrameElement,
+  worker: Worker,
+  setBuildErrorMessage?: (error: string | null) => void,
+  getLatestContent?: (vizId: string) => Promise<VizContent | null>,
+  resolveSlugKey?: (slugKey: string) => Promise<string | null>,
+  writeFile?: (fileName: string, content: string) => void
+});
+```
+
+##### Options
+
+- **iframe**: `HTMLIFrameElement` - The iframe element where the viz will be rendered
+- **worker**: `Worker` - Web Worker instance that handles code building
+- **setBuildErrorMessage**: `(error: string | null) => void` - Optional callback for handling build errors
+- **getLatestContent**: `(vizId: string) => Promise<VizContent | null>` - Optional function to fetch viz content for cross-viz imports
+- **resolveSlugKey**: `(slugKey: string) => Promise<string | null>` - Optional function to resolve viz slugs to IDs
+- **writeFile**: `(fileName: string, content: string) => void` - Optional callback when code running in the iframe writes files
+
+##### Returns
+
+Returns a `VizHubRuntime` object with methods:
+
+- **run**: `(options: RunOptions) => void` - Executes code in the iframe
+  - **options.files**: `FileCollection` - Map of filenames to file contents
+  - **options.enableHotReloading**: `boolean` - Enable hot reloading (v3 runtime only)
+  - **options.enableSourcemap**: `boolean` - Enable source maps for debugging
+  - **options.vizId**: `string` - ID of current viz (required for v3)
+- **cleanup**: `() => void` - Removes event listeners from worker and iframe
+- **invalidateVizCache**: `(changedVizIds: string[]) => Promise<void>` - Invalidates cache for specified viz IDs
+
+##### Example
+
+```javascript
+import { createRuntime } from "@vizhub/runtime";
+import BuildWorker from "./buildWorker?worker";
+
+// Get iframe from DOM
+const iframe = document.getElementById("viz-iframe");
+
+// Create worker
+const worker = new BuildWorker();
+
+// Initialize runtime
+const runtime = createRuntime({
+  iframe,
+  worker,
+  setBuildErrorMessage: (error) => {
+    error && console.error("Build error:", error);
+  },
+  getLatestContent: async (vizId) => {
+    // Fetch viz content from your backend
+    return await fetchVizContent(vizId);
+  },
+  resolveSlugKey: async (slugKey) => {
+    // Resolve slug to vizId from your backend
+    return await resolveSlug(slugKey);
+  },
+});
+
+// Run code in the iframe
+runtime.run({
+  files: {
+    "index.js":
+      'console.log("Hello from VizHub runtime!");',
+  },
+  enableHotReloading: true,
+  enableSourcemap: true,
+  vizId: "example-viz",
+});
+
+// Clean up when done
+runtime.cleanup();
+```
+
+### Building HTML Only
+
 ```javascript
 import { build } from "@vizhub/runtime";
 import { rollup } from "rollup";
