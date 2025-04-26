@@ -4,6 +4,8 @@ import type {
   OutputOptions,
 } from "rollup";
 import { FileCollection } from "@vizhub/viz-types";
+// @ts-ignore
+import libraries from "vizhub-libraries";
 import { virtualFileSystem } from "../common/virtualFileSystem.js";
 import { sucrasePlugin } from "../common/sucrasePlugin.js";
 import {
@@ -53,7 +55,12 @@ export const computeBundleJSV2 = async ({
   const pkg = packageJSON(files);
 
   if (pkg) {
-    const globals = getGlobals(pkg);
+    const globals = {
+      // Pre-configured globals for v2 only
+      ...libraries,
+      // Libraries from package.json
+      ...getGlobals(pkg),
+    };
     if (globals) {
       inputOptions.external = Object.keys(globals);
       outputOptions.globals = globals;

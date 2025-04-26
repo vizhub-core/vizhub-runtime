@@ -55,6 +55,7 @@
     "@vizhub/viz-types": "^0.1.0",
     "@vizhub/viz-utils": "^1.1.0",
     "magic-sandbox": "^2.2.0",
-    "sucrase": "^3.35.0"
+    "sucrase": "^3.35.0",
+    "vizhub-libraries": "^1.8.0"
   }
 }
