@@ -34,8 +34,16 @@
     "preflight": "npm run build && npm run prettier && npm test && npm run typecheck"
   },
   "keywords": [],
-  "author": "",
+  "author": "Curran Kelleher",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/vizhub-core/vizhub-runtime.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vizhub-core/vizhub-runtime/issues"
+  },
+  "homepage": "https://github.com/vizhub-core/vizhub-runtime#readme",
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.15.16",
