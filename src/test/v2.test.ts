@@ -24,6 +24,7 @@ import {
   basicBundleNoExtension,
   syntaxError,
   jsxTranspileJSXExt,
+  basicBundleNameCollision,
 } from "./fixtures/v2";
 import { build } from "../build";
 // import { JSDOM } from "jsdom";
@@ -55,6 +56,14 @@ describe("VizHub Runtime v2", () => {
       browser,
       files: basicBundleNoExtension,
       expectedLog: "bar",
+    });
+  });
+
+  it("should bundle with same variable across modules", async () => {
+    await testInBrowser({
+      browser,
+      files: basicBundleNameCollision,
+      expectedLog: "11 22",
     });
   });
 
