@@ -7,7 +7,7 @@ export default defineConfig({
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
-      "**/oldReferenceCode/**",
+      "**/old-implementation-reference/**",
     ],
   },
 });

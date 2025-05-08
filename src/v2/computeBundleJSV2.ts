@@ -39,7 +39,7 @@ export const computeBundleJSV2 = async ({
 
   const inputOptions: RollupOptions = {
     input: "./" + entryPoint,
-    plugins: [virtualFileSystem(files), sucrasePlugin()],
+    plugins: [sucrasePlugin(), virtualFileSystem(files)],
     onwarn(warning, warn) {
       // Suppress "treating module as external dependency" warnings
       if (warning.code === "UNRESOLVED_IMPORT") return;
@@ -49,7 +49,12 @@ export const computeBundleJSV2 = async ({
 
   const outputOptions: OutputOptions = {
     format: "iife",
-    sourcemap: enableSourcemap,
+    name: "bundle",
+    sourcemap: enableSourcemap ? "inline" : false,
+    // Preserve module structure to avoid variable name collisions
+    // preserveModules: false,
+    // Use a more aggressive variable renaming strategy
+    // manualChunks: undefined,
   };
 
   const pkg = packageJSON(files);

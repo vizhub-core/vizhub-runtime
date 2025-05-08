@@ -14,3 +14,4 @@ export { unicodeSupport } from "./unicodeSupport";
 export { d3RosettaImportPkg } from "./d3RosettaImportPkg";
 export { sourceMapErrorFixture } from "./sourceMapErrorFixture";
 export { syntaxError } from "./syntaxError";
+export { basicBundleNameCollision } from "./basicBundleNameCollision";

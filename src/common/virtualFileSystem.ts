@@ -64,7 +64,18 @@ export const virtualFileSystem = (
 
         // Try exact match first
         if (files[resolvedPath]) {
-          return VIRTUAL_PREFIX + resolvedPath;
+          return {
+            id: VIRTUAL_PREFIX + resolvedPath,
+            moduleSideEffects: false,
+            // Explicitly mark as ES module to ensure proper scope handling
+            syntheticNamedExports: true,
+            // Force module to be treated as external to preserve its scope
+            external: false,
+            // Add a unique namespace to each module
+            meta: {
+              moduleId: resolvedPath
+            }
+          };
         }
 
         // Try with extensions if no exact match is found
@@ -72,14 +83,36 @@ export const virtualFileSystem = (
         for (const ext of extensions) {
           const pathWithExt = resolvedPath + ext;
           if (files[pathWithExt]) {
-            return VIRTUAL_PREFIX + pathWithExt;
+            return {
+              id: VIRTUAL_PREFIX + pathWithExt,
+              moduleSideEffects: false,
+              // Explicitly mark as ES module to ensure proper scope handling
+              syntheticNamedExports: true,
+              // Force module to be treated as external to preserve its scope
+              external: false,
+              // Add a unique namespace to each module
+              meta: {
+                moduleId: pathWithExt
+              }
+            };
           }
         }
       }
 
       // Handle bare module imports
       if (files[source]) {
-        return VIRTUAL_PREFIX + source;
+        return {
+          id: VIRTUAL_PREFIX + source,
+          moduleSideEffects: false,
+          // Explicitly mark as ES module to ensure proper scope handling
+          syntheticNamedExports: true,
+          // Force module to be treated as external to preserve its scope
+          external: false,
+          // Add a unique namespace to each module
+          meta: {
+            moduleId: source
+          }
+        };
       }
 
       // Try bare imports with extensions
@@ -87,7 +120,18 @@ export const virtualFileSystem = (
       for (const ext of extensions) {
         const pathWithExt = source + ext;
         if (files[pathWithExt]) {
-          return VIRTUAL_PREFIX + pathWithExt;
+          return {
+            id: VIRTUAL_PREFIX + pathWithExt,
+            moduleSideEffects: false,
+            // Explicitly mark as ES module to ensure proper scope handling
+            syntheticNamedExports: true,
+            // Force module to be treated as external to preserve its scope
+            external: false,
+            // Add a unique namespace to each module
+            meta: {
+              moduleId: pathWithExt
+            }
+          };
         }
       }
 
@@ -95,11 +139,22 @@ export const virtualFileSystem = (
     },
 
     load(id: string) {
+      console.log("Loading file:", id);
       // Only handle our virtual-prefixed IDs
       if (id.startsWith(VIRTUAL_PREFIX)) {
         const actualId = id.slice(VIRTUAL_PREFIX.length);
         if (files[actualId]) {
-          return files[actualId];
+          // Return the file content with metadata
+          return {
+            code: files[actualId],
+            // Explicitly tell Rollup this is an ES module
+            moduleSideEffects: false,
+            syntheticNamedExports: true,
+            // Add module metadata to help with scope preservation
+            meta: {
+              moduleId: actualId
+            }
+          };
         }
       }
       return null;
