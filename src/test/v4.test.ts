@@ -4,6 +4,7 @@ import { testInBrowser } from "./testInBrowser";
 import {
   jsScriptTagTypeModule,
   jsScriptTagTypeModules,
+  jsInlineScriptModule,
   fetchInterception,
   esmBuild,
   reactJsx,
@@ -51,6 +52,14 @@ describe("VizHub Runtime v4", () => {
       browser,
       files: jsScriptTagTypeModulesRelative,
       expectedLog: "Hello, Relative ES Module File!",
+    });
+  });
+
+  it("should handle inline script type=module", async () => {
+    await testInBrowser({
+      browser,
+      files: jsInlineScriptModule,
+      expectedLog: "Hello from inline script!",
     });
   });
 
