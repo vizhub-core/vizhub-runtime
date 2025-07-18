@@ -11,7 +11,7 @@ const fetchedFileCache = new Map<string, string>();
 export type SvelteCompiler = (
   code: string,
   options: any,
-) => { js: { code: string; map?: object }; css?: { code: string; map?: object } };
+) => { js: { code: string; map?: object }; css?: { code: string; map?: object } | null };
 let compile: SvelteCompiler;
 
 const svelteURL =

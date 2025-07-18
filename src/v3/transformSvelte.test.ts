@@ -49,12 +49,13 @@ describe("transformSvelte", () => {
     expect(result.js).toBeDefined();
     expect(result.js.code).toBeDefined();
     expect(result.css).toBeDefined();
-    expect(result.css.code).toBeDefined();
-    expect(result.css.code).toContain("color: red");
+    expect(result.css).not.toBeNull();
+    expect(result.css?.code).toBeDefined();
+    expect(result.css?.code).toContain("color: red");
   });
 
   it("should work with the SvelteCompiler type", async () => {
-    const testCompiler: SvelteCompiler = compile;
+    const testCompiler: SvelteCompiler = compile as SvelteCompiler;
     
     const result = testCompiler(`
       <script>
