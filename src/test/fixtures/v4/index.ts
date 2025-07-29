@@ -1,6 +1,7 @@
 export { jsScriptTagTypeModule } from "./jsScriptTagTypeModule";
 export { jsScriptTagTypeModules } from "./jsScriptTagTypeModules";
 export { jsScriptTagTypeModulesRelative } from "./jsScriptTagTypeModulesRelative";
+export { jsInlineScriptModule } from "./jsInlineScriptModule";
 export { fetchInterception } from "./fetchInterception";
 export { esmBuild } from "./esmBuild";
 export { reactJsx } from "./reactJsx";

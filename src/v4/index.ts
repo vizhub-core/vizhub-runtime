@@ -19,7 +19,7 @@ export const v4Build = async ({
   enableSourcemap?: boolean;
 }): Promise<FileCollection> => {
   const html = files["index.html"] || "";
-  const entryPoints = extractModuleEntryPoints(html);
+  const { entryPoints, inlineScripts } = extractModuleEntryPoints(html);
 
   if (entryPoints.length === 0) {
     DEBUG &&
@@ -27,18 +27,24 @@ export const v4Build = async ({
     return files; // nothing to bundle
   }
 
+  // Add inline scripts to the files collection
+  const extendedFiles = { ...files };
+  for (const inlineScript of inlineScripts) {
+    extendedFiles[inlineScript.id] = inlineScript.content;
+  }
+
   const bundled = new Map<string, string>();
   for (const entry of entryPoints) {
     const code = await bundleESModule({
       entryPoint: entry,
-      files,
+      files: extendedFiles,
       rollup,
       enableSourcemap,
     });
     bundled.set(entry, code);
   }
 
-  const updatedHTML = updateHTML(files, bundled);
+  const updatedHTML = updateHTML(extendedFiles, bundled, inlineScripts);
 
   return {
     ...files,
