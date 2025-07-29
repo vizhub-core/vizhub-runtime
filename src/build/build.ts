@@ -15,8 +15,29 @@ import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "../v2";
 import { v4Build } from "../v4";
 import { VIRTUAL_PREFIX } from "../common/virtualFileSystem";
+import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling";
 
 const DEBUG = false;
+
+/**
+ * Adds runtime error handling to V1 HTML that was processed by magicSandbox
+ */
+const addRuntimeErrorHandlingToV1 = (html: string): string => {
+  const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>`;
+  
+  // Try to inject before </head> if it exists
+  if (html.includes('</head>')) {
+    return html.replace('</head>', `${errorHandlerScript}\n</head>`);
+  }
+  
+  // Try to inject before </body> if it exists
+  if (html.includes('</body>')) {
+    return html.replace('</body>', `${errorHandlerScript}\n</body>`);
+  }
+  
+  // If neither exists, inject at the end
+  return html + errorHandlerScript;
+};
 
 // Builds the given files.
 export const build = async ({
@@ -94,7 +115,7 @@ export const build = async ({
       console.log("[build] version:", runtimeVersion);
     if (runtimeVersion === "v1") {
       return {
-        html: magicSandbox(files),
+        html: addRuntimeErrorHandlingToV1(magicSandbox(files)),
         runtimeVersion,
       };
     }

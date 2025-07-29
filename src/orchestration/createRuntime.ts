@@ -70,6 +70,7 @@ export const createRuntime = ({
   getLatestContent,
   resolveSlugKey,
   writeFile,
+  handleRuntimeError,
 }: {
   iframe: HTMLIFrameElement;
   worker: Worker;
@@ -81,6 +82,7 @@ export const createRuntime = ({
     slugKey: string,
   ) => Promise<VizId | null>;
   writeFile?: (fileName: string, content: string) => void;
+  handleRuntimeError?: (formattedErrorMessage: string) => void;
 }): VizHubRuntime => {
   // Track the current state of the runtime
   let state:
@@ -194,6 +196,10 @@ export const createRuntime = ({
         setBuildErrorMessage &&
           setBuildErrorMessage(data.error.message);
       }
+    }
+
+    if (data.type === "runtimeError" && handleRuntimeError) {
+      handleRuntimeError(data.formattedErrorMessage);
     }
 
     if (data.type === "writeFile" && writeFile) {

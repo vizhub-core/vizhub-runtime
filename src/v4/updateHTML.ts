@@ -5,6 +5,7 @@ import {
   injectBeforeClose,
 } from "./stringUtils.js";
 import { generateImportMap } from "./importMap.js";
+import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling.js";
 
 /**
  * Update HTML to include import map and bundled modules
@@ -65,6 +66,10 @@ export const updateHTML = (
       );
     }
   }
+
+  // Add runtime error handler script
+  const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>\n`;
+  html = injectBeforeClose(html, "</head>", errorHandlerScript);
 
   // Ensure <!DOCTYPE html>
   return /^\s*<!DOCTYPE/i.test(html)
