@@ -30,7 +30,7 @@
     "demo": "cd demo-app; npm run dev",
     "typecheck": "tsc --noEmit",
     "prettier": "prettier {*.*,**/*.*} --write",
-    "upgrade": "ncu -x svelte -u",
+    "upgrade": "ncu -u",
     "preflight": "npm run build && npm run prettier && npm test && npm run typecheck"
   },
   "keywords": [],
@@ -46,22 +46,22 @@
   "homepage": "https://github.com/vizhub-core/vizhub-runtime#readme",
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.15.16",
+    "@types/node": "^24.1.0",
     "@types/uuid": "^10.0.0",
     "jsdom": "^26.1.0",
-    "npm-check-updates": "^18.0.1",
-    "prettier": "^3.5.3",
-    "puppeteer": "^24.8.2",
-    "rollup": "^4.40.2",
-    "svelte": "^5.36.8",
+    "npm-check-updates": "^18.0.2",
+    "prettier": "^3.6.2",
+    "puppeteer": "^24.15.0",
+    "rollup": "^4.46.1",
+    "svelte": "^5.37.1",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.1.3"
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@rollup/browser": "^4.40.2",
-    "@vizhub/viz-types": "^0.1.0",
-    "@vizhub/viz-utils": "^1.1.0",
+    "@rollup/browser": "^4.46.1",
+    "@vizhub/viz-types": "^0.3.0",
+    "@vizhub/viz-utils": "^1.3.0",
     "magic-sandbox": "^2.3.0",
     "sucrase": "^3.35.0",
     "vizhub-libraries": "^1.8.0"
