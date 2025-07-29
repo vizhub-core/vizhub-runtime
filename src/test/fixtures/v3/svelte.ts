@@ -7,10 +7,11 @@ export const svelte = {
     <h1>Hello {name}!</h1>
   `,
   "index.js": `
+    import { mount } from 'svelte';
     import App from './App.svelte';
 
     export const main = (container) => {
-      new App({
+      mount(App, {
         target: container,
       });
     };

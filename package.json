@@ -53,7 +53,7 @@
     "prettier": "^3.5.3",
     "puppeteer": "^24.8.2",
     "rollup": "^4.40.2",
-    "svelte": "4.2.9",
+    "svelte": "^5.36.8",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vitest": "^3.1.3"
