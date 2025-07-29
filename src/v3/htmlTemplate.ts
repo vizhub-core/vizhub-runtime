@@ -1,3 +1,5 @@
+import { getRuntimeErrorHandlerScript } from '../common/runtimeErrorHandling';
+
 function randomDigits() {
   return Math.random().toString().slice(2, 7);
 }
@@ -33,6 +35,7 @@ export const htmlTemplate = ({
 </head>
 <body>
   <div id="${vizContainerId}"></div>
+  <script>${getRuntimeErrorHandlerScript()}</script>
   <script id="injected-script">${src}</script>
   <script>
     (() => {

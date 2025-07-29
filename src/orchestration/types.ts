@@ -148,6 +148,14 @@ export type WindowMessage =
       requestId: string;
     }
 
+  // `runtimeError` (spontaneous error from iframe)
+  //  * Sent from the iframe to the main thread.
+  //  * Indicates a runtime error that occurred in user code.
+  | {
+      type: "runtimeError";
+      formattedErrorMessage: string;
+    }
+
   // `writeFile` (request from user generated code running inside iframe)
   //  * Sent from the iframe to the main thread.
   //  * Request to write file content.

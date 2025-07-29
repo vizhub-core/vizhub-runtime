@@ -4,6 +4,7 @@ import {
   getConfiguredLibraries,
   dependencySource,
 } from "../common/packageJson";
+import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling";
 
 const DEBUG = false;
 
@@ -128,6 +129,10 @@ const injectScripts = (
       html = injectBeforeClose(html, "</body>", bundleTag);
     }
   }
+
+  /* -------------------- inject runtime error handler ------------- */
+  const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>\n`;
+  html = injectBeforeClose(html, "</head>", errorHandlerScript);
 
   /* -------------------- make sure <!DOCTYPE html> ----------------- */
   return /^\s*<!DOCTYPE/i.test(html)
