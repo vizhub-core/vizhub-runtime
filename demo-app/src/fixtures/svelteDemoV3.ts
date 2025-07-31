@@ -38,14 +38,15 @@ export const svelteDemoV3: VizHubRuntimeFixture = {
     opacity: 0.7;
   }
 </style>`,
-    "index.js": `import App from './App.svelte';
+    "index.js": `import { mount } from 'svelte';
+import App from './App.svelte';
 
 export const main = (container) => {
-  const app = new App({
+  mount(App, {
     target: container,
-    hydrate: true,
   });
 };
+
 `,
     "package.json": `{
   "dependencies": {

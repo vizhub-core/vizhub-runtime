@@ -38,7 +38,7 @@ async function resolveSvelteImport(
     return cached;
   }
 
-  const suffixes = [".js", "/index.js", ".ts", "/index.ts"];
+  const suffixes = [".js", "/index.js"];
 
   for (const suffix of suffixes) {
     const url = `${basePath}${suffix}`;
@@ -75,6 +75,16 @@ export const transformSvelte = ({
   name: "transformSvelte",
 
   load: async (resolved: string) => {
+    // Handle virtual esm-env module
+    if (resolved === "virtual:esm-env") {
+      return `
+export const BROWSER = true;
+export const DEV = true;
+export const NODE = false;
+export const PROD = false;
+`;
+    }
+
     if (!resolved.startsWith(svelteURL)) {
       return;
     }
@@ -103,9 +113,15 @@ export const transformSvelte = ({
       console.log("importee: " + importee);
       console.log("importer: " + importer);
     }
+
+    // Special case for esm-env - provide browser environment constants
+    if (importee === "esm-env") {
+      return "virtual:esm-env";
+    }
+
     // importing from Svelte
     if (importee === `svelte`) {
-      return `${svelteURL}/src/index.js`;
+      return `${svelteURL}/src/index-client.js`;
     }
     if (importee.startsWith(`svelte/`)) {
       const sub_path = importee.slice(7);
