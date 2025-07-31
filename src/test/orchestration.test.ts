@@ -180,4 +180,237 @@ describe("Iframe and Worker Management", () => {
       global.Worker = originalWorker;
     }
   });
+
+  it("should clear console by default when clearConsole is not specified", async () => {
+    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+
+    // Create a mock worker that will simulate a successful build response
+    class MockBuildWorker {
+      private listeners: {
+        [key: string]: ((event: any) => void)[];
+      } = {};
+
+      constructor(public url: string) {}
+
+      postMessage(message: any) {
+        if (message.type === "buildRequest") {
+          setTimeout(() => {
+            const listeners = this.listeners["message"] || [];
+            const data: BuildWorkerMessage = {
+              type: "buildResponse",
+              requestId: message.requestId,
+              buildResult: {
+                html: "<html>Test HTML</html>",
+                runtimeVersion: "v2" as any,
+                js: "console.log('test');",
+                css: "body { color: red; }",
+              },
+            };
+            listeners.forEach((callback) => callback({ data }));
+          }, 10);
+        }
+      }
+
+      addEventListener(type: string, callback: any) {
+        if (!this.listeners[type]) {
+          this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+      }
+
+      removeEventListener(type: string, callback: any) {
+        if (this.listeners[type]) {
+          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+        }
+      }
+    }
+
+    const originalWorker = global.Worker;
+    global.Worker = MockBuildWorker as any;
+
+    try {
+      const iframe = { srcdoc: "" } as HTMLIFrameElement;
+      const setBuildErrorMessage = vi.fn();
+      const worker = new Worker("test-worker-url");
+
+      const runtime = createRuntime({
+        iframe,
+        setBuildErrorMessage,
+        worker,
+      });
+
+      // Run without specifying clearConsole (should default to true)
+      runtime.run({
+        files: {
+          "index.js": "console.log('Hello from test');",
+        },
+      });
+
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      expect(consoleClearSpy).toHaveBeenCalled();
+
+      runtime.cleanup();
+    } finally {
+      global.Worker = originalWorker;
+      consoleClearSpy.mockRestore();
+    }
+  });
+
+  it("should not clear console when clearConsole is set to false", async () => {
+    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+
+    // Create a mock worker that will simulate a successful build response
+    class MockBuildWorker {
+      private listeners: {
+        [key: string]: ((event: any) => void)[];
+      } = {};
+
+      constructor(public url: string) {}
+
+      postMessage(message: any) {
+        if (message.type === "buildRequest") {
+          setTimeout(() => {
+            const listeners = this.listeners["message"] || [];
+            const data: BuildWorkerMessage = {
+              type: "buildResponse",
+              requestId: message.requestId,
+              buildResult: {
+                html: "<html>Test HTML</html>",
+                runtimeVersion: "v2" as any,
+                js: "console.log('test');",
+                css: "body { color: red; }",
+              },
+            };
+            listeners.forEach((callback) => callback({ data }));
+          }, 10);
+        }
+      }
+
+      addEventListener(type: string, callback: any) {
+        if (!this.listeners[type]) {
+          this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+      }
+
+      removeEventListener(type: string, callback: any) {
+        if (this.listeners[type]) {
+          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+        }
+      }
+    }
+
+    const originalWorker = global.Worker;
+    global.Worker = MockBuildWorker as any;
+
+    try {
+      const iframe = { srcdoc: "" } as HTMLIFrameElement;
+      const setBuildErrorMessage = vi.fn();
+      const worker = new Worker("test-worker-url");
+
+      const runtime = createRuntime({
+        iframe,
+        setBuildErrorMessage,
+        worker,
+      });
+
+      // Run with clearConsole set to false
+      runtime.run({
+        files: {
+          "index.js": "console.log('Hello from test');",
+        },
+        clearConsole: false,
+      });
+
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      expect(consoleClearSpy).not.toHaveBeenCalled();
+
+      runtime.cleanup();
+    } finally {
+      global.Worker = originalWorker;
+      consoleClearSpy.mockRestore();
+    }
+  });
+
+  it("should clear console when clearConsole is explicitly set to true", async () => {
+    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+
+    // Create a mock worker that will simulate a successful build response
+    class MockBuildWorker {
+      private listeners: {
+        [key: string]: ((event: any) => void)[];
+      } = {};
+
+      constructor(public url: string) {}
+
+      postMessage(message: any) {
+        if (message.type === "buildRequest") {
+          setTimeout(() => {
+            const listeners = this.listeners["message"] || [];
+            const data: BuildWorkerMessage = {
+              type: "buildResponse",
+              requestId: message.requestId,
+              buildResult: {
+                html: "<html>Test HTML</html>",
+                runtimeVersion: "v2" as any,
+                js: "console.log('test');",
+                css: "body { color: red; }",
+              },
+            };
+            listeners.forEach((callback) => callback({ data }));
+          }, 10);
+        }
+      }
+
+      addEventListener(type: string, callback: any) {
+        if (!this.listeners[type]) {
+          this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+      }
+
+      removeEventListener(type: string, callback: any) {
+        if (this.listeners[type]) {
+          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+        }
+      }
+    }
+
+    const originalWorker = global.Worker;
+    global.Worker = MockBuildWorker as any;
+
+    try {
+      const iframe = { srcdoc: "" } as HTMLIFrameElement;
+      const setBuildErrorMessage = vi.fn();
+      const worker = new Worker("test-worker-url");
+
+      const runtime = createRuntime({
+        iframe,
+        setBuildErrorMessage,
+        worker,
+      });
+
+      // Run with clearConsole explicitly set to true
+      runtime.run({
+        files: {
+          "index.js": "console.log('Hello from test');",
+        },
+        clearConsole: true,
+      });
+
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      expect(consoleClearSpy).toHaveBeenCalled();
+
+      runtime.cleanup();
+    } finally {
+      global.Worker = originalWorker;
+      consoleClearSpy.mockRestore();
+    }
+  });
 });

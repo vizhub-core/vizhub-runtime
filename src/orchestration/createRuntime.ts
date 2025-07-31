@@ -222,11 +222,13 @@ export const createRuntime = ({
     enableHotReloading = false,
     enableSourcemap = false,
     vizId,
+    clearConsole = true,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
     vizId?: VizId;
+    clearConsole?: boolean;
   }) => {
     state = PENDING_CLEAN;
 
@@ -277,7 +279,7 @@ export const createRuntime = ({
         );
 
       // Clear the console before each run.
-      !DEBUG && console.clear();
+      !DEBUG && clearConsole && console.clear();
 
       // The `enableHotReloading` only works for v3 and v4.
       if (enableHotReloading && (runtimeVersion === "v3" || runtimeVersion === "v4")) {
@@ -331,6 +333,7 @@ export const createRuntime = ({
           enableHotReloading,
           enableSourcemap,
           vizId,
+          clearConsole,
         });
       });
       state = ENQUEUED;
@@ -346,11 +349,13 @@ export const createRuntime = ({
     enableHotReloading = false,
     enableSourcemap = false,
     vizId = undefined,
+    clearConsole = true,
   }: {
     files: FileCollection;
     enableHotReloading?: boolean;
     enableSourcemap?: boolean;
     vizId?: VizId;
+    clearConsole?: boolean;
   }) => {
     DEBUG && console.log("[runtime] run");
     latestFiles = null;
@@ -362,6 +367,7 @@ export const createRuntime = ({
         enableHotReloading,
         enableSourcemap,
         vizId,
+        clearConsole,
       });
     } else if (state === PENDING_CLEAN) {
       DEBUG && console.log("[runtime] run: PENDING_CLEAN");
