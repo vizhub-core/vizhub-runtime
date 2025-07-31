@@ -13,7 +13,7 @@ import { BuildResult } from "./types";
 import { vizFilesToFileCollection } from "@vizhub/viz-utils";
 import { determineRuntimeVersion } from "./determineRuntimeVersion";
 import { v2Build } from "../v2";
-import { v4Build } from "../v4";
+import { v4Build, v4BuildWithHotReload } from "../v4";
 import { VIRTUAL_PREFIX } from "../common/virtualFileSystem";
 import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling";
 
@@ -189,10 +189,14 @@ export const build = async ({
           rollup,
           enableSourcemap,
         });
+      
+      // For V4, we need to determine if we need hot reload support
+      // by checking if we need separate JS (this will be called from the runtime)
+      const v4Result = await v4BuildWithHotReload({ files, rollup, enableSourcemap });
+      
       return {
-        html: magicSandbox(
-          await v4Build({ files, rollup, enableSourcemap }),
-        ),
+        html: magicSandbox(v4Result.files),
+        js: v4Result.bundledJS,
         runtimeVersion,
       };
     }

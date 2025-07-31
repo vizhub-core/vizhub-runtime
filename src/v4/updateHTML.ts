@@ -6,6 +6,7 @@ import {
 } from "./stringUtils.js";
 import { generateImportMap } from "./importMap.js";
 import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling.js";
+import { getV4HotReloadScript } from "./hotReloadScript.js";
 
 /**
  * Update HTML to include import map and bundled modules
@@ -14,6 +15,7 @@ export const updateHTML = (
   files: FileCollection,
   bundled: Map<string, string>,
   inlineScripts: Array<{ id: string; content: string }> = [],
+  enableHotReload: boolean = false,
 ): string => {
   if (!files["index.html"]) return "";
 
@@ -70,6 +72,12 @@ export const updateHTML = (
   // Add runtime error handler script
   const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>\n`;
   html = injectBeforeClose(html, "</head>", errorHandlerScript);
+
+  // Add hot reload script if enabled
+  if (enableHotReload) {
+    const hotReloadScript = `<script>${getV4HotReloadScript()}</script>\n`;
+    html = injectBeforeClose(html, "</body>", hotReloadScript);
+  }
 
   // Ensure <!DOCTYPE html>
   return /^\s*<!DOCTYPE/i.test(html)
