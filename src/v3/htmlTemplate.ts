@@ -1,4 +1,4 @@
-import { getRuntimeErrorHandlerScript } from '../common/runtimeErrorHandling';
+import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling";
 
 function randomDigits() {
   return Math.random().toString().slice(2, 7);

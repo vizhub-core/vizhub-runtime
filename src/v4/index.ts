@@ -19,7 +19,8 @@ export const v4Build = async ({
   enableSourcemap?: boolean;
 }): Promise<FileCollection> => {
   const html = files["index.html"] || "";
-  const { entryPoints, inlineScripts } = extractModuleEntryPoints(html);
+  const { entryPoints, inlineScripts } =
+    extractModuleEntryPoints(html);
 
   if (entryPoints.length === 0) {
     DEBUG &&
@@ -44,7 +45,12 @@ export const v4Build = async ({
     bundled.set(entry, code);
   }
 
-  const updatedHTML = updateHTML(extendedFiles, bundled, inlineScripts, false);
+  const updatedHTML = updateHTML(
+    extendedFiles,
+    bundled,
+    inlineScripts,
+    false,
+  );
 
   return {
     ...files,
@@ -64,13 +70,19 @@ export const v4BuildWithHotReload = async ({
   files: FileCollection;
   rollup: (o: RollupOptions) => Promise<RollupBuild>;
   enableSourcemap?: boolean;
-}): Promise<{ files: FileCollection; bundledJS: string }> => {
+}): Promise<{
+  files: FileCollection;
+  bundledJS: string;
+}> => {
   const html = files["index.html"] || "";
-  const { entryPoints, inlineScripts } = extractModuleEntryPoints(html);
+  const { entryPoints, inlineScripts } =
+    extractModuleEntryPoints(html);
 
   if (entryPoints.length === 0) {
     DEBUG &&
-      console.log("[v4BuildWithHotReload] No module entry points found");
+      console.log(
+        "[v4BuildWithHotReload] No module entry points found",
+      );
     return { files, bundledJS: "" };
   }
 
@@ -82,7 +94,7 @@ export const v4BuildWithHotReload = async ({
 
   const bundled = new Map<string, string>();
   const allBundledCode: string[] = [];
-  
+
   for (const entry of entryPoints) {
     const code = await bundleESModule({
       entryPoint: entry,
@@ -94,10 +106,15 @@ export const v4BuildWithHotReload = async ({
     allBundledCode.push(code);
   }
 
-  const updatedHTML = updateHTML(extendedFiles, bundled, inlineScripts, true);
+  const updatedHTML = updateHTML(
+    extendedFiles,
+    bundled,
+    inlineScripts,
+    true,
+  );
 
   // Concatenate all bundled JS for hot reloading
-  const bundledJS = allBundledCode.join('\n');
+  const bundledJS = allBundledCode.join("\n");
 
   return {
     files: {

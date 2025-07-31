@@ -14,7 +14,10 @@ import { getV4HotReloadScript } from "./hotReloadScript.js";
 export const updateHTML = (
   files: FileCollection,
   bundled: Map<string, string>,
-  inlineScripts: Array<{ id: string; content: string }> = [],
+  inlineScripts: Array<{
+    id: string;
+    content: string;
+  }> = [],
   enableHotReload: boolean = false,
 ): string => {
   if (!files["index.html"]) return "";
@@ -24,15 +27,21 @@ export const updateHTML = (
   // Replace each <script src="…"> with inline module
   bundled.forEach((code, src) => {
     // Check if this is an inline script
-    const isInlineScript = inlineScripts.some(script => script.id === src);
-    
+    const isInlineScript = inlineScripts.some(
+      (script) => script.id === src,
+    );
+
     if (isInlineScript) {
       // Find and replace the inline script tag
-      const inlineScriptContent = inlineScripts.find(script => script.id === src)?.content || '';
-      const escapedContent = escapeRegExp(inlineScriptContent);
+      const inlineScriptContent =
+        inlineScripts.find((script) => script.id === src)
+          ?.content || "";
+      const escapedContent = escapeRegExp(
+        inlineScriptContent,
+      );
       const inlineTagRe = new RegExp(
         `<script\\b[^>]*\\btype=["']module["'][^>]*>\\s*${escapedContent}\\s*</script>`,
-        'gi'
+        "gi",
       );
       html = html.replace(
         inlineTagRe,
@@ -71,12 +80,20 @@ export const updateHTML = (
 
   // Add runtime error handler script
   const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>\n`;
-  html = injectBeforeClose(html, "</head>", errorHandlerScript);
+  html = injectBeforeClose(
+    html,
+    "</head>",
+    errorHandlerScript,
+  );
 
   // Add hot reload script if enabled
   if (enableHotReload) {
     const hotReloadScript = `<script>${getV4HotReloadScript()}</script>\n`;
-    html = injectBeforeClose(html, "</body>", hotReloadScript);
+    html = injectBeforeClose(
+      html,
+      "</body>",
+      hotReloadScript,
+    );
   }
 
   // Ensure <!DOCTYPE html>

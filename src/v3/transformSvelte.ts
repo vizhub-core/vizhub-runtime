@@ -11,11 +11,13 @@ const fetchedFileCache = new Map<string, string>();
 export type SvelteCompiler = (
   code: string,
   options: any,
-) => { js: { code: string; map?: object }; css?: { code: string; map?: object } | null };
+) => {
+  js: { code: string; map?: object };
+  css?: { code: string; map?: object } | null;
+};
 let compile: SvelteCompiler;
 
-const svelteURL =
-  "https://cdn.jsdelivr.net/npm/svelte@5";
+const svelteURL = "https://cdn.jsdelivr.net/npm/svelte@5";
 
 export const svelteCompilerUrl = `${svelteURL}/compiler.cjs`;
 
@@ -105,14 +107,14 @@ export const transformSvelte = ({
 
       const compiled = compile(code, {
         filename: fileName,
-        generate: 'client',        // Svelte 5 uses 'client' instead of 'dom'
-        css: 'external',           // Extract CSS instead of auto-injecting
-        dev: false,                // Production mode
+        generate: "client", // Svelte 5 uses 'client' instead of 'dom'
+        css: "external", // Extract CSS instead of auto-injecting
+        dev: false, // Production mode
       });
 
       // In Svelte 5, CSS is extracted separately if css: 'external' is used
       let result = compiled.js.code;
-      
+
       // If there's CSS, inject it into the component
       if (compiled.css && compiled.css.code) {
         // Prepend CSS injection code to the component

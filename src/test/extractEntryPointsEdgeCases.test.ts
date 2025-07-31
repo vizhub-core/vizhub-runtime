@@ -11,8 +11,12 @@ describe("extractModuleEntryPoints edge cases", () => {
       </script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["__inline_script_0.js"]);
-    expect(result.inlineScripts[0].content).toBe('console.log("Hello!");');
+    expect(result.entryPoints).toEqual([
+      "__inline_script_0.js",
+    ]);
+    expect(result.inlineScripts[0].content).toBe(
+      'console.log("Hello!");',
+    );
   });
 
   it("should handle empty inline scripts", () => {
@@ -50,10 +54,19 @@ describe("extractModuleEntryPoints edge cases", () => {
       </script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["__inline_script_0.js", "__inline_script_1.js"]);
+    expect(result.entryPoints).toEqual([
+      "__inline_script_0.js",
+      "__inline_script_1.js",
+    ]);
     expect(result.inlineScripts).toEqual([
-      { id: "__inline_script_0.js", content: 'console.log("First script");' },
-      { id: "__inline_script_1.js", content: 'console.log("Second script");' }
+      {
+        id: "__inline_script_0.js",
+        content: 'console.log("First script");',
+      },
+      {
+        id: "__inline_script_1.js",
+        content: 'console.log("Second script");',
+      },
     ]);
   });
 
@@ -76,8 +89,12 @@ describe("extractModuleEntryPoints edge cases", () => {
       </html>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["__inline_script_0.js"]);
-    expect(result.inlineScripts[0].content.trim()).toBe('import { main } from "./index.js";\n            main(document.getElementById("viz-container"));');
+    expect(result.entryPoints).toEqual([
+      "__inline_script_0.js",
+    ]);
+    expect(result.inlineScripts[0].content.trim()).toBe(
+      'import { main } from "./index.js";\n            main(document.getElementById("viz-container"));',
+    );
   });
 
   it("should handle mixed quoted attributes", () => {
@@ -90,10 +107,19 @@ describe("extractModuleEntryPoints edge cases", () => {
       </script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["__inline_script_0.js", "__inline_script_1.js"]);
+    expect(result.entryPoints).toEqual([
+      "__inline_script_0.js",
+      "__inline_script_1.js",
+    ]);
     expect(result.inlineScripts).toEqual([
-      { id: "__inline_script_0.js", content: 'console.log("Single quotes for type");' },
-      { id: "__inline_script_1.js", content: 'console.log("Double quotes for type");' }
+      {
+        id: "__inline_script_0.js",
+        content: 'console.log("Single quotes for type");',
+      },
+      {
+        id: "__inline_script_1.js",
+        content: 'console.log("Double quotes for type");',
+      },
     ]);
   });
 });

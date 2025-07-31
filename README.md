@@ -316,6 +316,7 @@ V4 runtime supports hot reloading similar to V3, allowing for rapid development 
 - Preserves the current browser state where possible
 
 The hot reloading system works by:
+
 1. Bundling ES modules using Rollup (similar to V3)
 2. Injecting a hot reload script that listens for update messages
 3. Replacing module scripts dynamically when code changes
@@ -326,14 +327,12 @@ Unlike V3's built-in state management, V4 hot reloading relies on the applicatio
 ## Key Features
 
 - **Multi-Version Runtime Support**
-
   - **v1**: Simple HTML execution with fetch proxying
   - **v2**: JavaScript bundling with Rollup, JSX support, and CDN-based dependency resolution
   - **v3**: Advanced module bundling with Svelte support and cross-viz imports
   - **v4**: Modern ES Modules with import maps for direct browser execution
 
 - **Comprehensive Tooling**
-
   - **Bundling**: Seamless integration with Rollup for module bundling
   - **Transpilation**: Support for JSX (v2) and Svelte components (v3)
   - **Dependency Management**: Automatic resolution via CDNs (jsDelivr/unpkg)

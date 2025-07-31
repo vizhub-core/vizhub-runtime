@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { compile } from "svelte/compiler";
-import { transformSvelte, SvelteCompiler } from "./transformSvelte";
+import {
+  transformSvelte,
+  SvelteCompiler,
+} from "./transformSvelte";
 
 describe("transformSvelte", () => {
   it("should use Svelte 5 compiler interface", async () => {
@@ -23,7 +26,7 @@ describe("transformSvelte", () => {
     expect(result.js).toBeDefined();
     expect(result.js.code).toBeDefined();
     expect(typeof result.js.code).toBe("string");
-    
+
     // CSS should be available if there are styles
     expect(result.css).toBeDefined();
   });
@@ -55,18 +58,22 @@ describe("transformSvelte", () => {
   });
 
   it("should work with the SvelteCompiler type", async () => {
-    const testCompiler: SvelteCompiler = compile as SvelteCompiler;
-    
-    const result = testCompiler(`
+    const testCompiler: SvelteCompiler =
+      compile as SvelteCompiler;
+
+    const result = testCompiler(
+      `
       <script>
         const msg = 'Hello World';
       </script>
       <div>{msg}</div>
-    `, {
-      filename: "TypeTest.svelte",
-      generate: "client",
-      css: "external",
-    });
+    `,
+      {
+        filename: "TypeTest.svelte",
+        generate: "client",
+        css: "external",
+      },
+    );
 
     expect(result.js).toBeDefined();
     expect(result.js.code).toContain("msg");

@@ -3,16 +3,19 @@ import { build } from "../build";
 import { FileCollection } from "@vizhub/viz-types";
 
 // Mock rollup function for testing
-const mockRollup = async () => ({
-  generate: async () => ({
-    output: [{
-      type: 'chunk' as const,
-      code: 'console.log("test");',
-      fileName: 'bundle.js'
-    }]
-  }),
-  close: async () => {}
-}) as any;
+const mockRollup = async () =>
+  ({
+    generate: async () => ({
+      output: [
+        {
+          type: "chunk" as const,
+          code: 'console.log("test");',
+          fileName: "bundle.js",
+        },
+      ],
+    }),
+    close: async () => {},
+  }) as any;
 
 describe("Runtime Error Handling - All Versions", () => {
   test("V1 runtime should include runtime error handlers", async () => {
@@ -24,14 +27,18 @@ describe("Runtime Error Handling - All Versions", () => {
             <h1>Hello V1</h1>
             <script>console.log('V1 test');</script>
           </body>
-        </html>`
+        </html>`,
     };
 
     const result = await build({ files });
-    
+
     expect(result.runtimeVersion).toBe("v1");
-    expect(result.html).toContain("window.addEventListener('error'");
-    expect(result.html).toContain("window.addEventListener('unhandledrejection'");
+    expect(result.html).toContain(
+      "window.addEventListener('error'",
+    );
+    expect(result.html).toContain(
+      "window.addEventListener('unhandledrejection'",
+    );
     expect(result.html).toContain("parent.postMessage");
     expect(result.html).toContain("type: 'runtimeError'");
     expect(result.html).toContain("Hello V1");
@@ -50,11 +57,18 @@ describe("Runtime Error Handling - All Versions", () => {
       "index.js": `console.log('V2 test');`,
     };
 
-    const result = await build({ files, rollup: mockRollup });
-    
+    const result = await build({
+      files,
+      rollup: mockRollup,
+    });
+
     expect(result.runtimeVersion).toBe("v2");
-    expect(result.html).toContain("window.addEventListener('error'");
-    expect(result.html).toContain("window.addEventListener('unhandledrejection'");
+    expect(result.html).toContain(
+      "window.addEventListener('error'",
+    );
+    expect(result.html).toContain(
+      "window.addEventListener('unhandledrejection'",
+    );
     expect(result.html).toContain("parent.postMessage");
     expect(result.html).toContain("type: 'runtimeError'");
     expect(result.html).toContain("Hello V2");
@@ -68,15 +82,19 @@ describe("Runtime Error Handling - All Versions", () => {
     };
 
     // V3 requires vizCache, so we set it up
-    const result = await build({ 
-      files, 
-      rollup: mockRollup
+    const result = await build({
+      files,
+      rollup: mockRollup,
       // vizId will be auto-generated when not provided
     });
-    
+
     expect(result.runtimeVersion).toBe("v3");
-    expect(result.html).toContain("window.addEventListener('error'");
-    expect(result.html).toContain("window.addEventListener('unhandledrejection'");
+    expect(result.html).toContain(
+      "window.addEventListener('error'",
+    );
+    expect(result.html).toContain(
+      "window.addEventListener('unhandledrejection'",
+    );
     expect(result.html).toContain("parent.postMessage");
     expect(result.html).toContain("type: 'runtimeError'");
     // V3 generates its own HTML template
@@ -105,11 +123,18 @@ describe("Runtime Error Handling - All Versions", () => {
       "index.js": `console.log('V4 test');`,
     };
 
-    const result = await build({ files, rollup: mockRollup });
-    
+    const result = await build({
+      files,
+      rollup: mockRollup,
+    });
+
     expect(result.runtimeVersion).toBe("v4");
-    expect(result.html).toContain("window.addEventListener('error'");
-    expect(result.html).toContain("window.addEventListener('unhandledrejection'");
+    expect(result.html).toContain(
+      "window.addEventListener('error'",
+    );
+    expect(result.html).toContain(
+      "window.addEventListener('unhandledrejection'",
+    );
     expect(result.html).toContain("parent.postMessage");
     expect(result.html).toContain("type: 'runtimeError'");
     expect(result.html).toContain("Hello V4");
@@ -118,33 +143,45 @@ describe("Runtime Error Handling - All Versions", () => {
   test("runtime error handler script should be valid JavaScript", () => {
     // Test that the error handler script can be executed without syntax errors
     const files: FileCollection = {
-      "index.html": `<!DOCTYPE html><html><head></head><body></body></html>`
+      "index.html": `<!DOCTYPE html><html><head></head><body></body></html>`,
     };
-    
-    return build({ files }).then(result => {
+
+    return build({ files }).then((result) => {
       // For V1, look for ALL script tags since magic-sandbox might split them
-      const scriptMatches = result.html?.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+      const scriptMatches = result.html?.match(
+        /<script[^>]*>([\s\S]*?)<\/script>/g,
+      );
       expect(scriptMatches).toBeTruthy();
-      
+
       if (scriptMatches) {
         // Find the script that contains our error handling code
-        const errorHandlerScript = scriptMatches.find(script => 
-          script.includes('addEventListener') && 
-          script.includes('runtimeError')
+        const errorHandlerScript = scriptMatches.find(
+          (script) =>
+            script.includes("addEventListener") &&
+            script.includes("runtimeError"),
         );
-        
+
         expect(errorHandlerScript).toBeTruthy();
-        
+
         if (errorHandlerScript) {
           // Extract just the content
-          const scriptContent = errorHandlerScript.replace(/<script[^>]*>|<\/script>/g, '');
-          
+          const scriptContent = errorHandlerScript.replace(
+            /<script[^>]*>|<\/script>/g,
+            "",
+          );
+
           // Should not throw when parsing as JavaScript
-          expect(() => new Function(scriptContent)).not.toThrow();
-          
+          expect(
+            () => new Function(scriptContent),
+          ).not.toThrow();
+
           // Should contain error handling logic
-          expect(scriptContent).toContain('formatRuntimeError');
-          expect(scriptContent).toContain('addEventListener');
+          expect(scriptContent).toContain(
+            "formatRuntimeError",
+          );
+          expect(scriptContent).toContain(
+            "addEventListener",
+          );
         }
       }
     });

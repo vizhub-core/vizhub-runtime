@@ -15,9 +15,10 @@ describe("Svelte 5 Integration", () => {
       </style>
     `;
 
-    const getSvelteCompiler = async (): Promise<SvelteCompiler> => {
-      return compile as SvelteCompiler;
-    };
+    const getSvelteCompiler =
+      async (): Promise<SvelteCompiler> => {
+        return compile as SvelteCompiler;
+      };
 
     const svelteCompiler = await getSvelteCompiler();
     const result = svelteCompiler(svelteCode, {
@@ -32,11 +33,11 @@ describe("Svelte 5 Integration", () => {
     expect(result.js.code).toBeDefined();
     expect(typeof result.js.code).toBe("string");
     expect(result.js.code.length).toBeGreaterThan(0);
-    
+
     // Check that the compiled JS contains expected Svelte 5 patterns
     expect(result.js.code).toContain("svelte/internal");
     expect(result.js.code).toContain("Hello from");
-    
+
     // Check that CSS is properly extracted
     expect(result.css).toBeDefined();
     expect(result.css).not.toBeNull();
@@ -67,9 +68,10 @@ describe("Svelte 5 Integration", () => {
       </style>
     `;
 
-    const getSvelteCompiler = async (): Promise<SvelteCompiler> => {
-      return compile as SvelteCompiler;
-    };
+    const getSvelteCompiler =
+      async (): Promise<SvelteCompiler> => {
+        return compile as SvelteCompiler;
+      };
 
     const svelteCompiler = await getSvelteCompiler();
     const result = svelteCompiler(svelteCode, {
@@ -82,18 +84,22 @@ describe("Svelte 5 Integration", () => {
     expect(result).toBeDefined();
     expect(result.js).toBeDefined();
     expect(result.js.code).toBeDefined();
-    
+
     // Check that the compiled JS contains expected patterns
     expect(result.js.code).toContain("onMount");
-    expect(result.js.code).toContain("Chart mounted with data");
+    expect(result.js.code).toContain(
+      "Chart mounted with data",
+    );
     expect(result.js.code).toContain("svg");
-    
+
     // Check that CSS is properly extracted
     expect(result.css).toBeDefined();
     expect(result.css).not.toBeNull();
     expect(result.css?.code).toBeDefined();
     expect(result.css?.code).toContain("color: #333");
-    expect(result.css?.code).toContain("border: 1px solid #ccc");
+    expect(result.css?.code).toContain(
+      "border: 1px solid #ccc",
+    );
   });
 
   it("should handle Svelte 5 component with mount pattern", async () => {
