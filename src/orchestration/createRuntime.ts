@@ -279,8 +279,8 @@ export const createRuntime = ({
       // Clear the console before each run.
       !DEBUG && console.clear();
 
-      // The `enableHotReloading` only works for v3.
-      if (enableHotReloading && runtimeVersion === "v3") {
+      // The `enableHotReloading` only works for v3 and v4.
+      if (enableHotReloading && (runtimeVersion === "v3" || runtimeVersion === "v4")) {
         if (css) {
           const runCSSMessage: WindowMessage = {
             type: "runCSS",
