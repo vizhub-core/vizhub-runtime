@@ -18,6 +18,10 @@ export type VizHubRuntime = {
     // The ID of the viz.
     // Only strictly required for v3 runtime.
     vizId?: VizId;
+
+    // Toggle for clearing console before each run.
+    // Defaults to true for backward compatibility.
+    clearConsole?: boolean;
   }) => void;
 
   // Cleans up the event listeners from the Worker and the iframe.
