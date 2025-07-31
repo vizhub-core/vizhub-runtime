@@ -1,4 +1,5 @@
 export { basicIndexJS } from "./basicIndexJS";
+export { basicIndexJSWithViz } from "./basicIndexJSWithViz";
 export { sampleVizContent } from "./vizContent";
 export { jsExport } from "./jsExport";
 export { cssImport } from "./cssImport";

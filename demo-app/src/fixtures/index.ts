@@ -1,5 +1,6 @@
 import { d3DemoV2 } from "./d3DemoV2";
 import { d3DemoV3 } from "./d3DemoV3";
+import { d3DemoV3WithViz } from "./d3DemoV3WithViz";
 import { helloWorldDemoV1 } from "./helloWorldDemoV1";
 import { jsScriptTagTypeModules } from "./jsScriptTagTypeModules";
 import { reactDemoV2 } from "./reactDemoV2";
@@ -17,6 +18,7 @@ export const fixtures: Array<VizHubRuntimeFixture> = [
   reactDemoV2jsxExt,
   d3DemoV2,
   d3DemoV3,
+  d3DemoV3WithViz,
   d3DemoV3Full,
   svelteDemoV3,
   threeJsDemoV4,
