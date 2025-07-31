@@ -43,7 +43,7 @@ export const htmlTemplate = ({
       const render = () => {
         const container = document.getElementById('${vizContainerId}');
         typeof cleanup === 'function' && cleanup();
-        cleanup = Viz.main(container, { state: window.state, setState, writeFile });
+        cleanup = (Viz.viz || Viz.main)(container, { state: window.state, setState, writeFile });
       };
       const setState = (next) => {
         window.state = next(window.state);
