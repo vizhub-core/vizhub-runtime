@@ -28,7 +28,7 @@ The library automatically detects which runtime version to use based on the file
 | **React JSX**           | ⬜️     | ✅     | ⬜️     | ✅     |
 | **Svelte**              | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Cross-Viz Imports**   | ⬜️     | ⬜️     | ✅     | ⬜️     |
-| **Hot Reloading**       | ⬜️     | ⬜️     | ✅     | ⬜️     |
+| **Hot Reloading**       | ⬜️     | ⬜️     | ✅     | ✅     |
 | **State Management**    | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **Import from CSV**     | ⬜️     | ⬜️     | ✅     | ⬜️     |
 | **TypeScript**          | ⬜️     | ⬜️     | ⬜️     | ✅     |
@@ -304,6 +304,24 @@ V4 is ideal for modern browsers with native ES module support, TypeScript develo
 - Import maps for direct CDN dependencies
 - Native ES modules without bundling
 - Local module imports with relative paths
+- Hot reloading for fast development iteration
+
+### V4 Hot Reloading
+
+V4 runtime supports hot reloading similar to V3, allowing for rapid development cycles without full page refreshes. When `enableHotReloading` is set to `true`, the V4 runtime:
+
+- Monitors code changes and re-bundles ES modules
+- Sends updated JavaScript to the iframe via `runJS` messages
+- Replaces existing module script tags with updated bundled code
+- Preserves the current browser state where possible
+
+The hot reloading system works by:
+1. Bundling ES modules using Rollup (similar to V3)
+2. Injecting a hot reload script that listens for update messages
+3. Replacing module scripts dynamically when code changes
+4. Re-executing the updated modules in the current context
+
+Unlike V3's built-in state management, V4 hot reloading relies on the application's own state management (e.g., React state, DOM state) to preserve state between updates.
 
 ## Key Features
 
