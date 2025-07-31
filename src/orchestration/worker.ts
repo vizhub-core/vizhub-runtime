@@ -9,7 +9,6 @@ import {
 import { generateRequestId } from "./generateRequestId";
 import { BuildWorkerMessage } from "./types";
 import { build } from "../build";
-import { generateVizId } from "@vizhub/viz-utils";
 
 // Flag for debugging
 const DEBUG = false;
