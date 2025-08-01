@@ -129,6 +129,13 @@ export const PROD = false;
       return await resolveSvelteImport(basePath);
     }
 
+    // Handle Svelte internal package imports (e.g., #client/constants)
+    if (importee.startsWith("#client/")) {
+      const sub_path = importee.slice(8); // Remove '#client/'
+      const basePath = `${svelteURL}/src/internal/client/${sub_path}`;
+      return await resolveSvelteImport(basePath);
+    }
+
     // importing from a URL
     if (/^https?:/.test(importee)) return importee;
 

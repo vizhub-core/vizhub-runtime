@@ -3,6 +3,7 @@ import type {
   RollupBuild,
   RollupOptions,
   OutputOptions,
+  Plugin,
 } from "rollup";
 import { FileCollection, VizId } from "@vizhub/viz-types";
 import {
@@ -46,6 +47,31 @@ export const computeBundleJSV3 = async ({
     throw new Error("Missing index.js");
   }
 
+  // Create a replace plugin similar to the REPL implementation
+  const replacePlugin: Plugin = {
+    name: "replace",
+    transform(code, id) {
+      // Replace process.env.NODE_ENV and other environment variables
+      let hasReplacements = false;
+      let transformedCode = code;
+
+      // Replace process.env.NODE_ENV
+      if (
+        transformedCode.includes("process.env.NODE_ENV")
+      ) {
+        transformedCode = transformedCode.replace(
+          /\bprocess\.env\.NODE_ENV\b/g,
+          JSON.stringify("production"),
+        );
+        hasReplacements = true;
+      }
+
+      return hasReplacements
+        ? { code: transformedCode, map: null }
+        : null;
+    },
+  };
+
   const inputOptions: RollupOptions = {
     input: "./index.js",
     plugins: [
@@ -53,6 +79,7 @@ export const computeBundleJSV3 = async ({
       transformDSV(),
       sucrasePlugin(),
       transformSvelte({ getSvelteCompiler }),
+      replacePlugin,
       ...(vizCache
         ? [
             vizLoad({
@@ -85,6 +112,24 @@ export const computeBundleJSV3 = async ({
       inputOptions.external = Object.keys(globals);
       outputOptions.globals = globals;
     }
+  }
+
+  // Handle Svelte internal modules that might be treated as external
+  if (!inputOptions.external) {
+    inputOptions.external = [];
+  }
+  if (!outputOptions.globals) {
+    outputOptions.globals = {};
+  }
+
+  // Ensure Svelte internal modules are not treated as external
+  // by filtering them out if they were added
+  if (Array.isArray(inputOptions.external)) {
+    inputOptions.external = inputOptions.external.filter(
+      (ext) =>
+        typeof ext === "string" &&
+        !ext.startsWith("#client/"),
+    );
   }
 
   const bundle = await rollup(inputOptions);
