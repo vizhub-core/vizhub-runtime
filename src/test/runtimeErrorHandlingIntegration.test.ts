@@ -1,16 +1,22 @@
-import { describe, expect, test, vi, beforeEach } from "vitest";
+import {
+  describe,
+  expect,
+  test,
+  vi,
+  beforeEach,
+} from "vitest";
 import { createRuntime } from "../orchestration/createRuntime";
 
 // Mock window object
-Object.defineProperty(global, 'window', {
+Object.defineProperty(global, "window", {
   value: {
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     location: {
-      origin: 'http://localhost'
-    }
+      origin: "http://localhost",
+    },
   },
-  writable: true
+  writable: true,
 });
 
 beforeEach(() => {
@@ -38,13 +44,19 @@ describe("Runtime Error Handling Integration", () => {
     });
 
     // Get the window event listener that was added
-    const windowEventListenerCalls = vi.mocked(window.addEventListener);
-    expect(windowEventListenerCalls).toHaveBeenCalledWith("message", expect.any(Function));
-    
+    const windowEventListenerCalls = vi.mocked(
+      window.addEventListener,
+    );
+    expect(windowEventListenerCalls).toHaveBeenCalledWith(
+      "message",
+      expect.any(Function),
+    );
+
     // Get the listener function
-    const messageListener = windowEventListenerCalls.mock.calls.find(
-      call => call[0] === "message"
-    )?.[1] as EventListener;
+    const messageListener =
+      windowEventListenerCalls.mock.calls.find(
+        (call) => call[0] === "message",
+      )?.[1] as EventListener;
 
     expect(messageListener).toBeDefined();
 
@@ -59,7 +71,9 @@ describe("Runtime Error Handling Integration", () => {
     messageListener(mockEvent);
 
     // Verify that handleRuntimeError was called with the correct message
-    expect(handleRuntimeError).toHaveBeenCalledWith("Test runtime error message");
+    expect(handleRuntimeError).toHaveBeenCalledWith(
+      "Test runtime error message",
+    );
     expect(handleRuntimeError).toHaveBeenCalledTimes(1);
 
     // Clean up
@@ -82,10 +96,13 @@ describe("Runtime Error Handling Integration", () => {
     });
 
     // Get the window event listener that was added
-    const windowEventListenerCalls = vi.mocked(window.addEventListener);
-    const messageListener = windowEventListenerCalls.mock.calls.find(
-      call => call[0] === "message"
-    )?.[1] as EventListener;
+    const windowEventListenerCalls = vi.mocked(
+      window.addEventListener,
+    );
+    const messageListener =
+      windowEventListenerCalls.mock.calls.find(
+        (call) => call[0] === "message",
+      )?.[1] as EventListener;
 
     expect(messageListener).toBeDefined();
 
@@ -124,10 +141,13 @@ describe("Runtime Error Handling Integration", () => {
     });
 
     // Get the window event listener that was added
-    const windowEventListenerCalls = vi.mocked(window.addEventListener);
-    const messageListener = windowEventListenerCalls.mock.calls.find(
-      call => call[0] === "message"
-    )?.[1] as EventListener;
+    const windowEventListenerCalls = vi.mocked(
+      window.addEventListener,
+    );
+    const messageListener =
+      windowEventListenerCalls.mock.calls.find(
+        (call) => call[0] === "message",
+      )?.[1] as EventListener;
 
     expect(messageListener).toBeDefined();
 

@@ -5,8 +5,12 @@ import { v4Build } from "../v4/index";
 const mockRollup = async (options: any) => {
   return {
     generate: async () => ({
-      output: [{ code: `console.log("bundled code for ${options.input}");` }]
-    })
+      output: [
+        {
+          code: `console.log("bundled code for ${options.input}");`,
+        },
+      ],
+    }),
   };
 };
 
@@ -19,18 +23,24 @@ describe("v4Build", () => {
           main();
         </script>
       `,
-      "index.js": `export function main() { console.log("Hello from main"); }`
+      "index.js": `export function main() { console.log("Hello from main"); }`,
     };
 
-    const result = await v4Build({ 
-      files, 
+    const result = await v4Build({
+      files,
       rollup: mockRollup as any,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
-    expect(result["index.html"]).toContain('<script type="module">');
-    expect(result["index.html"]).toContain('bundled code for');
-    expect(result["index.html"]).not.toContain('import { main } from "./index.js";');
+    expect(result["index.html"]).toContain(
+      '<script type="module">',
+    );
+    expect(result["index.html"]).toContain(
+      "bundled code for",
+    );
+    expect(result["index.html"]).not.toContain(
+      'import { main } from "./index.js";',
+    );
   });
 
   it("should handle mixed src and inline scripts", async () => {
@@ -43,16 +53,20 @@ describe("v4Build", () => {
         </script>
       `,
       "main.js": `console.log("main script");`,
-      "helper.js": `export function helper() { console.log("helper"); }`
+      "helper.js": `export function helper() { console.log("helper"); }`,
     };
 
-    const result = await v4Build({ 
-      files, 
+    const result = await v4Build({
+      files,
       rollup: mockRollup as any,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
-    expect(result["index.html"]).toContain('bundled code for ./main.js');
-    expect(result["index.html"]).toContain('bundled code for ./__inline_script_0.js');
+    expect(result["index.html"]).toContain(
+      "bundled code for ./main.js",
+    );
+    expect(result["index.html"]).toContain(
+      "bundled code for ./__inline_script_0.js",
+    );
   });
 });

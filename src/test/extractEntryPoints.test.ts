@@ -15,7 +15,10 @@ describe("extractModuleEntryPoints", () => {
       <script type="module" src="other.js"></script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["index.js", "other.js"]);
+    expect(result.entryPoints).toEqual([
+      "index.js",
+      "other.js",
+    ]);
     expect(result.inlineScripts).toEqual([]);
   });
 
@@ -27,11 +30,16 @@ describe("extractModuleEntryPoints", () => {
       </script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["__inline_script_0.js"]);
-    expect(result.inlineScripts).toEqual([{
-      id: "__inline_script_0.js",
-      content: 'import { main } from "./index.js";\n        main();'
-    }]);
+    expect(result.entryPoints).toEqual([
+      "__inline_script_0.js",
+    ]);
+    expect(result.inlineScripts).toEqual([
+      {
+        id: "__inline_script_0.js",
+        content:
+          'import { main } from "./index.js";\n        main();',
+      },
+    ]);
   });
 
   it("should handle mixed src and inline scripts", () => {
@@ -43,10 +51,16 @@ describe("extractModuleEntryPoints", () => {
       </script>
     `;
     const result = extractModuleEntryPoints(html);
-    expect(result.entryPoints).toEqual(["index.js", "__inline_script_0.js"]);
-    expect(result.inlineScripts).toEqual([{
-      id: "__inline_script_0.js",
-      content: 'import { main } from "./other.js";\n        main();'
-    }]);
+    expect(result.entryPoints).toEqual([
+      "index.js",
+      "__inline_script_0.js",
+    ]);
+    expect(result.inlineScripts).toEqual([
+      {
+        id: "__inline_script_0.js",
+        content:
+          'import { main } from "./other.js";\n        main();',
+      },
+    ]);
   });
 });

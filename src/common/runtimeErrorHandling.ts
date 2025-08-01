@@ -1,35 +1,41 @@
 /**
  * Formats an error object into a readable error message for runtime errors
  */
-export const formatRuntimeError = (error: Error | ErrorEvent | PromiseRejectionEvent): string => {
+export const formatRuntimeError = (
+  error: Error | ErrorEvent | PromiseRejectionEvent,
+): string => {
   if (error instanceof Error) {
     // Regular Error object
-    const stack = error.stack || '';
-    const message = error.message || 'Unknown error';
-    return `${error.name || 'Error'}: ${message}\n${stack}`;
-  } else if ('error' in error && error.error instanceof Error) {
+    const stack = error.stack || "";
+    const message = error.message || "Unknown error";
+    return `${error.name || "Error"}: ${message}\n${stack}`;
+  } else if (
+    "error" in error &&
+    error.error instanceof Error
+  ) {
     // ErrorEvent from window.addEventListener('error')
     const err = error.error;
-    const stack = err.stack || '';
-    const message = err.message || 'Unknown error';
-    const filename = 'filename' in error ? error.filename : '';
-    const lineno = 'lineno' in error ? error.lineno : '';
-    const colno = 'colno' in error ? error.colno : '';
-    
-    let location = '';
+    const stack = err.stack || "";
+    const message = err.message || "Unknown error";
+    const filename =
+      "filename" in error ? error.filename : "";
+    const lineno = "lineno" in error ? error.lineno : "";
+    const colno = "colno" in error ? error.colno : "";
+
+    let location = "";
     if (filename && lineno) {
       location = ` at ${filename}:${lineno}`;
       if (colno) location += `:${colno}`;
     }
-    
-    return `${err.name || 'Error'}: ${message}${location}\n${stack}`;
-  } else if ('reason' in error) {
+
+    return `${err.name || "Error"}: ${message}${location}\n${stack}`;
+  } else if ("reason" in error) {
     // PromiseRejectionEvent from window.addEventListener('unhandledrejection')
     const reason = error.reason;
     if (reason instanceof Error) {
-      const stack = reason.stack || '';
-      const message = reason.message || 'Unknown error';
-      return `Unhandled Promise Rejection - ${reason.name || 'Error'}: ${message}\n${stack}`;
+      const stack = reason.stack || "";
+      const message = reason.message || "Unknown error";
+      return `Unhandled Promise Rejection - ${reason.name || "Error"}: ${message}\n${stack}`;
     } else {
       return `Unhandled Promise Rejection: ${String(reason)}`;
     }

@@ -6,6 +6,7 @@ export default defineConfig({
       // Exclude Rollup v4 from being bundled,
       // because it messes up the WASM part of the build.
       "@rollup/browser",
+      "@vizhub/runtime",
     ],
   },
   server: {

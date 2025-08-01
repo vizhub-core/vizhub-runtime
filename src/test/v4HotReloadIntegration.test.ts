@@ -23,18 +23,20 @@ describe("V4 Hot Reloading Integration", () => {
           container.innerHTML = '<h1>' + message + '</h1>';
           console.log('Rendered: ' + message);
         }
-      `
+      `,
     };
 
     // First build - should detect as V4 and include hot reload support
-    const initialBuild = await build({ 
-      files: initialFiles, 
+    const initialBuild = await build({
+      files: initialFiles,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     expect(initialBuild.runtimeVersion).toBe("v4");
-    expect(initialBuild.html).toContain("// V4 Hot Reloading Support");
+    expect(initialBuild.html).toContain(
+      "// V4 Hot Reloading Support",
+    );
     expect(initialBuild.js).toBeTruthy();
     expect(initialBuild.js).toContain("Initial Version");
 
@@ -46,22 +48,26 @@ describe("V4 Hot Reloading Integration", () => {
           container.innerHTML = '<h1 style="color: blue;">' + message + '</h1>';
           console.log('Rendered with style: ' + message);
         }
-      `
+      `,
     };
 
     // Second build - simulating hot reload
-    const updatedBuild = await build({ 
-      files: updatedFiles, 
+    const updatedBuild = await build({
+      files: updatedFiles,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     expect(updatedBuild.runtimeVersion).toBe("v4");
     expect(updatedBuild.js).toContain("color: blue");
-    expect(updatedBuild.js).toContain("Rendered with style");
-    
+    expect(updatedBuild.js).toContain(
+      "Rendered with style",
+    );
+
     // The HTML should still contain the hot reload script
-    expect(updatedBuild.html).toContain("// V4 Hot Reloading Support");
+    expect(updatedBuild.html).toContain(
+      "// V4 Hot Reloading Support",
+    );
   });
 
   it("should handle inline scripts with hot reloading", async () => {
@@ -76,17 +82,19 @@ describe("V4 Hot Reloading Integration", () => {
       console.log('Inline script running');
     </script>
   </body>
-</html>`
+</html>`,
     };
 
-    const result = await build({ 
-      files, 
+    const result = await build({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     expect(result.runtimeVersion).toBe("v4");
-    expect(result.html).toContain("// V4 Hot Reloading Support");
+    expect(result.html).toContain(
+      "// V4 Hot Reloading Support",
+    );
     expect(result.js).toContain("Inline script executed");
     expect(result.js).toContain("Inline script running");
   });
@@ -110,17 +118,19 @@ describe("V4 Hot Reloading Integration", () => {
         export function helper(source) {
           console.log('Helper called ' + source);
         }
-      `
+      `,
     };
 
-    const result = await build({ 
-      files, 
+    const result = await build({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     expect(result.runtimeVersion).toBe("v4");
-    expect(result.html).toContain("// V4 Hot Reloading Support");
+    expect(result.html).toContain(
+      "// V4 Hot Reloading Support",
+    );
     expect(result.js).toContain("External module loaded");
     expect(result.js).toContain("Helper called");
     expect(result.js).toContain("from inline");

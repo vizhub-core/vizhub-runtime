@@ -182,7 +182,9 @@ describe("Iframe and Worker Management", () => {
   });
 
   it("should clear console by default when clearConsole is not specified", async () => {
-    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+    const consoleClearSpy = vi
+      .spyOn(console, "clear")
+      .mockImplementation(() => {});
 
     // Create a mock worker that will simulate a successful build response
     class MockBuildWorker {
@@ -195,7 +197,8 @@ describe("Iframe and Worker Management", () => {
       postMessage(message: any) {
         if (message.type === "buildRequest") {
           setTimeout(() => {
-            const listeners = this.listeners["message"] || [];
+            const listeners =
+              this.listeners["message"] || [];
             const data: BuildWorkerMessage = {
               type: "buildResponse",
               requestId: message.requestId,
@@ -206,7 +209,9 @@ describe("Iframe and Worker Management", () => {
                 css: "body { color: red; }",
               },
             };
-            listeners.forEach((callback) => callback({ data }));
+            listeners.forEach((callback) =>
+              callback({ data }),
+            );
           }, 10);
         }
       }
@@ -220,7 +225,9 @@ describe("Iframe and Worker Management", () => {
 
       removeEventListener(type: string, callback: any) {
         if (this.listeners[type]) {
-          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+          this.listeners[type] = this.listeners[
+            type
+          ].filter((cb) => cb !== callback);
         }
       }
     }
@@ -247,7 +254,9 @@ describe("Iframe and Worker Management", () => {
       });
 
       // Wait for async operations
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 50),
+      );
 
       expect(consoleClearSpy).toHaveBeenCalled();
 
@@ -259,7 +268,9 @@ describe("Iframe and Worker Management", () => {
   });
 
   it("should not clear console when clearConsole is set to false", async () => {
-    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+    const consoleClearSpy = vi
+      .spyOn(console, "clear")
+      .mockImplementation(() => {});
 
     // Create a mock worker that will simulate a successful build response
     class MockBuildWorker {
@@ -272,7 +283,8 @@ describe("Iframe and Worker Management", () => {
       postMessage(message: any) {
         if (message.type === "buildRequest") {
           setTimeout(() => {
-            const listeners = this.listeners["message"] || [];
+            const listeners =
+              this.listeners["message"] || [];
             const data: BuildWorkerMessage = {
               type: "buildResponse",
               requestId: message.requestId,
@@ -283,7 +295,9 @@ describe("Iframe and Worker Management", () => {
                 css: "body { color: red; }",
               },
             };
-            listeners.forEach((callback) => callback({ data }));
+            listeners.forEach((callback) =>
+              callback({ data }),
+            );
           }, 10);
         }
       }
@@ -297,7 +311,9 @@ describe("Iframe and Worker Management", () => {
 
       removeEventListener(type: string, callback: any) {
         if (this.listeners[type]) {
-          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+          this.listeners[type] = this.listeners[
+            type
+          ].filter((cb) => cb !== callback);
         }
       }
     }
@@ -325,7 +341,9 @@ describe("Iframe and Worker Management", () => {
       });
 
       // Wait for async operations
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 50),
+      );
 
       expect(consoleClearSpy).not.toHaveBeenCalled();
 
@@ -337,7 +355,9 @@ describe("Iframe and Worker Management", () => {
   });
 
   it("should clear console when clearConsole is explicitly set to true", async () => {
-    const consoleClearSpy = vi.spyOn(console, "clear").mockImplementation(() => {});
+    const consoleClearSpy = vi
+      .spyOn(console, "clear")
+      .mockImplementation(() => {});
 
     // Create a mock worker that will simulate a successful build response
     class MockBuildWorker {
@@ -350,7 +370,8 @@ describe("Iframe and Worker Management", () => {
       postMessage(message: any) {
         if (message.type === "buildRequest") {
           setTimeout(() => {
-            const listeners = this.listeners["message"] || [];
+            const listeners =
+              this.listeners["message"] || [];
             const data: BuildWorkerMessage = {
               type: "buildResponse",
               requestId: message.requestId,
@@ -361,7 +382,9 @@ describe("Iframe and Worker Management", () => {
                 css: "body { color: red; }",
               },
             };
-            listeners.forEach((callback) => callback({ data }));
+            listeners.forEach((callback) =>
+              callback({ data }),
+            );
           }, 10);
         }
       }
@@ -375,7 +398,9 @@ describe("Iframe and Worker Management", () => {
 
       removeEventListener(type: string, callback: any) {
         if (this.listeners[type]) {
-          this.listeners[type] = this.listeners[type].filter((cb) => cb !== callback);
+          this.listeners[type] = this.listeners[
+            type
+          ].filter((cb) => cb !== callback);
         }
       }
     }
@@ -403,7 +428,9 @@ describe("Iframe and Worker Management", () => {
       });
 
       // Wait for async operations
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 50),
+      );
 
       expect(consoleClearSpy).toHaveBeenCalled();
 

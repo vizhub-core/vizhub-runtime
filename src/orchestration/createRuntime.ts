@@ -82,7 +82,9 @@ export const createRuntime = ({
     slugKey: string,
   ) => Promise<VizId | null>;
   writeFile?: (fileName: string, content: string) => void;
-  handleRuntimeError?: (formattedErrorMessage: string) => void;
+  handleRuntimeError?: (
+    formattedErrorMessage: string,
+  ) => void;
 }): VizHubRuntime => {
   // Track the current state of the runtime
   let state:
@@ -198,7 +200,10 @@ export const createRuntime = ({
       }
     }
 
-    if (data.type === "runtimeError" && handleRuntimeError) {
+    if (
+      data.type === "runtimeError" &&
+      handleRuntimeError
+    ) {
       handleRuntimeError(data.formattedErrorMessage);
     }
 
@@ -282,7 +287,10 @@ export const createRuntime = ({
       !DEBUG && clearConsole && console.clear();
 
       // The `enableHotReloading` only works for v3 and v4.
-      if (enableHotReloading && (runtimeVersion === "v3" || runtimeVersion === "v4")) {
+      if (
+        enableHotReloading &&
+        (runtimeVersion === "v3" || runtimeVersion === "v4")
+      ) {
         if (css) {
           const runCSSMessage: WindowMessage = {
             type: "runCSS",

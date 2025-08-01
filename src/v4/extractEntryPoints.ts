@@ -8,22 +8,26 @@ export const extractModuleEntryPoints = (
   inlineScripts: Array<{ id: string; content: string }>;
 } => {
   const entryPoints: string[] = [];
-  const inlineScripts: Array<{ id: string; content: string }> = [];
-  const scriptTag = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  const inlineScripts: Array<{
+    id: string;
+    content: string;
+  }> = [];
+  const scriptTag =
+    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
   let m: RegExpExecArray | null;
   let inlineScriptCounter = 0;
 
   while ((m = scriptTag.exec(html)) !== null) {
     const attrs = m[1];
     const content = m[2];
-    
+
     if (!/\btype\s*=\s*["']module["']/i.test(attrs))
       continue;
-    
+
     const srcMatch = attrs.match(
       /\bsrc\s*=\s*["']([^"']+)["']/i,
     );
-    
+
     if (srcMatch) {
       entryPoints.push(srcMatch[1]);
     } else if (content.trim()) {
@@ -36,6 +40,6 @@ export const extractModuleEntryPoints = (
       entryPoints.push(inlineId);
     }
   }
-  
+
   return { entryPoints, inlineScripts };
 };

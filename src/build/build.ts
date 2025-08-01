@@ -22,19 +22,27 @@ const DEBUG = false;
 /**
  * Adds runtime error handling to V1 HTML that was processed by magicSandbox
  */
-const addRuntimeErrorHandlingToV1 = (html: string): string => {
+const addRuntimeErrorHandlingToV1 = (
+  html: string,
+): string => {
   const errorHandlerScript = `<script>${getRuntimeErrorHandlerScript()}</script>`;
-  
+
   // Try to inject before </head> if it exists
-  if (html.includes('</head>')) {
-    return html.replace('</head>', `${errorHandlerScript}\n</head>`);
+  if (html.includes("</head>")) {
+    return html.replace(
+      "</head>",
+      `${errorHandlerScript}\n</head>`,
+    );
   }
-  
+
   // Try to inject before </body> if it exists
-  if (html.includes('</body>')) {
-    return html.replace('</body>', `${errorHandlerScript}\n</body>`);
+  if (html.includes("</body>")) {
+    return html.replace(
+      "</body>",
+      `${errorHandlerScript}\n</body>`,
+    );
   }
-  
+
   // If neither exists, inject at the end
   return html + errorHandlerScript;
 };
@@ -115,7 +123,9 @@ export const build = async ({
       console.log("[build] version:", runtimeVersion);
     if (runtimeVersion === "v1") {
       return {
-        html: addRuntimeErrorHandlingToV1(magicSandbox(files)),
+        html: addRuntimeErrorHandlingToV1(
+          magicSandbox(files),
+        ),
         runtimeVersion,
       };
     }
@@ -189,11 +199,15 @@ export const build = async ({
           rollup,
           enableSourcemap,
         });
-      
+
       // For V4, we need to determine if we need hot reload support
       // by checking if we need separate JS (this will be called from the runtime)
-      const v4Result = await v4BuildWithHotReload({ files, rollup, enableSourcemap });
-      
+      const v4Result = await v4BuildWithHotReload({
+        files,
+        rollup,
+        enableSourcemap,
+      });
+
       return {
         html: magicSandbox(v4Result.files),
         js: v4Result.bundledJS,

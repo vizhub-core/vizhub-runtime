@@ -12,24 +12,24 @@ describe("V3 Build Integration - viz export support", () => {
       `,
     };
 
-    const result = await build({ 
-      files, 
+    const result = await build({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     // Check that HTML was generated
     expect(result).toBeDefined();
     expect(result.html).toBeDefined();
-    expect(typeof result.html).toBe('string');
-    
+    expect(typeof result.html).toBe("string");
+
     // Should contain the fallback logic for viz || main
     expect(result.html).toContain("(Viz.viz || Viz.main)");
-    
+
     // Should contain the basic V3 runtime structure
     expect(result.html).toContain('<div id="viz-container');
-    expect(result.html).toContain('window.state');
-    expect(result.html).toContain('setState');
+    expect(result.html).toContain("window.state");
+    expect(result.html).toContain("setState");
   });
 
   it("should still support export const main for backward compatibility", async () => {
@@ -41,20 +41,20 @@ describe("V3 Build Integration - viz export support", () => {
       `,
     };
 
-    const result = await build({ 
-      files, 
+    const result = await build({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     // Check that HTML was generated
     expect(result).toBeDefined();
     expect(result.html).toBeDefined();
-    expect(typeof result.html).toBe('string');
-    
+    expect(typeof result.html).toBe("string");
+
     // Should still contain the fallback logic
     expect(result.html).toContain("(Viz.viz || Viz.main)");
-    
+
     // Should contain the basic V3 runtime structure
     expect(result.html).toContain('<div id="viz-container');
   });
@@ -71,17 +71,17 @@ describe("V3 Build Integration - viz export support", () => {
       `,
     };
 
-    const result = await build({ 
-      files, 
+    const result = await build({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     // Check that HTML was generated
     expect(result).toBeDefined();
     expect(result.html).toBeDefined();
-    expect(typeof result.html).toBe('string');
-    
+    expect(typeof result.html).toBe("string");
+
     // Should contain the fallback logic that prioritizes viz
     expect(result.html).toContain("(Viz.viz || Viz.main)");
   });

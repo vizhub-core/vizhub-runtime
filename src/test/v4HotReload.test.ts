@@ -17,23 +17,23 @@ describe("V4 Hot Reloading", () => {
       `,
       "main.js": `
         console.log("Hello from main");
-      `
+      `,
     };
 
-    const result = await v4BuildWithHotReload({ 
-      files, 
+    const result = await v4BuildWithHotReload({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     const html = result.files["index.html"];
-    
+
     // Should include the hot reload script
     expect(html).toContain("// V4 Hot Reloading Support");
     expect(html).toContain("addEventListener('message'");
     expect(html).toContain("case 'runJS':");
     expect(html).toContain("case 'runCSS':");
-    
+
     // Should have bundled JS
     expect(result.bundledJS).toContain("Hello from main");
   });
@@ -50,19 +50,19 @@ describe("V4 Hot Reloading", () => {
         export function helper() {
           console.log("Helper function");
         }
-      `
+      `,
     };
 
-    const result = await v4BuildWithHotReload({ 
-      files, 
+    const result = await v4BuildWithHotReload({
+      files,
       rollup,
-      enableSourcemap: false
+      enableSourcemap: false,
     });
 
     // Should return bundled JS that includes the helper function
     expect(result.bundledJS).toBeTruthy();
     expect(result.bundledJS).toContain("Helper function");
-    
+
     // HTML should be processed correctly
     const html = result.files["index.html"];
     expect(html).toContain('<script type="module">');

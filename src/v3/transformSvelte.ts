@@ -7,17 +7,60 @@ const debug = false;
 // The cache of fetched files.
 const fetchedFileCache = new Map<string, string>();
 
+// Cache for resolved svelte import paths to avoid repeated HTTP requests
+const svelteImportCache = new Map<string, string>();
+
 // The Svelte compiler.
 export type SvelteCompiler = (
   code: string,
   options: any,
-) => { js: { code: string; map?: object }; css?: { code: string; map?: object } | null };
+) => {
+  js: { code: string; map?: object };
+  css?: { code: string; map?: object } | null;
+};
 let compile: SvelteCompiler;
 
 const svelteURL =
-  "https://cdn.jsdelivr.net/npm/svelte@5";
+  "https://cdn.jsdelivr.net/npm/svelte@5.37.1";
 
-export const svelteCompilerUrl = `${svelteURL}/compiler.cjs`;
+export const svelteCompilerUrl = `${svelteURL}/compiler/index.js`;
+
+/**
+ * Tries to resolve a svelte import path by testing different suffixes.
+ * Similar to the resolve function in the alias plugin reference.
+ */
+async function resolveSvelteImport(
+  basePath: string,
+): Promise<string> {
+  // Check cache first
+  const cached = svelteImportCache.get(basePath);
+  if (cached) {
+    return cached;
+  }
+
+  const suffixes = [".js", "/index.js"];
+
+  for (const suffix of suffixes) {
+    const url = `${basePath}${suffix}`;
+    try {
+      // Make a HEAD request to check if the file exists without downloading it
+      const response = await fetch(url, { method: "HEAD" });
+      if (response.ok) {
+        // Cache the successful resolution
+        svelteImportCache.set(basePath, url);
+        return url;
+      }
+    } catch (error) {
+      // Continue to next suffix if this one fails
+      continue;
+    }
+  }
+
+  // If none of the suffixes work, return the original .js version as fallback
+  const fallback = `${basePath}.js`;
+  svelteImportCache.set(basePath, fallback);
+  return fallback;
+}
 
 // Responsible for transforming Svelte files.
 // Inspired by:
@@ -32,6 +75,16 @@ export const transformSvelte = ({
   name: "transformSvelte",
 
   load: async (resolved: string) => {
+    // Handle virtual esm-env module
+    if (resolved === "virtual:esm-env") {
+      return `
+export const BROWSER = true;
+export const DEV = true;
+export const NODE = false;
+export const PROD = false;
+`;
+    }
+
     if (!resolved.startsWith(svelteURL)) {
       return;
     }
@@ -60,13 +113,27 @@ export const transformSvelte = ({
       console.log("importee: " + importee);
       console.log("importer: " + importer);
     }
+
+    // Special case for esm-env - provide browser environment constants
+    if (importee === "esm-env") {
+      return "virtual:esm-env";
+    }
+
     // importing from Svelte
     if (importee === `svelte`) {
-      return `${svelteURL}/src/runtime/index.js`;
+      return `${svelteURL}/src/index-client.js`;
     }
     if (importee.startsWith(`svelte/`)) {
       const sub_path = importee.slice(7);
-      return `${svelteURL}/src/runtime/${sub_path}/index.js`;
+      const basePath = `${svelteURL}/src/${sub_path}`;
+      return await resolveSvelteImport(basePath);
+    }
+
+    // Handle Svelte internal package imports (e.g., #client/constants)
+    if (importee.startsWith("#client/")) {
+      const sub_path = importee.slice(8); // Remove '#client/'
+      const basePath = `${svelteURL}/src/internal/client/${sub_path}`;
+      return await resolveSvelteImport(basePath);
     }
 
     // importing from a URL
@@ -105,14 +172,14 @@ export const transformSvelte = ({
 
       const compiled = compile(code, {
         filename: fileName,
-        generate: 'client',        // Svelte 5 uses 'client' instead of 'dom'
-        css: 'external',           // Extract CSS instead of auto-injecting
-        dev: false,                // Production mode
+        generate: "client", // Svelte 5 uses 'client' instead of 'dom'
+        css: "external", // Extract CSS instead of auto-injecting
+        dev: false, // Production mode
       });
 
       // In Svelte 5, CSS is extracted separately if css: 'external' is used
       let result = compiled.js.code;
-      
+
       // If there's CSS, inject it into the component
       if (compiled.css && compiled.css.code) {
         // Prepend CSS injection code to the component

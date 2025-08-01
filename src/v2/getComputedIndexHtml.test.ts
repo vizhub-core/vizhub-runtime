@@ -18,28 +18,35 @@ describe("v2 getComputedIndexHtml", () => {
       "<!DOCTYPE html><html><head></head><body><h1>Hello World</h1></body></html>";
     const files: FileCollection = { "index.html": text };
     const result = getComputedIndexHtml(files);
-    
+
     // Should include the original content
     expect(result).toContain("<h1>Hello World</h1>");
     expect(result).toContain("<!DOCTYPE html>");
     // Should include runtime error handler
-    expect(result).toContain("window.addEventListener('error'");
+    expect(result).toContain(
+      "window.addEventListener('error'",
+    );
     expect(result).toContain("parent.postMessage");
     expect(result).toContain("type: 'runtimeError'");
   });
 
   it("should add bundle.js, no package.json", async () => {
     const files: FileCollection = {
-      "index.html": '<!DOCTYPE html><html><head></head><body></body></html>',
+      "index.html":
+        "<!DOCTYPE html><html><head></head><body></body></html>",
       "index.js": 'console.log("Hello")',
     };
     const result = getComputedIndexHtml(files);
-    
+
     // Should include bundle.js script
-    expect(result).toContain('<script src="bundle.js"></script>');
+    expect(result).toContain(
+      '<script src="bundle.js"></script>',
+    );
     expect(result).toContain("<!DOCTYPE html>");
     // Should include runtime error handler
-    expect(result).toContain("window.addEventListener('error'");
+    expect(result).toContain(
+      "window.addEventListener('error'",
+    );
     expect(result).toContain("parent.postMessage");
     expect(result).toContain("type: 'runtimeError'");
   });
