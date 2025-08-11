@@ -16,6 +16,7 @@ import { v2Build } from "../v2";
 import { v4Build, v4BuildWithHotReload } from "../v4";
 import { VIRTUAL_PREFIX } from "../common/virtualFileSystem";
 import { getRuntimeErrorHandlerScript } from "../common/runtimeErrorHandling";
+import { processHTMLImages } from "../common/imageSupport";
 
 const DEBUG = false;
 
@@ -45,6 +46,22 @@ const addRuntimeErrorHandlingToV1 = (
 
   // If neither exists, inject at the end
   return html + errorHandlerScript;
+};
+
+/**
+ * Processes files for V1 runtime by converting image references in HTML to data URLs
+ */
+const processImagesForV1 = (files: FileCollection): FileCollection => {
+  const processedFiles = { ...files };
+  
+  // Process HTML files to replace image src attributes with data URLs
+  for (const [filename, content] of Object.entries(processedFiles)) {
+    if (filename.toLowerCase().endsWith('.html')) {
+      processedFiles[filename] = processHTMLImages(content, files);
+    }
+  }
+  
+  return processedFiles;
 };
 
 // Builds the given files.
@@ -122,9 +139,10 @@ export const build = async ({
     DEBUG &&
       console.log("[build] version:", runtimeVersion);
     if (runtimeVersion === "v1") {
+      const processedFiles = processImagesForV1(files);
       return {
         html: addRuntimeErrorHandlingToV1(
-          magicSandbox(files),
+          magicSandbox(processedFiles),
         ),
         runtimeVersion,
       };
@@ -136,10 +154,10 @@ export const build = async ({
           "Rollup is required for v2 runtime",
         );
       }
+      const v2Files = await v2Build({ files, rollup, enableSourcemap });
+      const processedFiles = processImagesForV1(v2Files); // Same processing as V1 for HTML
       return {
-        html: magicSandbox(
-          await v2Build({ files, rollup, enableSourcemap }),
-        ),
+        html: magicSandbox(processedFiles),
         runtimeVersion,
       };
     }
@@ -208,8 +226,10 @@ export const build = async ({
         enableSourcemap,
       });
 
+      const processedFiles = processImagesForV1(v4Result.files); // Same processing as V1 for HTML
+
       return {
-        html: magicSandbox(v4Result.files),
+        html: magicSandbox(processedFiles),
         js: v4Result.bundledJS,
         runtimeVersion,
       };

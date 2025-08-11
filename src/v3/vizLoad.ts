@@ -8,6 +8,7 @@ import { getFileText } from "@vizhub/viz-utils";
 import type { ResolvedVizFileId } from "./types";
 import { parseId } from "./parseId";
 import { VizCache } from "./vizCache.js";
+import { isImageFile, convertImageToDataURL } from "../common/imageSupport";
 
 const debug = false;
 
@@ -84,6 +85,12 @@ export const vizLoad = ({
       // `Imported file "${fileName}" not found in viz ${vizId}`,
       // `Imported file "${fileName}" not found.`,
       // );
+    }
+
+    // Handle image files by returning them as data URL exports
+    if (isImageFile(parsedFileName)) {
+      const dataURL = convertImageToDataURL(parsedFileName, fileText);
+      return `export default "${dataURL}";`;
     }
 
     return fileText;

@@ -1,5 +1,6 @@
 import { FileCollection } from "@vizhub/viz-types";
 import type { Plugin } from "rollup";
+import { isImageFile, convertImageToDataURL } from "./imageSupport";
 
 export const VIRTUAL_PREFIX = "\0virtual:";
 
@@ -99,6 +100,12 @@ export const virtualFileSystem = (
       if (id.startsWith(VIRTUAL_PREFIX)) {
         const actualId = id.slice(VIRTUAL_PREFIX.length);
         if (files[actualId]) {
+          // Handle image files by returning them as data URL exports
+          if (isImageFile(actualId)) {
+            const dataURL = convertImageToDataURL(actualId, files[actualId]);
+            return `export default "${dataURL}";`;
+          }
+          // Handle regular files
           return files[actualId];
         }
       }
