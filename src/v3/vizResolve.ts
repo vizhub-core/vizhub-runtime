@@ -44,11 +44,20 @@ export const vizResolve = ({
       // Handle JS files
       // e.g. `import { foo } from './foo.js'`
       // e.g. `import { foo } from './foo'`
+      // Handle image files
+      // e.g. `import logoSrc from './logo.png'`
       if (
         !fileName.endsWith(".js") &&
         !fileName.endsWith(".css") &&
         !fileName.endsWith(".csv") &&
-        !fileName.endsWith(".svelte")
+        !fileName.endsWith(".svelte") &&
+        !fileName.endsWith(".png") &&
+        !fileName.endsWith(".jpg") &&
+        !fileName.endsWith(".jpeg") &&
+        !fileName.endsWith(".gif") &&
+        !fileName.endsWith(".svg") &&
+        !fileName.endsWith(".webp") &&
+        !fileName.endsWith(".bmp")
       ) {
         fileName += ".js";
       }
