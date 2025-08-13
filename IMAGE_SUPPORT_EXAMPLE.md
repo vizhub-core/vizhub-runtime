@@ -5,6 +5,7 @@ This example demonstrates the image support functionality working across differe
 ## Files
 
 **index.html**
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -22,16 +23,19 @@ This example demonstrates the image support functionality working across differe
 ```
 
 **favicon-tiny.jpg** (base64 content)
+
 ```
 /9j/4AAQSkZJRgABAQEBLAEsAAD/4RqSRXhpZgAASUkqAAgAAAAIAA4BAgASAAAAbgAAABIBAwABAAAAAQAAABoBBQABAAAAgAAAABsBBQABAAAAiAAAACgBAwABAAAAAgAAADEBAgANAAAAkAAAADIBAgAUAAAAngAAAGmHBAABAAAAsgAAAOoAAABDcmVhdGVkIHdpdGggR0lNUAAsAQAAAQAAACwBAAABAAAAR0lNUCAyLjEwLjMwAAA
 ```
 
 **index.js**
+
 ```javascript
-console.log('hello world');
+console.log("hello world");
 ```
 
 **styles.css**
+
 ```css
 body,
 html {
@@ -54,6 +58,7 @@ html {
 ```
 
 **README.md**
+
 ```
 (empty file)
 ```
@@ -69,11 +74,16 @@ When this example is processed by VizHub Runtime:
 ## Result
 
 The final HTML will contain:
+
 ```html
-<img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4RqSRXhpZgAA..." class="centered-image" />
+<img
+  src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4RqSRXhpZgAA..."
+  class="centered-image"
+/>
 ```
 
 Instead of the original:
+
 ```html
 <img src="favicon-tiny.jpg" class="centered-image" />
 ```
@@ -83,21 +93,25 @@ This allows the image to display correctly within the sandboxed iframe environme
 ## Runtime Support
 
 ### V1 Runtime (HTML only)
+
 - ✅ Images referenced in HTML via `<img src="...">` are converted to data URLs
 - ✅ Supports: JPG, PNG, GIF, SVG, WebP, BMP formats
 
 ### V2 Runtime (HTML + bundled JS)
-- ✅ Images referenced in HTML via `<img src="...">` are converted to data URLs  
+
+- ✅ Images referenced in HTML via `<img src="...">` are converted to data URLs
 - ✅ JavaScript bundling works alongside image processing
 - ✅ All V1 image formats supported
 
 ### V3 Runtime (Advanced bundling)
+
 - ✅ Images can be imported in JavaScript: `import logoSrc from './logo.png'`
 - ✅ Images are converted to data URLs and exported as JavaScript modules
 - ✅ Works with cross-viz imports and state management
 - ✅ All image formats supported
 
 ### V4 Runtime (ES modules)
+
 - ✅ Images referenced in HTML via `<img src="...">` are converted to data URLs
 - ✅ ES module processing works alongside image support
 - ✅ Hot reloading preserves image processing

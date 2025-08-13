@@ -4,4 +4,9 @@ export { fetchProxy } from "./fetchProxy";
 export { styleTest } from "./styleTest";
 export { xmlTest } from "./xmlTest";
 export { protocolTest } from "./protocolTest";
-export { imageInHTML, svgInHTML, noImagesHTML, mixedContentHTML } from "./imageSupport";
+export {
+  imageInHTML,
+  svgInHTML,
+  noImagesHTML,
+  mixedContentHTML,
+} from "./imageSupport";

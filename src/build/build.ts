@@ -51,16 +51,23 @@ const addRuntimeErrorHandlingToV1 = (
 /**
  * Processes files for V1 runtime by converting image references in HTML to data URLs
  */
-const processImagesForV1 = (files: FileCollection): FileCollection => {
+const processImagesForV1 = (
+  files: FileCollection,
+): FileCollection => {
   const processedFiles = { ...files };
-  
+
   // Process HTML files to replace image src attributes with data URLs
-  for (const [filename, content] of Object.entries(processedFiles)) {
-    if (filename.toLowerCase().endsWith('.html')) {
-      processedFiles[filename] = processHTMLImages(content, files);
+  for (const [filename, content] of Object.entries(
+    processedFiles,
+  )) {
+    if (filename.toLowerCase().endsWith(".html")) {
+      processedFiles[filename] = processHTMLImages(
+        content,
+        files,
+      );
     }
   }
-  
+
   return processedFiles;
 };
 
@@ -154,7 +161,11 @@ export const build = async ({
           "Rollup is required for v2 runtime",
         );
       }
-      const v2Files = await v2Build({ files, rollup, enableSourcemap });
+      const v2Files = await v2Build({
+        files,
+        rollup,
+        enableSourcemap,
+      });
       const processedFiles = processImagesForV1(v2Files); // Same processing as V1 for HTML
       return {
         html: magicSandbox(processedFiles),
@@ -226,7 +237,9 @@ export const build = async ({
         enableSourcemap,
       });
 
-      const processedFiles = processImagesForV1(v4Result.files); // Same processing as V1 for HTML
+      const processedFiles = processImagesForV1(
+        v4Result.files,
+      ); // Same processing as V1 for HTML
 
       return {
         html: magicSandbox(processedFiles),
